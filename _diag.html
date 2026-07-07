@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Viewport Diagnostic</title>
+<style>
+  html,body{margin:0;padding:0}
+  html{height:100%}
+  body{min-height:100%;height:100dvh;background:#101018;font-family:-apple-system,system-ui,sans-serif;color:#fff;overflow:hidden}
+  *{box-sizing:border-box}
+
+  /* This box is pinned exactly like the app shell. Its RED border shows where
+     CSS believes the true viewport edges are. If the red bottom border is not
+     flush with the physical screen bottom, that IS the bug. */
+  #shell{position:fixed;inset:0;border:4px solid #ff3b6b;display:flex;flex-direction:column;
+         background:linear-gradient(180deg,#1a1a2e,#0e2a2a)}
+
+  /* Green bars = the actual size iOS reports for the safe-area insets.
+     If a bar has visible height, that inset is non-zero. */
+  #topInset{height:env(safe-area-inset-top,0px);background:rgba(52,211,153,.55);flex:none}
+  #botInset{height:env(safe-area-inset-bottom,0px);background:rgba(52,211,153,.55);flex:none}
+
+  #mid{flex:1;overflow:auto;padding:16px}
+  h1{font-size:16px;margin:0 0 10px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  td{padding:5px 6px;border-bottom:1px solid rgba(255,255,255,.12);vertical-align:top}
+  td:first-child{color:#9aa0b4;white-space:nowrap;width:52%}
+  td:last-child{font-weight:700;font-variant-numeric:tabular-nums}
+  .hi{color:#ffd166}
+  .warn{color:#ff6b6b}
+  .ok{color:#34d399}
+  #legend{font-size:11px;color:#9aa0b4;padding:10px 16px;line-height:1.5;flex:none;border-top:1px solid rgba(255,255,255,.12)}
+  b.r{color:#ff3b6b}b.g{color:#34d399}
+</style>
+</head>
+<body>
+<div id="shell">
+  <div id="topInset"></div>
+  <div id="mid">
+    <h1>📐 Viewport Diagnostic</h1>
+    <table id="tbl"></table>
+  </div>
+  <div id="botInset"></div>
+  <div id="legend">
+    <b class="r">━━</b> red border = where CSS thinks the viewport edges are.
+    It should hug all 4 physical screen edges.<br>
+    <b class="g">▉</b> green bars = actual safe-area insets iOS reports.
+  </div>
+</div>
+
+<script>
+  function px(el, prop){ return getComputedStyle(el).getPropertyValue(prop); }
+  // read the resolved inset values off the green bars
+  function insets(){
+    return {
+      top: document.getElementById('topInset').getBoundingClientRect().height,
+      bottom: document.getElementById('botInset').getBoundingClientRect().height
+    };
+  }
+  function render(){
+    const s = document.getElementById('shell').getBoundingClientRect();
+    const vv = window.visualViewport;
+    const ins = insets();
+    const standalone = window.matchMedia('(display-mode: standalone)').matches
+      || window.navigator.standalone === true;
+    const screenBottomGap = Math.round(window.innerHeight - s.bottom);
+    const rows = [
+      ['display mode', standalone ? '<span class="hi">STANDALONE (home screen)</span>' : 'browser tab'],
+      ['window.innerHeight', Math.round(window.innerHeight)],
+      ['window.innerWidth', Math.round(window.innerWidth)],
+      ['visualViewport.height', vv ? Math.round(vv.height) : 'n/a'],
+      ['visualViewport.offsetTop', vv ? Math.round(vv.offsetTop) : 'n/a'],
+      ['screen.height', screen.height],
+      ['documentElement.clientHeight', document.documentElement.clientHeight],
+      ['— shell (fixed inset:0) rect —', ''],
+      ['shell.top', Math.round(s.top)],
+      ['shell.bottom', Math.round(s.bottom)],
+      ['shell.height', Math.round(s.height)],
+      ['innerHeight − shell.bottom', (screenBottomGap === 0 ? '<span class="ok">0 ✓ flush</span>' : '<span class="warn">'+screenBottomGap+' ✗ GAP</span>')],
+      ['— safe-area insets (resolved) —', ''],
+      ['inset-top', Math.round(ins.top) + (ins.top>0?' <span class="ok">✓ active</span>':' <span class="warn">0 — not active!</span>')],
+      ['inset-bottom', Math.round(ins.bottom) + (ins.bottom>0?' <span class="ok">✓ active</span>':' <span class="warn">0 — not active!</span>')],
+    ];
+    document.getElementById('tbl').innerHTML = rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('');
+  }
+  render();
+  window.addEventListener('resize', render);
+  window.addEventListener('scroll', render);
+  if (window.visualViewport){
+    window.visualViewport.addEventListener('resize', render);
+    window.visualViewport.addEventListener('scroll', render);
+  }
+  setInterval(render, 800);
+</script>
+</body>
+</html>
