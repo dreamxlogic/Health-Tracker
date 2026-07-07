@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <script src="./support.js"></script>
 </head>
 <body>
@@ -65,7 +65,7 @@
 
       <!-- STEP 0: WELCOME -->
       <sc-if value="{{ ob.isWelcome }}" hint-placeholder-val="{{ true }}">
-      <div style="flex:1;display:flex;flex-direction:column;padding:0 26px 34px">
+      <div style="flex:1;display:flex;flex-direction:column;padding:0 26px calc(34px + env(safe-area-inset-bottom,0px))">
         <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;text-align:center">
           <div style="width:88px;height:88px;border-radius:var(--r-lg);background:linear-gradient(135deg,var(--ac),var(--ac-deep));box-shadow:0 20px 44px rgba(var(--ac-rgb),.4);display:flex;align-items:center;justify-content:center;animation:hcFloat 3.4s ease-in-out infinite"><svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.5 12.6 12 20l-7.5-7.4a5 5 0 1 1 7.5-6.6 5 5 0 1 1 7.5 6.6Z"></path><path d="M7 12h2l1.5-3 2.5 6 1.5-3h2.5"></path></svg></div>
           <div style="display:flex;flex-direction:column;gap:9px">
@@ -82,7 +82,7 @@
 
       <!-- STEP 1: NAME -->
       <sc-if value="{{ ob.isName }}" hint-placeholder-val="{{ false }}">
-      <div style="flex:1;display:flex;flex-direction:column;padding:26px 26px 34px;gap:22px">
+      <div style="flex:1;display:flex;flex-direction:column;padding:26px 26px calc(34px + env(safe-area-inset-bottom,0px));gap:22px">
         <div style="display:flex;flex-direction:column;gap:8px">
           <div style="font-size:24px;font-weight:800;letter-spacing:-.02em">What should we call you?</div>
           <div style="font-size:13.5px;color:#565B6E;line-height:1.5">Just for greetings. You can leave it blank.</div>
@@ -95,7 +95,7 @@
 
       <!-- STEP 2: MEDS (full editor per item) -->
       <sc-if value="{{ ob.isMeds }}" hint-placeholder-val="{{ false }}">
-      <div style="flex:1;display:flex;flex-direction:column;padding:26px 26px 34px;gap:16px;min-height:0">
+      <div style="flex:1;display:flex;flex-direction:column;padding:26px 26px calc(34px + env(safe-area-inset-bottom,0px));gap:16px;min-height:0">
         <div style="display:flex;flex-direction:column;gap:8px">
           <div style="font-size:24px;font-weight:800;letter-spacing:-.02em">{{ ob.title }}</div>
           <div style="font-size:13.5px;color:#565B6E;line-height:1.5">{{ ob.sub }}</div>
@@ -116,7 +116,7 @@
 
       <!-- STEP 3: SYMPTOMS (full editor per item, suggestions prefill) -->
       <sc-if value="{{ ob.isSyms }}" hint-placeholder-val="{{ false }}">
-      <div style="flex:1;display:flex;flex-direction:column;padding:26px 26px 34px;gap:16px;min-height:0">
+      <div style="flex:1;display:flex;flex-direction:column;padding:26px 26px calc(34px + env(safe-area-inset-bottom,0px));gap:16px;min-height:0">
         <div style="display:flex;flex-direction:column;gap:8px">
           <div style="font-size:24px;font-weight:800;letter-spacing:-.02em">{{ ob.title }}</div>
           <div style="font-size:13.5px;color:#565B6E;line-height:1.5">{{ ob.sub }}</div>
@@ -149,7 +149,7 @@
 
       <!-- STEP 4: RELIEF -->
       <sc-if value="{{ ob.isRelief }}" hint-placeholder-val="{{ false }}">
-      <div style="flex:1;display:flex;flex-direction:column;padding:26px 26px 34px;gap:16px;min-height:0">
+      <div style="flex:1;display:flex;flex-direction:column;padding:26px 26px calc(34px + env(safe-area-inset-bottom,0px));gap:16px;min-height:0">
         <div style="display:flex;flex-direction:column;gap:8px">
           <div style="font-size:24px;font-weight:800;letter-spacing:-.02em">{{ ob.title }}</div>
           <div style="font-size:13.5px;color:#565B6E;line-height:1.5">{{ ob.sub }}</div>
@@ -179,7 +179,7 @@
 
       <!-- STEP 5: TRIGGERS & LIFE FACTORS -->
       <sc-if value="{{ ob.isFactors }}" hint-placeholder-val="{{ false }}">
-      <div style="flex:1;display:flex;flex-direction:column;padding:26px 26px 34px;gap:16px;min-height:0">
+      <div style="flex:1;display:flex;flex-direction:column;padding:26px 26px calc(34px + env(safe-area-inset-bottom,0px));gap:16px;min-height:0">
         <div style="display:flex;flex-direction:column;gap:8px">
           <div style="font-size:24px;font-weight:800;letter-spacing:-.02em">{{ ob.title }}</div>
           <div style="font-size:13.5px;color:#565B6E;line-height:1.5">{{ ob.sub }}</div>
@@ -209,7 +209,7 @@
 
       <!-- STEP 6: PREFERENCES -->
       <sc-if value="{{ ob.isPrefs }}" hint-placeholder-val="{{ false }}">
-      <div style="flex:1;display:flex;flex-direction:column;padding:26px 26px 34px;gap:16px;min-height:0">
+      <div style="flex:1;display:flex;flex-direction:column;padding:26px 26px calc(34px + env(safe-area-inset-bottom,0px));gap:16px;min-height:0">
         <div style="display:flex;flex-direction:column;gap:8px">
           <div style="font-size:24px;font-weight:800;letter-spacing:-.02em">{{ ob.title }}</div>
           <div style="font-size:13.5px;color:#565B6E;line-height:1.5">{{ ob.sub }}</div>
@@ -552,7 +552,7 @@
         </div>
         </sc-if>
       </div>
-      <div style="padding:12px 20px 26px">
+      <div style="padding:12px 20px calc(26px + env(safe-area-inset-bottom,0px))">
         <div onClick="{{ ci.onContinue }}" style="cursor:pointer;background:linear-gradient(90deg,var(--ac-soft),var(--ac));color:#fff;font-size:15px;font-weight:700;padding:15px;border-radius:999px;text-align:center;box-shadow:0 10px 22px rgba(var(--ac-rgb),.35)">{{ ci.continueLabel }}</div>
       </div>
     </div>
@@ -708,7 +708,7 @@
 
         <textarea onInput="{{ log.onNotes }}" placeholder="Notes (optional)" style="background:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:15px 18px;box-shadow:0 2px 6px rgba(120,110,180,.06),0 16px 36px rgba(120,110,180,.15);font-size:13.5px;color:#23262F;min-height:60px;resize:none;outline:none"></textarea>
       </div>
-      <div style="padding:12px 20px 26px">
+      <div style="padding:12px 20px calc(26px + env(safe-area-inset-bottom,0px))">
         <div onClick="{{ log.onSave }}" style="cursor:pointer;background:linear-gradient(90deg,var(--ac-soft),var(--ac));color:#fff;font-size:15px;font-weight:700;padding:15px;border-radius:999px;text-align:center;box-shadow:0 10px 22px rgba(var(--ac-rgb),.35)">Save entry</div>
       </div>
       </sc-if>
@@ -1619,7 +1619,7 @@
     <sc-if value="{{ prn.open }}" hint-placeholder-val="{{ false }}">
     <div style="position:absolute;inset:0;background:rgba(40,34,70,.35);backdrop-filter:blur(3px);display:flex;flex-direction:column;justify-content:flex-end">
       <div onClick="{{ prn.onCancel }}" style="flex:1"></div>
-      <div style="background:#fff;border-radius:var(--r-sheet) var(--r-sheet) 0 0;padding:22px 22px 30px;display:flex;flex-direction:column;gap:16px;box-shadow:0 -20px 50px rgba(70,60,130,.3);max-height:88%;overflow-y:auto">
+      <div style="background:#fff;border-radius:var(--r-sheet) var(--r-sheet) 0 0;padding:22px 22px calc(30px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:16px;box-shadow:0 -20px 50px rgba(70,60,130,.3);max-height:88%;overflow-y:auto">
         <div style="width:40px;height:5px;border-radius:99px;background:#E4E2EE;align-self:center"></div>
         <div style="font-size:19px;font-weight:800;letter-spacing:-.01em">Log {{ prn.name }}</div>
         <div style="display:flex;gap:12px">
@@ -1642,7 +1642,7 @@
     <sc-if value="{{ medEdit.open }}" hint-placeholder-val="{{ false }}">
     <div style="position:absolute;inset:0;background:rgba(40,34,70,.35);backdrop-filter:blur(3px);display:flex;flex-direction:column;justify-content:flex-end;z-index:70">
       <div onClick="{{ medEdit.onCancel }}" style="flex:1"></div>
-      <div style="background:#fff;border-radius:var(--r-sheet) var(--r-sheet) 0 0;padding:22px 22px 30px;display:flex;flex-direction:column;gap:14px;box-shadow:0 -20px 50px rgba(70,60,130,.3);max-height:88%;overflow-y:auto">
+      <div style="background:#fff;border-radius:var(--r-sheet) var(--r-sheet) 0 0;padding:22px 22px calc(30px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:14px;box-shadow:0 -20px 50px rgba(70,60,130,.3);max-height:88%;overflow-y:auto">
         <div style="width:40px;height:5px;border-radius:99px;background:#E4E2EE;align-self:center"></div>
         <div style="font-size:19px;font-weight:800">{{ medEdit.title }}</div>
         <div style="display:flex;flex-direction:column;gap:7px"><div style="font-size:12px;font-weight:700;color:#565B6E">Name</div><input id="hcc-med-name" defaultValue="{{ medEdit.name }}" placeholder="e.g. Wellbutrin XL" style="border:none;background:#F6F5FB;border-radius:12px;padding:12px 13px;font-size:14px;font-weight:600;color:#23262F;outline:none;font-family:inherit"></div>
@@ -1712,7 +1712,7 @@
     <sc-if value="{{ symEdit.open }}" hint-placeholder-val="{{ false }}">
     <div style="position:absolute;inset:0;background:rgba(40,34,70,.35);backdrop-filter:blur(3px);display:flex;flex-direction:column;justify-content:flex-end;z-index:70">
       <div onClick="{{ symEdit.onCancel }}" style="flex:1"></div>
-      <div style="background:#fff;border-radius:var(--r-sheet) var(--r-sheet) 0 0;padding:22px 22px 30px;display:flex;flex-direction:column;gap:14px;box-shadow:0 -20px 50px rgba(70,60,130,.3);max-height:88%;overflow-y:auto">
+      <div style="background:#fff;border-radius:var(--r-sheet) var(--r-sheet) 0 0;padding:22px 22px calc(30px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:14px;box-shadow:0 -20px 50px rgba(70,60,130,.3);max-height:88%;overflow-y:auto">
         <div style="width:40px;height:5px;border-radius:99px;background:#E4E2EE;align-self:center"></div>
         <div style="font-size:19px;font-weight:800">{{ symEdit.title }}</div>
         <div style="display:flex;flex-direction:column;gap:7px"><div style="font-size:12px;font-weight:700;color:#565B6E">Name</div><input id="hcc-sym-name" defaultValue="{{ symEdit.name }}" placeholder="e.g. Irritability" style="border:none;background:#F6F5FB;border-radius:12px;padding:12px 13px;font-size:14px;font-weight:600;color:#23262F;outline:none;font-family:inherit"></div>
@@ -1801,7 +1801,7 @@
         <sc-for list="{{ sp.chips }}" as="ch" hint-placeholder-count="3"><div onClick="{{ ch.onRemove }}" style="cursor:pointer;flex:none;display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:800;padding:8px 12px;border-radius:999px;background:{{ ch.bg }};color:{{ ch.deep }}">{{ ch.name }}<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></div></sc-for>
       </div>
       </sc-if>
-      <div style="padding:12px 20px 22px;display:flex;gap:10px;background:linear-gradient(to top,rgba(250,247,252,.96),rgba(250,247,252,0))">
+      <div style="padding:12px 20px calc(22px + env(safe-area-inset-bottom,0px));display:flex;gap:10px;background:linear-gradient(to top,rgba(250,247,252,.96),rgba(250,247,252,0))">
         <div onClick="{{ sp.onClear }}" style="cursor:pointer;border:1.5px solid #CFC6EC;color:var(--ac-deep);font-weight:800;font-size:14px;padding:14px 22px;border-radius:999px">Clear</div>
         <div onClick="{{ sp.onCommit }}" style="cursor:pointer;flex:1;text-align:center;background:{{ sp.addBg }};color:{{ sp.addColor }};font-weight:800;font-size:14.5px;padding:14px;border-radius:999px;box-shadow:{{ sp.addShadow }}">{{ sp.addLabel }}</div>
       </div>
@@ -1825,7 +1825,7 @@
     <sc-if value="{{ exp.open }}" hint-placeholder-val="{{ false }}">
     <div style="position:absolute;inset:0;background:rgba(40,34,70,.35);backdrop-filter:blur(3px);display:flex;flex-direction:column;justify-content:flex-end">
       <div onClick="{{ exp.onClose }}" style="flex:1"></div>
-      <div style="background:#fff;border-radius:var(--r-sheet) var(--r-sheet) 0 0;padding:22px 22px 30px;display:flex;flex-direction:column;gap:14px;box-shadow:0 -20px 50px rgba(70,60,130,.3);max-height:90%;overflow-y:auto">
+      <div style="background:#fff;border-radius:var(--r-sheet) var(--r-sheet) 0 0;padding:22px 22px calc(30px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:14px;box-shadow:0 -20px 50px rgba(70,60,130,.3);max-height:90%;overflow-y:auto">
         <div style="width:40px;height:5px;border-radius:99px;background:#E4E2EE;align-self:center"></div>
         <div style="display:flex;align-items:flex-start;gap:10px"><div style="flex:1"><div style="font-size:20px;font-weight:800;letter-spacing:-.01em">{{ exp.title }}</div><div style="font-size:13px;color:#7A7F92;margin-top:4px;line-height:1.5">{{ exp.desc }}</div></div><div onClick="{{ exp.onClose }}" style="cursor:pointer;width:30px;height:30px;border-radius:50%;background:#F6F5FB;display:flex;align-items:center;justify-content:center;color:#565B6E;font-size:16px">✕</div></div>
 
@@ -1864,7 +1864,7 @@
     <sc-if value="{{ tp.open }}" hint-placeholder-val="{{ false }}">
     <div style="position:absolute;inset:0;background:rgba(40,34,70,.35);backdrop-filter:blur(4px);display:flex;flex-direction:column;justify-content:flex-end;z-index:75">
       <div onClick="{{ tp.onCancel }}" style="flex:1"></div>
-      <div style="background:linear-gradient(155deg,rgba(255,255,255,.94),rgba(255,255,255,.8));backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.95);border-radius:var(--r-sheet) var(--r-sheet) 0 0;padding:20px 22px 30px;display:flex;flex-direction:column;gap:14px;box-shadow:0 -20px 50px rgba(70,60,130,.3)">
+      <div style="background:linear-gradient(155deg,rgba(255,255,255,.94),rgba(255,255,255,.8));backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.95);border-radius:var(--r-sheet) var(--r-sheet) 0 0;padding:20px 22px calc(30px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:14px;box-shadow:0 -20px 50px rgba(70,60,130,.3)">
         <div style="width:40px;height:5px;border-radius:99px;background:#E4E2EE;align-self:center"></div>
         <div style="display:flex;align-items:baseline"><div style="font-size:17px;font-weight:800;flex:1">Time taken</div><div style="font-size:15px;font-weight:800;color:var(--ac)">{{ tp.preview }}</div></div>
         <div style="position:relative;display:flex;gap:10px;height:176px">
@@ -1892,7 +1892,7 @@
     <sc-if value="{{ dp.open }}" hint-placeholder-val="{{ false }}">
     <div style="position:absolute;inset:0;background:rgba(40,34,70,.35);backdrop-filter:blur(4px);display:flex;flex-direction:column;justify-content:flex-end;z-index:80">
       <div onClick="{{ dp.onCancel }}" style="flex:1"></div>
-      <div style="background:linear-gradient(155deg,rgba(255,255,255,.94),rgba(255,255,255,.8));backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.95);border-radius:var(--r-sheet) var(--r-sheet) 0 0;padding:20px 22px 30px;display:flex;flex-direction:column;gap:14px;box-shadow:0 -20px 50px rgba(70,60,130,.3)">
+      <div style="background:linear-gradient(155deg,rgba(255,255,255,.94),rgba(255,255,255,.8));backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.95);border-radius:var(--r-sheet) var(--r-sheet) 0 0;padding:20px 22px calc(30px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:14px;box-shadow:0 -20px 50px rgba(70,60,130,.3)">
         <div style="width:40px;height:5px;border-radius:99px;background:#E4E2EE;align-self:center"></div>
         <div style="display:flex;align-items:center;gap:8px">
           <div style="font-size:17px;font-weight:800;flex:1">{{ dp.title }}</div>
@@ -1932,7 +1932,7 @@
 <!-- ============================ FULL-PAGE DOCTOR REPORT ============================ -->
 <sc-if value="{{ rep.open }}" hint-placeholder-val="{{ false }}">
 <div id="hcc-report" style="position:fixed;inset:0;z-index:80;overflow-y:auto;background:var(--wash)">
-  <div style="max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:14px;padding:28px 20px 60px">
+  <div style="max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:14px;padding:calc(28px + env(safe-area-inset-top,0px)) 20px calc(60px + env(safe-area-inset-bottom,0px))">
     <div class="hcc-noprint" style="display:flex;align-items:center;gap:10px">
       <div onClick="{{ rep.onClose }}" style="cursor:pointer;background:rgba(255,255,255,.9);color:#565B6E;font-size:13px;font-weight:700;padding:11px 18px;border-radius:999px;box-shadow:0 6px 16px rgba(120,110,180,.15)">‹ Back to app</div>
       <div style="flex:1"></div>
