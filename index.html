@@ -36,9 +36,7 @@
   <div id="hcc-phone-sizer" style="width:100%;height:100%;flex:none">
   <div id="hcc-phone" style="width:100%;height:100%;transform-origin:top left;overflow:hidden;position:relative;background:var(--wash)">
 
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 26px 4px;font-size:14px;font-weight:600">9:41
-      <div style="display:flex;gap:5px;align-items:center"><div style="width:16px;height:10px;background:#23262F;border-radius:2px"></div><div style="width:22px;height:11px;border:1.5px solid #23262F;border-radius:3px"></div></div>
-    </div>
+    <div style="height:env(safe-area-inset-top,0px);flex:none"></div>
 
     <sc-if value="{{ loading }}" hint-placeholder-val="{{ true }}">
       <div style="height:760px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px">
@@ -50,9 +48,7 @@
     <!-- ============================ FIRST-RUN ONBOARDING WIZARD ============================ -->
     <sc-if value="{{ ob.show }}" hint-placeholder-val="{{ false }}">
     <div data-screen-label="Onboarding" style="position:absolute;inset:0;z-index:60;display:flex;flex-direction:column;background:var(--wash)">
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 26px 4px;font-size:14px;font-weight:600">9:41
-        <div style="display:flex;gap:5px;align-items:center"><div style="width:16px;height:10px;background:#23262F;border-radius:2px"></div><div style="width:22px;height:11px;border:1.5px solid #23262F;border-radius:3px"></div></div>
-      </div>
+      <div style="height:env(safe-area-inset-top,0px);flex:none"></div>
 
       <div style="display:flex;align-items:center;padding:10px 20px 0;height:46px">
         <div style="width:64px;display:flex">
