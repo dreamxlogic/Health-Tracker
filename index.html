@@ -8,7 +8,11 @@
 <body>
 <x-dc>
 <helmet>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Health Tracker">
+<meta name="theme-color" content="#F0EBFA">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -28,9 +32,9 @@
 </style>
 </helmet>
 
-<div class="hcc-app-root" style="height:100vh;overflow:hidden;display:flex;align-items:center;justify-content:center">
-  <div id="hcc-phone-sizer" style="width:390px;height:844px;flex:none">
-  <div id="hcc-phone" style="width:390px;height:844px;transform-origin:top left;border-radius:46px;overflow:hidden;position:relative;box-shadow:0 40px 100px rgba(70,60,130,.4),0 0 0 11px #1c1a26,0 0 0 13px #34303f;background:var(--wash)">
+<div class="hcc-app-root" style="height:100vh;overflow:hidden;display:flex">
+  <div id="hcc-phone-sizer" style="width:100%;height:100%;flex:none">
+  <div id="hcc-phone" style="width:100%;height:100%;transform-origin:top left;overflow:hidden;position:relative;background:var(--wash)">
 
     <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 26px 4px;font-size:14px;font-weight:600">9:41
       <div style="display:flex;gap:5px;align-items:center"><div style="width:16px;height:10px;background:#23262F;border-radius:2px"></div><div style="width:22px;height:11px;border:1.5px solid #23262F;border-radius:3px"></div></div>
@@ -283,7 +287,7 @@
           </div>
           </sc-if>
           <sc-if value="{{ home.noMeds }}" hint-placeholder-val="{{ false }}">
-            <div style="background:rgba(255,255,255,.7);border:1px dashed rgba(var(--ac-rgb),.35);border-radius:var(--r-lg);padding:22px;text-align:center;font-size:13px;color:#7A7F92">No medications yet. Load sample data in Settings to explore.</div>
+            <div style="background:rgba(255,255,255,.7);border:1px dashed rgba(var(--ac-rgb),.35);border-radius:var(--r-lg);padding:22px;text-align:center;font-size:13px;color:#7A7F92">No medications yet. Add one from the Meds tab or Settings.</div>
           </sc-if>
         </div>
 
@@ -370,7 +374,7 @@
         </sc-for>
         </sc-if>
         <sc-if value="{{ meds.empty }}" hint-placeholder-val="{{ false }}">
-          <div style="background:rgba(255,255,255,.7);border:1px dashed rgba(var(--ac-rgb),.35);border-radius:var(--r-lg);padding:28px;text-align:center;font-size:13px;color:#7A7F92">No medications yet.<br>Load sample data in Settings.</div>
+          <div style="background:rgba(255,255,255,.7);border:1px dashed rgba(var(--ac-rgb),.35);border-radius:var(--r-lg);padding:28px;text-align:center;font-size:13px;color:#7A7F92">No medications yet.<br>Add one with the ＋ button.</div>
         </sc-if>
       </div>
     </div>
@@ -2078,11 +2082,10 @@ class Component extends DCLogic {
     const phone = document.getElementById('hcc-phone');
     const sizer = document.getElementById('hcc-phone-sizer');
     if (!phone || !sizer) return;
-    const W = 390, H = 844, pad = 16;
-    const s = Math.min(1, (window.innerHeight - pad) / H, (window.innerWidth - pad) / W);
-    phone.style.transform = `scale(${s})`;
-    sizer.style.width = (W * s) + 'px';
-    sizer.style.height = (H * s) + 'px';
+    // Full-bleed: no simulated device frame or scaling (runs as a real mobile web app)
+    phone.style.transform = 'none';
+    sizer.style.width = '100%';
+    sizer.style.height = '100%';
   }
 
   async refresh() {
