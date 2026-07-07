@@ -33,14 +33,14 @@
 </style>
 </helmet>
 
-<div class="hcc-app-root" style="position:fixed;inset:0;overflow:hidden;display:flex;background:var(--wash)">
+<div class="hcc-app-root" style="position:fixed;top:0;left:0;right:0;height:100dvh;overflow:hidden;display:flex;background:var(--wash)">
   <div id="hcc-phone-sizer" style="width:100%;height:100%;flex:none">
-  <div id="hcc-phone" style="width:100%;height:100%;transform-origin:top left;overflow:hidden;position:relative;background:var(--wash)">
+  <div id="hcc-phone" style="width:100%;height:100%;transform-origin:top left;overflow:hidden;position:relative;display:flex;flex-direction:column;background:var(--wash)">
 
     <div style="height:env(safe-area-inset-top,0px);flex:none"></div>
 
     <sc-if value="{{ loading }}" hint-placeholder-val="{{ true }}">
-      <div style="height:760px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px">
+      <div style="flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px">
         <div style="width:40px;height:40px;border-radius:50%;border:4px solid var(--ac-100);border-top-color:var(--ac);animation:hcSpin .8s linear infinite"></div>
         <div style="font-size:13px;color:#7A7F92">Opening your health data…</div>
       </div>
@@ -233,8 +233,8 @@
 
     <!-- ============================ HOME ============================ -->
     <sc-if value="{{ isHome }}" hint-placeholder-val="{{ false }}">
-    <div style="height:790px;display:flex;flex-direction:column">
-      <div style="flex:1;overflow-y:auto;padding:10px 20px 100px;display:flex;flex-direction:column;gap:18px">
+    <div style="flex:1;min-height:0;display:flex;flex-direction:column">
+      <div style="flex:1;overflow-y:auto;padding:10px 20px 28px;display:flex;flex-direction:column;gap:18px">
         <div style="display:flex;align-items:center;gap:12px;padding-top:6px">
           <div onClick="{{ home.onAvatar }}" style="cursor:pointer;width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#F6C6A8,#C9B6F5);padding:3px;box-shadow:0 6px 16px rgba(160,140,220,.3)">
             <sc-if value="{{ home.hasAvatar }}" hint-placeholder-val="{{ false }}"><div style="width:100%;height:100%;border-radius:50%;background-image:{{ home.avatarBg }};background-size:cover;background-position:center"></div></sc-if>
@@ -322,8 +322,8 @@
 
     <!-- ============================ MEDS (1e) ============================ -->
     <sc-if value="{{ isMeds }}" hint-placeholder-val="{{ false }}">
-    <div style="height:790px;display:flex;flex-direction:column">
-      <div style="flex:1;overflow-y:auto;padding:12px 20px 100px;display:flex;flex-direction:column;gap:16px">
+    <div style="flex:1;min-height:0;display:flex;flex-direction:column">
+      <div style="flex:1;overflow-y:auto;padding:12px 20px 28px;display:flex;flex-direction:column;gap:16px">
         <div style="display:flex;align-items:center"><div style="font-size:22px;font-weight:800;letter-spacing:-.02em;flex:1">Medications</div></div>
         <div style="display:flex;gap:7px">
           <sc-for list="{{ meds.dayStrip }}" as="d" hint-placeholder-count="6">
@@ -379,7 +379,7 @@
 
     <!-- ============================ CHECK-IN WIZARD (2c) ============================ -->
     <sc-if value="{{ isCheckin }}" hint-placeholder-val="{{ false }}">
-    <div style="height:830px;display:flex;flex-direction:column;background:{{ ci.stepBg }}">
+    <div style="flex:1;min-height:0;display:flex;flex-direction:column;background:{{ ci.stepBg }}">
       <div style="display:flex;align-items:center;gap:12px;padding:8px 20px 0">
         <div onClick="{{ ci.onBack }}" style="cursor:pointer;width:36px;height:36px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(120,110,180,.12);font-size:18px;color:#565B6E">‹</div>
         <div style="flex:1;text-align:center;font-size:15px;font-weight:700">{{ ci.headerTitle }}</div>
@@ -560,7 +560,7 @@
 
     <!-- ============================ UNIFIED LOG (2e) ============================ -->
     <sc-if value="{{ isLog }}" hint-placeholder-val="{{ false }}">
-    <div style="height:830px;display:flex;flex-direction:column">
+    <div style="flex:1;min-height:0;display:flex;flex-direction:column">
       <div style="display:flex;align-items:center;gap:12px;padding:8px 20px 0">
         <div onClick="{{ log.onBack }}" style="cursor:pointer;width:36px;height:36px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(120,110,180,.12);font-size:18px;color:#565B6E">‹</div>
         <div style="flex:1;text-align:center;font-size:15px;font-weight:700">{{ log.headerTitle }}</div>
@@ -717,7 +717,7 @@
 
     <!-- ============================ SETTINGS ============================ -->
     <sc-if value="{{ isSettings }}" hint-placeholder-val="{{ false }}">
-    <div style="height:790px;display:flex;flex-direction:column">
+    <div style="flex:1;min-height:0;display:flex;flex-direction:column">
       <div style="display:flex;align-items:center;gap:12px;padding:8px 20px 0">
         <div onClick="{{ settings.onBack }}" style="cursor:pointer;width:36px;height:36px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(120,110,180,.12);font-size:18px;color:#565B6E">‹</div>
         <div style="flex:1;text-align:center;font-size:15px;font-weight:700">{{ settings.headerTitle }}</div>
@@ -896,7 +896,7 @@
 
     <!-- ============================ INSIGHTS ============================ -->
     <sc-if value="{{ isInsights }}" hint-placeholder-val="{{ false }}">
-    <div style="height:790px;display:flex;flex-direction:column;background:{{ ins.screenBg }}">
+    <div style="flex:1;min-height:0;display:flex;flex-direction:column;background:{{ ins.screenBg }}">
       <div style="display:flex;align-items:center;gap:12px;padding:8px 20px 0">
         <sc-if value="{{ ins.showBack }}" hint-placeholder-val="{{ false }}"><div onClick="{{ ins.onBack }}" style="cursor:pointer;width:36px;height:36px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(120,110,180,.12);font-size:18px;color:#565B6E">‹</div></sc-if>
         <sc-if value="{{ ins.showSpacer }}" hint-placeholder-val="{{ true }}"><div style="width:36px"></div></sc-if>
@@ -1578,7 +1578,7 @@
 
     <!-- ============================ ACTIVITY (review & remove) ============================ -->
     <sc-if value="{{ isActivity }}" hint-placeholder-val="{{ false }}">
-    <div style="height:790px;display:flex;flex-direction:column">
+    <div style="flex:1;min-height:0;display:flex;flex-direction:column">
       <div style="display:flex;align-items:center;gap:12px;padding:8px 20px 0">
         <div onClick="{{ nav.goHome }}" style="cursor:pointer;width:36px;height:36px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(120,110,180,.12);font-size:18px;color:#565B6E">‹</div>
         <div style="flex:1;text-align:center;font-size:15px;font-weight:700">Recent activity</div>
@@ -1915,7 +1915,7 @@
 
     <!-- ============================ TAB BAR ============================ -->
     <sc-if value="{{ showTabBar }}" hint-placeholder-val="{{ false }}">
-    <div style="position:absolute;bottom:0;left:0;right:0;display:flex;align-items:center;justify-content:space-around;padding:10px 12px 20px;background:rgba(255,255,255,.85);backdrop-filter:blur(10px);border-top:1px solid rgba(255,255,255,.9);box-shadow:0 -10px 30px rgba(120,110,180,.12)">
+    <div style="flex:none;display:flex;align-items:center;justify-content:space-around;padding:10px 12px calc(20px + env(safe-area-inset-bottom,0px));background:rgba(255,255,255,.85);backdrop-filter:blur(10px);border-top:1px solid rgba(255,255,255,.9);box-shadow:0 -10px 30px rgba(120,110,180,.12)">
       <div onClick="{{ nav.goHome }}" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;color:{{ nav.cHome }}"><svg width="22" height="22" viewBox="0 0 504 398" fill="currentColor"><path fill-rule="evenodd" d="M86 170L90 162L95 157L97 157L109 144L111 144L123 131L125 131L137 118L139 118L151 105L153 105L165 92L167 92L232 30L242 25L255 27L280 51L282 51L294 64L296 64L308 77L310 77L322 90L324 90L336 103L338 103L350 116L352 116L364 129L366 129L378 142L380 142L392 155L394 155L402 163L405 169L405 181L397 192L388 195L375 195L375 313L372 322L360 337L353 340L352 342L340 345L152 345L136 340L130 336L122 327L116 313L116 195L103 195L93 191L86 181ZM205 254L205 315L286 315L286 253L284 244L276 232L262 225L230 225L218 230L210 238Z"></path></svg><div style="font-size:10px;font-weight:700">Home</div></div>
       <div onClick="{{ nav.goMeds }}" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;color:{{ nav.cMeds }}"><svg width="22" height="22" viewBox="0 0 532 410" fill="currentColor"><path fill-rule="evenodd" d="M94 97L102 73L108 64L112 61L112 59L121 51L130 45L145 39L170 37L185 40L194 45L197 45L210 54L221 66L227 76L232 90L233 118L235 118L247 107L257 102L271 98L299 99L309 102L325 111L342 129L383 191L397 209L407 226L421 244L429 259L433 274L433 297L429 312L422 326L405 344L389 353L379 356L350 356L339 353L327 347L317 338L315 338L313 334L307 329L247 239L233 221L233 298L228 315L217 333L199 348L182 355L171 357L157 357L142 354L121 343L112 335L112 333L103 323L98 313L94 297ZM133 106L133 177L194 177L194 105L192 96L186 86L180 81L170 77L158 77L152 79L146 82L138 90ZM253 168L254 176L259 188L264 193L299 246L303 245L308 240L350 212L308 149L295 139L280 137L272 139L264 144L255 157Z"></path></svg><div style="font-size:10px;font-weight:600">Meds</div></div>
       <div onClick="{{ nav.goLog }}" style="cursor:pointer;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--ac-soft),var(--ac));display:flex;align-items:center;justify-content:center;margin-top:-26px;box-shadow:0 10px 22px rgba(var(--ac-rgb),.45),inset 0 1px 0 rgba(255,255,255,.4)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></div>
