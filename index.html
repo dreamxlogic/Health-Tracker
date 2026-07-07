@@ -2082,10 +2082,20 @@ class Component extends DCLogic {
   componentDidUpdate(prev) { const p = this.props || {}, q = prev || {}; if (p.accent !== q.accent || p.ambiance !== q.ambiance || p.corners !== q.corners) this.applyTheme(); }
   componentWillUnmount() { if (this._onResize) { window.removeEventListener('resize', this._onResize); window.removeEventListener('orientationchange', this._onResize); if (window.visualViewport) { window.visualViewport.removeEventListener('resize', this._onResize); window.visualViewport.removeEventListener('scroll', this._onResize); } } }
   _fitPhone() {
-    // Size the shell to the LIVE visible viewport so it tracks Safari's
-    // retracting toolbar (a fixed inset:0/bottom:0 element references the
-    // static layout viewport and leaves an uncovered strip when the toolbar hides).
-    document.documentElement.style.setProperty('--appvh', window.innerHeight + 'px');
+    // Size the shell to the correct height PER DISPLAY MODE:
+    //  - Standalone (home-screen app): fixed top:0 starts at the PHYSICAL top (behind the
+    //    translucent status bar), but innerHeight excludes that band — so innerHeight
+    //    undershoots and leaves an uncovered strip at the bottom. Cover the full screen.
+    //  - Browser tab: track the LIVE visual viewport so the shell follows Safari's
+    //    retracting toolbar instead of the static layout-viewport bottom.
+    const standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    let h;
+    if (standalone) {
+      h = Math.max(window.innerHeight, document.documentElement.clientHeight || 0, (window.screen && window.screen.height) || 0);
+    } else {
+      h = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+    }
+    document.documentElement.style.setProperty('--appvh', Math.round(h) + 'px');
     const phone = document.getElementById('hcc-phone');
     const sizer = document.getElementById('hcc-phone-sizer');
     if (!phone || !sizer) return;
