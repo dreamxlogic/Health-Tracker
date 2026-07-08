@@ -20,6 +20,7 @@
   :root{--ac:#8E7CF3;--ac-deep:#6A57C9;--ac-soft:#A99BF8;--ac-rgb:142,124,243;--ac-100:#E4DCFB;--ac-200:#C9BDF6;--ac-050:#F1EEFA;--head:#F1893D;--wash:radial-gradient(60% 40% at 88% 6%,rgba(246,198,168,.38),transparent 60%),radial-gradient(50% 35% at 8% 32%,rgba(201,182,245,.42),transparent 60%),radial-gradient(45% 30% at 82% 78%,rgba(180,210,243,.38),transparent 60%),linear-gradient(165deg,#FBF1F2,#F0EBFA 45%,#E4E8F8);--r-sheet:28px;--r-lg:24px;--r-md:18px;--hcc-safe-bottom:34px}
   html{height:100%;min-height:100%;background:var(--wash);background-color:#E4E8F8}
   body{margin:0;min-height:100vh;min-height:100lvh;height:100vh;height:100lvh;overflow:hidden;overscroll-behavior:none;background:var(--wash);background-color:#E4E8F8;font-family:'Figtree',system-ui,sans-serif;color:#23262F}
+  body::before{content:"";position:fixed;inset:-220px 0 -260px;z-index:-1;pointer-events:none;background:var(--wash);background-color:#E4E8F8}
   *{box-sizing:border-box}
   ::-webkit-scrollbar{width:0;height:0}
   textarea{font-family:inherit}
@@ -2154,10 +2155,15 @@ class Component extends DCLogic {
       const node = document.elementFromPoint(x, y);
       if (!node) return `${name}: none`;
       const st = getComputedStyle(node);
-      const id = node.id ? `#${node.id}` : '';
-      const cls = node.className && typeof node.className === 'string' ? '.' + node.className.trim().split(/\s+/).slice(0, 2).join('.') : '';
+      const nameOf = (n) => {
+        if (!n || n.nodeType !== 1) return '';
+        const id = n.id ? `#${n.id}` : '';
+        const cls = n.className && typeof n.className === 'string' ? '.' + n.className.trim().split(/\s+/).slice(0, 2).join('.') : '';
+        return `${n.tagName.toLowerCase()}${id}${cls}`;
+      };
+      const chain = [node, node.parentElement, node.parentElement && node.parentElement.parentElement].map(nameOf).filter(Boolean).join('<');
       const r = node.getBoundingClientRect();
-      return `${name}: ${node.tagName.toLowerCase()}${id}${cls} bg=${st.backgroundColor} rect=${Math.round(r.top)}-${Math.round(r.bottom)}`;
+      return `${name}: ${chain} bg=${st.backgroundColor} rect=${Math.round(r.top)}-${Math.round(r.bottom)}`;
     }).join('\n');
   }
 
