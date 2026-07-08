@@ -75,8 +75,8 @@
           </div>
           <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.75);border:1px solid rgba(255,255,255,.9);border-radius:999px;padding:8px 15px;box-shadow:0 6px 16px rgba(120,110,180,.12)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2E8B5B" stroke-width="2.2" stroke-linecap="round"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg><div style="font-size:12px;font-weight:700;color:#2E8B5B">Everything stays on this device</div></div>
         </div>
-        <div style="position:absolute;left:26px;right:26px;bottom:calc(24px + var(--hcc-safe-bottom));display:flex;flex-direction:column;gap:10px;z-index:5">
-          <div onClick="{{ ob.onStart }}" style="cursor:pointer;text-align:center;background:var(--ac-deep);color:#fff;font-size:15px;font-weight:800;padding:16px 0;border-radius:999px;box-shadow:0 14px 30px rgba(var(--ac-rgb),.35)">Set up my tracker</div>
+        <div style="position:absolute;left:26px;right:26px;bottom:calc(112px + var(--hcc-safe-bottom));display:flex;flex-direction:column;gap:10px;z-index:5">
+          <div id="hcc-onboarding-start" onClick="{{ ob.onStart }}" style="cursor:pointer;text-align:center;background:var(--ac-deep);color:#fff;font-size:15px;font-weight:800;padding:16px 0;border-radius:999px;box-shadow:0 14px 30px rgba(var(--ac-rgb),.35)">Set up my tracker</div>
         </div>
       </div>
       </sc-if>
@@ -2108,7 +2108,7 @@ class Component extends DCLogic {
       el.style.cssText = 'position:fixed;left:8px;right:8px;bottom:8px;z-index:2147483647;background:rgba(20,18,35,.9);color:#fff;font:11px/1.35 ui-monospace,monospace;padding:8px;border-radius:8px;white-space:pre-wrap;pointer-events:none';
       document.body.appendChild(el);
     }
-    const btn = [...document.querySelectorAll('div')].find(x => (x.textContent || '').trim() === 'Set up my tracker');
+    const btn = document.getElementById('hcc-onboarding-start');
     const br = btn ? btn.getBoundingClientRect() : null;
     el.textContent = [
       `inner ${window.innerWidth}x${window.innerHeight}`,
