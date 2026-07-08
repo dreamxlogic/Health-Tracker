@@ -66,8 +66,8 @@
 
       <!-- STEP 0: WELCOME -->
       <sc-if value="{{ ob.isWelcome }}" hint-placeholder-val="{{ true }}">
-      <div style="flex:1;min-height:0;display:grid;grid-template-rows:minmax(0,1fr) auto;padding:0 26px calc(22px + var(--hcc-safe-bottom))">
-        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;text-align:center">
+      <div style="position:relative;flex:1;min-height:0;padding:0 26px calc(104px + var(--hcc-safe-bottom))">
+        <div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;text-align:center">
           <div style="width:88px;height:88px;border-radius:var(--r-lg);background:linear-gradient(135deg,var(--ac),var(--ac-deep));box-shadow:0 20px 44px rgba(var(--ac-rgb),.4);display:flex;align-items:center;justify-content:center;animation:hcFloat 3.4s ease-in-out infinite"><svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.5 12.6 12 20l-7.5-7.4a5 5 0 1 1 7.5-6.6 5 5 0 1 1 7.5 6.6Z"></path><path d="M7 12h2l1.5-3 2.5 6 1.5-3h2.5"></path></svg></div>
           <div style="display:flex;flex-direction:column;gap:9px">
             <div style="font-size:26px;font-weight:800;letter-spacing:-.02em;line-height:1.15">Your health,<br>in one quiet place</div>
@@ -75,7 +75,7 @@
           </div>
           <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.75);border:1px solid rgba(255,255,255,.9);border-radius:999px;padding:8px 15px;box-shadow:0 6px 16px rgba(120,110,180,.12)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2E8B5B" stroke-width="2.2" stroke-linecap="round"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg><div style="font-size:12px;font-weight:700;color:#2E8B5B">Everything stays on this device</div></div>
         </div>
-        <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="position:absolute;left:26px;right:26px;bottom:calc(24px + var(--hcc-safe-bottom));display:flex;flex-direction:column;gap:10px;z-index:5">
           <div onClick="{{ ob.onStart }}" style="cursor:pointer;text-align:center;background:var(--ac-deep);color:#fff;font-size:15px;font-weight:800;padding:16px 0;border-radius:999px;box-shadow:0 14px 30px rgba(var(--ac-rgb),.35)">Set up my tracker</div>
         </div>
       </div>
@@ -2090,6 +2090,7 @@ class Component extends DCLogic {
     const vvBottomGap = vv ? Math.max(0, layoutH - vv.height - vv.offsetTop) : 0;
     const safeBottom = Math.max(68, Math.round(vvBottomGap + 34));
     document.documentElement.style.setProperty('--hcc-safe-bottom', safeBottom + 'px');
+    this._debugViewport({ layoutH, vvBottomGap, safeBottom, vv });
     const phone = document.getElementById('hcc-phone');
     const sizer = document.getElementById('hcc-phone-sizer');
     if (!phone || !sizer) return;
@@ -2097,6 +2098,25 @@ class Component extends DCLogic {
     phone.style.transform = 'none';
     sizer.style.width = '100%';
     sizer.style.height = '100%';
+  }
+  _debugViewport(info) {
+    if (!new URLSearchParams(location.search).has('debugViewport')) return;
+    let el = document.getElementById('hcc-vp-debug');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'hcc-vp-debug';
+      el.style.cssText = 'position:fixed;left:8px;right:8px;bottom:8px;z-index:2147483647;background:rgba(20,18,35,.9);color:#fff;font:11px/1.35 ui-monospace,monospace;padding:8px;border-radius:8px;white-space:pre-wrap;pointer-events:none';
+      document.body.appendChild(el);
+    }
+    const btn = [...document.querySelectorAll('div')].find(x => (x.textContent || '').trim() === 'Set up my tracker');
+    const br = btn ? btn.getBoundingClientRect() : null;
+    el.textContent = [
+      `inner ${window.innerWidth}x${window.innerHeight}`,
+      `client ${document.documentElement.clientWidth}x${document.documentElement.clientHeight}`,
+      `vv ${info.vv ? Math.round(info.vv.width) + 'x' + Math.round(info.vv.height) + ' off ' + Math.round(info.vv.offsetTop) : 'none'}`,
+      `gap ${Math.round(info.vvBottomGap)} safe ${info.safeBottom}`,
+      `button ${br ? Math.round(br.top) + '-' + Math.round(br.bottom) : 'missing'}`,
+    ].join('\n');
   }
 
   async refresh() {
