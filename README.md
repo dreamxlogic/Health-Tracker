@@ -10,10 +10,30 @@ Because the app loads `db.js` / `seed.js` as ES modules, open it through a local
 web server (not `file://`):
 
 ```bash
-cd github-build
+cd Health-Tracker-Repo
 python3 -m http.server 8000
 # then visit http://localhost:8000
 ```
+
+## Review annotation mode
+
+Use this when you want to mark exact UI elements for follow-up fixes:
+
+```bash
+python3 -m http.server 8000
+# then visit http://localhost:8000/?annotate=1
+```
+
+What it does:
+
+- adds a review panel only when `?annotate=1` is in the URL
+- lets you click actual app elements, not just screenshot coordinates
+- captures the screen label, CSS selector, element text, click point, size, and basic styling
+- saves notes in this browser's `localStorage`
+- exports `health-tracker-annotations.json` so the notes can be resolved in code
+- opens a prefilled GitHub issue with the saved notes when you click **Submit issue**
+
+Normal app users will not see the review tools unless they open the annotation URL.
 
 ## Deploy to GitHub Pages
 
