@@ -34,9 +34,9 @@
 </style>
 </helmet>
 
-<div class="hcc-app-root" style="position:fixed;top:0;left:0;right:0;height:calc(var(--appvh,100dvh) + var(--hcc-safe-bottom));overflow:hidden;display:flex;background:var(--wash);background-color:#E9F0F9">
-  <div id="hcc-phone-sizer" style="width:100%;height:var(--appvh,100dvh);flex:none">
-  <div id="hcc-phone" style="width:100%;height:100%;transform-origin:top left;overflow:visible;position:relative;display:flex;flex-direction:column;background:var(--wash)">
+<div class="hcc-app-root" style="position:fixed;inset:0;min-height:100vh;height:100dvh;overflow:hidden;display:flex;background:var(--wash);background-color:#E9F0F9">
+  <div id="hcc-phone-sizer" style="width:100%;height:100%;flex:none">
+  <div id="hcc-phone" style="width:100%;height:100%;transform-origin:top left;overflow:hidden;position:relative;display:flex;flex-direction:column;background:var(--wash)">
 
     <div style="height:env(safe-area-inset-top,0px);flex:none"></div>
 
@@ -2083,25 +2083,12 @@ class Component extends DCLogic {
   componentDidUpdate(prev) { const p = this.props || {}, q = prev || {}; if (p.accent !== q.accent || p.ambiance !== q.ambiance || p.corners !== q.corners) this.applyTheme(); }
   componentWillUnmount() { if (this._onResize) { window.removeEventListener('resize', this._onResize); window.removeEventListener('orientationchange', this._onResize); if (window.visualViewport) { window.visualViewport.removeEventListener('resize', this._onResize); window.visualViewport.removeEventListener('scroll', this._onResize); } } }
   _fitPhone() {
-    // Size the shell to the correct height PER DISPLAY MODE:
-    //  - Standalone (home-screen app): fixed top:0 starts at the PHYSICAL top (behind the
-    //    translucent status bar), but innerHeight excludes that band — so innerHeight
-    //    undershoots and leaves an uncovered strip at the bottom. Cover the full screen.
-    //  - Browser tab: use the layout viewport for UI placement. visualViewport can
-    //    report a shorter height while Safari's lower chrome is animating/visible,
-    //    which clips fixed-height app shells before the bottom button.
-    const standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    // Match the Workout app shell: let CSS own viewport height. JS only provides
+    // a conservative pixel bottom inset for controls that sit near iOS chrome.
     const vv = window.visualViewport;
-    let h;
-    if (standalone) {
-      h = Math.max(window.innerHeight, document.documentElement.clientHeight || 0, (window.screen && window.screen.height) || 0);
-    } else {
-      h = Math.max(window.innerHeight || 0, document.documentElement.clientHeight || 0, vv ? vv.height : 0);
-    }
-    const layoutH = window.innerHeight || document.documentElement.clientHeight || h;
+    const layoutH = window.innerHeight || document.documentElement.clientHeight || 0;
     const vvBottomGap = vv ? Math.max(0, layoutH - vv.height - vv.offsetTop) : 0;
     const safeBottom = Math.max(68, Math.round(vvBottomGap + 34));
-    document.documentElement.style.setProperty('--appvh', Math.round(h) + 'px');
     document.documentElement.style.setProperty('--hcc-safe-bottom', safeBottom + 'px');
     const phone = document.getElementById('hcc-phone');
     const sizer = document.getElementById('hcc-phone-sizer');
@@ -2109,7 +2096,7 @@ class Component extends DCLogic {
     // Full-bleed: no simulated device frame or scaling (runs as a real mobile web app)
     phone.style.transform = 'none';
     sizer.style.width = '100%';
-    sizer.style.height = 'var(--appvh, 100dvh)';
+    sizer.style.height = '100%';
   }
 
   async refresh() {
