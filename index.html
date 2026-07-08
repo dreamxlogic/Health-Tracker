@@ -17,13 +17,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root{--ac:#8E7CF3;--ac-deep:#6A57C9;--ac-soft:#A99BF8;--ac-rgb:142,124,243;--ac-100:#E4DCFB;--ac-200:#C9BDF6;--ac-050:#F1EEFA;--head:#F1893D;--wash:radial-gradient(60% 40% at 88% 6%,rgba(246,198,168,.38),transparent 60%),radial-gradient(50% 35% at 8% 32%,rgba(201,182,245,.42),transparent 60%),radial-gradient(45% 30% at 82% 78%,rgba(180,210,243,.38),transparent 60%),linear-gradient(165deg,#FBF1F2,#F0EBFA 45%,#E9F0F9);--r-sheet:28px;--r-lg:24px;--r-md:18px;--hcc-safe-bottom:34px}
-  html{height:100%;min-height:100%;background:var(--wash);background-color:#E9F0F9}
-  body{margin:0;min-height:100%;height:100dvh;overflow:hidden;overscroll-behavior:none;background:var(--wash);background-color:#E9F0F9;font-family:'Figtree',system-ui,sans-serif;color:#23262F}
+  :root{--ac:#8E7CF3;--ac-deep:#6A57C9;--ac-soft:#A99BF8;--ac-rgb:142,124,243;--ac-100:#E4DCFB;--ac-200:#C9BDF6;--ac-050:#F1EEFA;--head:#F1893D;--wash:radial-gradient(60% 40% at 88% 6%,rgba(246,198,168,.38),transparent 60%),radial-gradient(50% 35% at 8% 32%,rgba(201,182,245,.42),transparent 60%),radial-gradient(45% 30% at 82% 78%,rgba(180,210,243,.38),transparent 60%),linear-gradient(165deg,#FBF1F2,#F0EBFA 45%,#E4E8F8);--r-sheet:28px;--r-lg:24px;--r-md:18px;--hcc-safe-bottom:34px}
+  html{height:100%;min-height:100%;background:var(--wash);background-color:#E4E8F8}
+  body{margin:0;min-height:100%;height:100dvh;overflow:hidden;overscroll-behavior:none;background:var(--wash);background-color:#E4E8F8;font-family:'Figtree',system-ui,sans-serif;color:#23262F}
   *{box-sizing:border-box}
   ::-webkit-scrollbar{width:0;height:0}
   textarea{font-family:inherit}
   [data-hcc-sep]:not(:has(~ [data-hcc-sep])){border-bottom:none !important}
+  .hcc-app-root::after{content:"";position:fixed;left:0;right:0;bottom:0;height:190px;z-index:0;pointer-events:none;background:linear-gradient(180deg,rgba(235,231,250,0),#E4E8F8 58%,#E4E8F8)}
+  #hcc-phone-sizer{position:relative;z-index:1}
   @keyframes hcFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
   @keyframes hcSpin{to{transform:rotate(360deg)}}
   @media print{
@@ -34,7 +36,7 @@
 </style>
 </helmet>
 
-<div class="hcc-app-root" style="position:fixed;inset:0;min-height:100vh;height:100dvh;overflow:hidden;display:flex;background:var(--wash);background-color:#E9F0F9">
+<div class="hcc-app-root" style="position:fixed;inset:0;min-height:100vh;height:100dvh;overflow:hidden;display:flex;background:var(--wash);background-color:#E4E8F8">
   <div id="hcc-phone-sizer" style="width:100%;height:100%;flex:none">
   <div id="hcc-phone" style="width:100%;height:100%;transform-origin:top left;overflow:hidden;position:relative;display:flex;flex-direction:column;background:var(--wash)">
 
@@ -2019,7 +2021,7 @@ class Component extends DCLogic {
     Sage:     { ac: '#5CAE87', deep: '#2E7C5A', soft: '#8ECDAE', rgb: '92,174,135', c100: '#D2EBDE', c200: '#ACDCC3', c050: '#EAF5EF' },
   };
   AMBIANCES = {
-    Sunrise: 'radial-gradient(60% 40% at 88% 6%,rgba(246,198,168,.38),transparent 60%),radial-gradient(50% 35% at 8% 32%,rgba(201,182,245,.42),transparent 60%),radial-gradient(45% 30% at 82% 78%,rgba(180,210,243,.38),transparent 60%),linear-gradient(165deg,#FBF1F2,#F0EBFA 45%,#E9F0F9)',
+    Sunrise: 'radial-gradient(60% 40% at 88% 6%,rgba(246,198,168,.38),transparent 60%),radial-gradient(50% 35% at 8% 32%,rgba(201,182,245,.42),transparent 60%),radial-gradient(45% 30% at 82% 78%,rgba(180,210,243,.38),transparent 60%),linear-gradient(165deg,#FBF1F2,#F0EBFA 45%,#E4E8F8)',
     Blossom: 'radial-gradient(60% 40% at 86% 5%,rgba(246,184,200,.42),transparent 60%),radial-gradient(52% 36% at 8% 30%,rgba(224,190,240,.4),transparent 60%),radial-gradient(46% 30% at 82% 80%,rgba(250,214,196,.4),transparent 60%),linear-gradient(165deg,#FCF1F5,#F7EDF6 45%,#F3EBF3)',
     Lagoon:  'radial-gradient(60% 40% at 86% 6%,rgba(160,216,222,.44),transparent 60%),radial-gradient(52% 36% at 6% 28%,rgba(178,203,244,.4),transparent 60%),radial-gradient(46% 32% at 82% 80%,rgba(186,232,210,.4),transparent 60%),linear-gradient(165deg,#EEF6F5,#E9F1FA 45%,#E7F3EC)',
     Paper:   'radial-gradient(72% 52% at 88% 2%,rgba(233,228,241,.55),transparent 64%),radial-gradient(50% 40% at 6% 34%,rgba(228,224,238,.4),transparent 62%),linear-gradient(165deg,#FBFAFD,#F6F5FA 52%,#F2F1F7)',
