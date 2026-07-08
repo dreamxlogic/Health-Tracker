@@ -2087,19 +2087,20 @@ class Component extends DCLogic {
     //  - Standalone (home-screen app): fixed top:0 starts at the PHYSICAL top (behind the
     //    translucent status bar), but innerHeight excludes that band — so innerHeight
     //    undershoots and leaves an uncovered strip at the bottom. Cover the full screen.
-    //  - Browser tab: track the LIVE visual viewport so the shell follows Safari's
-    //    retracting toolbar instead of the static layout-viewport bottom.
+    //  - Browser tab: use the layout viewport for UI placement. visualViewport can
+    //    report a shorter height while Safari's lower chrome is animating/visible,
+    //    which clips fixed-height app shells before the bottom button.
     const standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
     const vv = window.visualViewport;
     let h;
     if (standalone) {
       h = Math.max(window.innerHeight, document.documentElement.clientHeight || 0, (window.screen && window.screen.height) || 0);
     } else {
-      h = vv ? vv.height : window.innerHeight;
+      h = Math.max(window.innerHeight || 0, document.documentElement.clientHeight || 0, vv ? vv.height : 0);
     }
     const layoutH = window.innerHeight || document.documentElement.clientHeight || h;
     const vvBottomGap = vv ? Math.max(0, layoutH - vv.height - vv.offsetTop) : 0;
-    const safeBottom = Math.max(34, Math.round(vvBottomGap + 34));
+    const safeBottom = Math.max(68, Math.round(vvBottomGap + 34));
     document.documentElement.style.setProperty('--appvh', Math.round(h) + 'px');
     document.documentElement.style.setProperty('--hcc-safe-bottom', safeBottom + 'px');
     const phone = document.getElementById('hcc-phone');
