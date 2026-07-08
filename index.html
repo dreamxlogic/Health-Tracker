@@ -2093,6 +2093,7 @@ class Component extends DCLogic {
     const safeBottom = Math.max(68, Math.round(vvBottomGap + 34));
     document.documentElement.style.setProperty('--hcc-safe-bottom', safeBottom + 'px');
     this._debugViewport({ layoutH, vvBottomGap, safeBottom, vv });
+    this._debugPaint();
     const phone = document.getElementById('hcc-phone');
     const sizer = document.getElementById('hcc-phone-sizer');
     if (!phone || !sizer) return;
@@ -2119,6 +2120,45 @@ class Component extends DCLogic {
       `gap ${Math.round(info.vvBottomGap)} safe ${info.safeBottom}`,
       `button ${br ? Math.round(br.top) + '-' + Math.round(br.bottom) : 'missing'}`,
     ].join('\n');
+  }
+  _debugPaint() {
+    const qs = new URLSearchParams(location.search);
+    if (!qs.has('debugPaint')) return;
+    document.documentElement.style.background = '#ff3b30';
+    document.documentElement.style.backgroundColor = '#ff3b30';
+    document.body.style.background = '#34c759';
+    document.body.style.backgroundColor = '#34c759';
+    const app = document.querySelector('.hcc-app-root');
+    const sizer = document.getElementById('hcc-phone-sizer');
+    const phone = document.getElementById('hcc-phone');
+    const screen = document.querySelector('[data-screen-label="Onboarding"]');
+    if (app) app.style.background = '#007aff';
+    if (sizer) sizer.style.background = '#ffcc00';
+    if (phone) phone.style.background = '#af52de';
+    if (screen) screen.style.background = 'linear-gradient(180deg,#ff9f0a,#af52de)';
+
+    let el = document.getElementById('hcc-paint-debug');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'hcc-paint-debug';
+      el.style.cssText = 'position:fixed;left:8px;right:8px;top:8px;z-index:2147483647;background:rgba(20,18,35,.92);color:#fff;font:10px/1.35 ui-monospace,monospace;padding:8px;border-radius:8px;white-space:pre-wrap;pointer-events:none';
+      document.body.appendChild(el);
+    }
+    const pts = [
+      ['top', window.innerWidth / 2, 80],
+      ['mid', window.innerWidth / 2, window.innerHeight / 2],
+      ['band', window.innerWidth / 2, window.innerHeight - 72],
+      ['bottom', window.innerWidth / 2, window.innerHeight - 12],
+    ];
+    el.textContent = pts.map(([name, x, y]) => {
+      const node = document.elementFromPoint(x, y);
+      if (!node) return `${name}: none`;
+      const st = getComputedStyle(node);
+      const id = node.id ? `#${node.id}` : '';
+      const cls = node.className && typeof node.className === 'string' ? '.' + node.className.trim().split(/\s+/).slice(0, 2).join('.') : '';
+      const r = node.getBoundingClientRect();
+      return `${name}: ${node.tagName.toLowerCase()}${id}${cls} bg=${st.backgroundColor} rect=${Math.round(r.top)}-${Math.round(r.bottom)}`;
+    }).join('\n');
   }
 
   async refresh() {
