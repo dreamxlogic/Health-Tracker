@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root{--ac:#8E7CF3;--ac-deep:#6A57C9;--ac-soft:#A99BF8;--ac-rgb:142,124,243;--ac-100:#E4DCFB;--ac-200:#C9BDF6;--ac-050:#F1EEFA;--head:#F1893D;--wash:radial-gradient(60% 40% at 88% 6%,rgba(246,198,168,.38),transparent 60%),radial-gradient(50% 35% at 8% 32%,rgba(201,182,245,.42),transparent 60%),radial-gradient(45% 30% at 82% 78%,rgba(180,210,243,.38),transparent 60%),linear-gradient(165deg,#FBF1F2,#F0EBFA 45%,#E9F0F9);--r-sheet:28px;--r-lg:24px;--r-md:18px;--hcc-safe-bottom:max(env(safe-area-inset-bottom,0px),34px)}
+  :root{--ac:#8E7CF3;--ac-deep:#6A57C9;--ac-soft:#A99BF8;--ac-rgb:142,124,243;--ac-100:#E4DCFB;--ac-200:#C9BDF6;--ac-050:#F1EEFA;--head:#F1893D;--wash:radial-gradient(60% 40% at 88% 6%,rgba(246,198,168,.38),transparent 60%),radial-gradient(50% 35% at 8% 32%,rgba(201,182,245,.42),transparent 60%),radial-gradient(45% 30% at 82% 78%,rgba(180,210,243,.38),transparent 60%),linear-gradient(165deg,#FBF1F2,#F0EBFA 45%,#E9F0F9);--r-sheet:28px;--r-lg:24px;--r-md:18px;--hcc-safe-bottom:34px}
   html{height:100%;min-height:100%;background:var(--wash);background-color:#E9F0F9}
   body{margin:0;min-height:100%;height:100dvh;overflow:hidden;overscroll-behavior:none;background:var(--wash);background-color:#E9F0F9;font-family:'Figtree',system-ui,sans-serif;color:#23262F}
   *{box-sizing:border-box}
@@ -66,7 +66,7 @@
 
       <!-- STEP 0: WELCOME -->
       <sc-if value="{{ ob.isWelcome }}" hint-placeholder-val="{{ true }}">
-      <div style="flex:1;display:flex;flex-direction:column;padding:0 26px calc(14px + var(--hcc-safe-bottom))">
+      <div style="flex:1;min-height:0;display:grid;grid-template-rows:minmax(0,1fr) auto;padding:0 26px calc(14px + var(--hcc-safe-bottom))">
         <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;text-align:center">
           <div style="width:88px;height:88px;border-radius:var(--r-lg);background:linear-gradient(135deg,var(--ac),var(--ac-deep));box-shadow:0 20px 44px rgba(var(--ac-rgb),.4);display:flex;align-items:center;justify-content:center;animation:hcFloat 3.4s ease-in-out infinite"><svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.5 12.6 12 20l-7.5-7.4a5 5 0 1 1 7.5-6.6 5 5 0 1 1 7.5 6.6Z"></path><path d="M7 12h2l1.5-3 2.5 6 1.5-3h2.5"></path></svg></div>
           <div style="display:flex;flex-direction:column;gap:9px">
@@ -2090,13 +2090,18 @@ class Component extends DCLogic {
     //  - Browser tab: track the LIVE visual viewport so the shell follows Safari's
     //    retracting toolbar instead of the static layout-viewport bottom.
     const standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    const vv = window.visualViewport;
     let h;
     if (standalone) {
       h = Math.max(window.innerHeight, document.documentElement.clientHeight || 0, (window.screen && window.screen.height) || 0);
     } else {
-      h = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+      h = vv ? vv.height : window.innerHeight;
     }
+    const layoutH = window.innerHeight || document.documentElement.clientHeight || h;
+    const vvBottomGap = vv ? Math.max(0, layoutH - vv.height - vv.offsetTop) : 0;
+    const safeBottom = Math.max(34, Math.round(vvBottomGap + 34));
     document.documentElement.style.setProperty('--appvh', Math.round(h) + 'px');
+    document.documentElement.style.setProperty('--hcc-safe-bottom', safeBottom + 'px');
     const phone = document.getElementById('hcc-phone');
     const sizer = document.getElementById('hcc-phone-sizer');
     if (!phone || !sizer) return;
