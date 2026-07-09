@@ -8,6 +8,8 @@
   const state = {
     armed: true,
     collapsed: false,
+    position: loadPosition(),
+    drag: null,
     selected: null,
     notes: loadNotes(),
     hover: null,
@@ -19,6 +21,15 @@
       return raw ? JSON.parse(raw) : [];
     } catch {
       return [];
+    }
+  }
+
+  function loadPosition() {
+    try {
+      const raw = localStorage.getItem("hccAnnotatorPosition");
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
     }
   }
 
@@ -128,17 +139,18 @@
   function installStyles() {
     const style = document.createElement("style");
     style.textContent = `
-      .hcc-ann-shell{position:fixed;inset:max(14px,env(safe-area-inset-top,0px)) 14px auto auto;z-index:2147483600;width:min(380px,calc(100vw - 28px));max-height:calc(100dvh - 28px - env(safe-area-inset-top,0px));display:flex;flex-direction:column;background:#fff;color:#23262f;border:1px solid #dedcea;border-radius:14px;box-shadow:0 18px 60px rgba(35,38,47,.24);font:13px/1.35 Figtree,system-ui,sans-serif;overflow:hidden}
+      .hcc-ann-shell{position:fixed;inset:max(14px,env(safe-area-inset-top,0px)) 14px auto auto;z-index:2147483600;width:min(380px,calc(100vw - 28px));max-height:calc(100dvh - 28px - env(safe-area-inset-top,0px));display:flex;flex-direction:column;background:#fff;color:#23262f;border:1px solid #dedcea;border-radius:14px;box-shadow:0 18px 60px rgba(35,38,47,.24);font:13px/1.35 Figtree,system-ui,sans-serif;overflow:hidden;touch-action:none}
       .hcc-ann-shell.is-collapsed{width:auto;max-width:calc(100vw - 28px)}
       .hcc-ann-shell.is-collapsed .hcc-ann-body{display:none}
-      .hcc-ann-head{display:flex;align-items:center;gap:8px;padding:11px 12px;border-bottom:1px solid #eceaf3;background:#faf9fe}
+      .hcc-ann-head{display:flex;align-items:center;gap:8px;padding:11px 12px;border-bottom:1px solid #eceaf3;background:#faf9fe;cursor:grab;user-select:none}
+      .hcc-ann-shell.is-dragging .hcc-ann-head{cursor:grabbing}
       .hcc-ann-shell.is-collapsed .hcc-ann-head{border-bottom:0}
       .hcc-ann-title{font-weight:850;flex:1}
       .hcc-ann-btn{appearance:none;border:0;border-radius:999px;background:#eeeafc;color:#5b44d6;font-weight:800;font:inherit;padding:8px 11px;cursor:pointer}
       .hcc-ann-btn.primary{background:#6a57c9;color:#fff}
       .hcc-ann-btn.danger{background:#fde9e6;color:#b3502e}
       .hcc-ann-btn.is-off{background:#f3f3f7;color:#565b6e}
-      .hcc-ann-body{padding:12px;display:flex;flex-direction:column;gap:10px;overflow:auto}
+      .hcc-ann-body{padding:12px;display:flex;flex-direction:column;gap:10px;overflow:auto;min-height:0}
       .hcc-ann-muted{color:#6f7486;font-size:12px}
       .hcc-ann-status{min-height:17px;color:#2e8b5b;font-size:12px;font-weight:750}
       .hcc-ann-field{display:flex;flex-direction:column;gap:5px}
@@ -147,7 +159,7 @@
       .hcc-ann-field textarea{min-height:84px;resize:vertical}
       .hcc-ann-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
       .hcc-ann-target{border:1px solid #eeeafc;border-radius:10px;padding:9px;background:#faf9fe}
-      .hcc-ann-list{display:flex;flex-direction:column;gap:8px}
+      .hcc-ann-list{display:flex;flex-direction:column;gap:8px;max-height:min(34dvh,260px);overflow:auto;padding-right:2px}
       .hcc-ann-item{border:1px solid #eceaf3;border-radius:10px;padding:9px;background:#fff}
       .hcc-ann-item-title{font-weight:800;margin-bottom:3px}
       .hcc-ann-actions{display:flex;gap:7px;flex-wrap:wrap}
@@ -194,10 +206,12 @@
     `;
     document.body.appendChild(panel);
     panel.addEventListener("click", onPanelClick);
+    panel.querySelector(".hcc-ann-head").addEventListener("pointerdown", onDragStart);
     panel.querySelector("[data-type]").addEventListener("change", (e) => state.selected && (state.selected.type = e.target.value));
     panel.querySelector("[data-priority]").addEventListener("change", (e) => state.selected && (state.selected.priority = e.target.value));
     panel.querySelector("[data-note]").addEventListener("input", (e) => state.selected && (state.selected.note = e.target.value));
     renderMode();
+    applySavedPosition();
     renderList();
     renderSelected();
   }
@@ -254,6 +268,64 @@
       toggle.setAttribute("aria-pressed", state.armed ? "true" : "false");
     }
     if (collapse) collapse.textContent = state.collapsed ? "Show panel" : "Collapse";
+  }
+
+  function clampPosition(x, y, panel) {
+    const pad = 10;
+    const w = panel.offsetWidth || 320;
+    const h = panel.offsetHeight || 80;
+    return {
+      x: Math.max(pad, Math.min(window.innerWidth - w - pad, x)),
+      y: Math.max(pad, Math.min(window.innerHeight - h - pad, y)),
+    };
+  }
+
+  function applyPosition(x, y) {
+    const panel = document.querySelector(".hcc-ann-shell");
+    if (!panel) return;
+    const p = clampPosition(x, y, panel);
+    panel.style.left = `${p.x}px`;
+    panel.style.top = `${p.y}px`;
+    panel.style.right = "auto";
+    panel.style.bottom = "auto";
+    state.position = p;
+  }
+
+  function applySavedPosition() {
+    const panel = document.querySelector(".hcc-ann-shell");
+    if (!panel || !state.position) return;
+    requestAnimationFrame(() => applyPosition(state.position.x, state.position.y));
+  }
+
+  function onDragStart(event) {
+    if (event.target.closest("button,select,input,textarea")) return;
+    const panel = document.querySelector(".hcc-ann-shell");
+    if (!panel) return;
+    const rect = panel.getBoundingClientRect();
+    state.drag = {
+      dx: event.clientX - rect.left,
+      dy: event.clientY - rect.top,
+      pointerId: event.pointerId,
+    };
+    panel.classList.add("is-dragging");
+    panel.setPointerCapture?.(event.pointerId);
+    event.preventDefault();
+  }
+
+  function onDragMove(event) {
+    if (!state.drag) return;
+    applyPosition(event.clientX - state.drag.dx, event.clientY - state.drag.dy);
+  }
+
+  function onDragEnd(event) {
+    if (!state.drag) return;
+    const panel = document.querySelector(".hcc-ann-shell");
+    if (panel) {
+      panel.classList.remove("is-dragging");
+      panel.releasePointerCapture?.(state.drag.pointerId);
+    }
+    if (state.position) localStorage.setItem("hccAnnotatorPosition", JSON.stringify(state.position));
+    state.drag = null;
   }
 
   function setStatus(message) {
@@ -463,7 +535,13 @@
       }
     }, true);
     window.addEventListener("scroll", drawPins, true);
-    window.addEventListener("resize", drawPins);
+    window.addEventListener("resize", () => {
+      drawPins();
+      if (state.position) applyPosition(state.position.x, state.position.y);
+    });
+    document.addEventListener("pointermove", onDragMove, true);
+    document.addEventListener("pointerup", onDragEnd, true);
+    document.addEventListener("pointercancel", onDragEnd, true);
     drawPins();
   }
 
