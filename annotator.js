@@ -7,6 +7,7 @@
   const SKIP = "hcc-annotator-skip";
   const state = {
     armed: true,
+    collapsed: false,
     selected: null,
     notes: loadNotes(),
     hover: null,
@@ -22,7 +23,11 @@
   }
 
   function saveNotes() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state.notes));
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.notes));
+    } catch (err) {
+      setStatus("Could not save locally.");
+    }
     renderList();
   }
 
@@ -123,14 +128,19 @@
   function installStyles() {
     const style = document.createElement("style");
     style.textContent = `
-      .hcc-ann-shell{position:fixed;inset:auto 14px 14px auto;z-index:2147483600;width:min(360px,calc(100vw - 28px));max-height:calc(100dvh - 28px);display:flex;flex-direction:column;background:#fff;color:#23262f;border:1px solid #dedcea;border-radius:14px;box-shadow:0 18px 60px rgba(35,38,47,.24);font:13px/1.35 Figtree,system-ui,sans-serif;overflow:hidden}
+      .hcc-ann-shell{position:fixed;inset:max(14px,env(safe-area-inset-top,0px)) 14px auto auto;z-index:2147483600;width:min(380px,calc(100vw - 28px));max-height:calc(100dvh - 28px - env(safe-area-inset-top,0px));display:flex;flex-direction:column;background:#fff;color:#23262f;border:1px solid #dedcea;border-radius:14px;box-shadow:0 18px 60px rgba(35,38,47,.24);font:13px/1.35 Figtree,system-ui,sans-serif;overflow:hidden}
+      .hcc-ann-shell.is-collapsed{width:auto;max-width:calc(100vw - 28px)}
+      .hcc-ann-shell.is-collapsed .hcc-ann-body{display:none}
       .hcc-ann-head{display:flex;align-items:center;gap:8px;padding:11px 12px;border-bottom:1px solid #eceaf3;background:#faf9fe}
+      .hcc-ann-shell.is-collapsed .hcc-ann-head{border-bottom:0}
       .hcc-ann-title{font-weight:850;flex:1}
       .hcc-ann-btn{appearance:none;border:0;border-radius:999px;background:#eeeafc;color:#5b44d6;font-weight:800;font:inherit;padding:8px 11px;cursor:pointer}
       .hcc-ann-btn.primary{background:#6a57c9;color:#fff}
       .hcc-ann-btn.danger{background:#fde9e6;color:#b3502e}
+      .hcc-ann-btn.is-off{background:#f3f3f7;color:#565b6e}
       .hcc-ann-body{padding:12px;display:flex;flex-direction:column;gap:10px;overflow:auto}
       .hcc-ann-muted{color:#6f7486;font-size:12px}
+      .hcc-ann-status{min-height:17px;color:#2e8b5b;font-size:12px;font-weight:750}
       .hcc-ann-field{display:flex;flex-direction:column;gap:5px}
       .hcc-ann-field label{font-size:11px;font-weight:850;color:#6f7486;text-transform:uppercase;letter-spacing:.04em}
       .hcc-ann-field textarea,.hcc-ann-field select,.hcc-ann-field input{width:100%;border:1px solid #dedcea;border-radius:10px;background:#fff;font:inherit;padding:9px;color:#23262f}
@@ -144,6 +154,12 @@
       .hcc-ann-highlight{position:fixed;z-index:2147483598;pointer-events:none;border:2px solid #6a57c9;border-radius:10px;box-shadow:0 0 0 9999px rgba(35,38,47,.16);transition:all .08s ease}
       .hcc-ann-pin{position:fixed;z-index:2147483599;width:24px;height:24px;border-radius:50%;background:#6a57c9;color:#fff;display:flex;align-items:center;justify-content:center;font:800 12px/1 Figtree,system-ui,sans-serif;box-shadow:0 6px 18px rgba(106,87,201,.35);pointer-events:none}
       body.hcc-ann-armed *{cursor:crosshair !important}
+      @media (max-width:520px){
+        .hcc-ann-shell{left:10px;right:10px;width:auto}
+        .hcc-ann-head{gap:6px;padding:9px 10px}
+        .hcc-ann-title{font-size:12px}
+        .hcc-ann-btn{padding:7px 9px;font-size:12px}
+      }
     `;
     document.head.appendChild(style);
   }
@@ -154,10 +170,11 @@
       <div class="hcc-ann-head">
         <div class="hcc-ann-title">Review notes</div>
         <button class="hcc-ann-btn" data-act="toggle">Annotate on</button>
+        <button class="hcc-ann-btn" data-act="collapse">Collapse</button>
         <button class="hcc-ann-btn primary" data-act="export">Export</button>
       </div>
       <div class="hcc-ann-body">
-        <div class="hcc-ann-muted">Click any real app element, write the change, then export the notes for fixes.</div>
+        <div class="hcc-ann-muted">Turn annotation on to select elements. Turn it off to click around the app normally.</div>
         <div class="hcc-ann-target" data-target>Click an element to select it.</div>
         <div class="hcc-ann-row">
           <div class="hcc-ann-field"><label>Type</label><select data-type><option>design</option><option>bug</option><option>copy</option><option>flow</option><option>question</option></select></div>
@@ -171,6 +188,7 @@
           <button class="hcc-ann-btn" data-act="markdown">Download MD</button>
           <button class="hcc-ann-btn danger" data-act="clear">Clear all</button>
         </div>
+        <div class="hcc-ann-status" data-status></div>
         <div class="hcc-ann-list" data-list></div>
       </div>
     `;
@@ -179,28 +197,71 @@
     panel.querySelector("[data-type]").addEventListener("change", (e) => state.selected && (state.selected.type = e.target.value));
     panel.querySelector("[data-priority]").addEventListener("change", (e) => state.selected && (state.selected.priority = e.target.value));
     panel.querySelector("[data-note]").addEventListener("input", (e) => state.selected && (state.selected.note = e.target.value));
+    renderMode();
     renderList();
     renderSelected();
   }
 
-  function onPanelClick(event) {
+  async function onPanelClick(event) {
     const act = event.target.closest("[data-act]")?.getAttribute("data-act");
     if (!act) return;
+    event.preventDefault();
+    event.stopPropagation();
     if (act === "toggle") {
-      state.armed = !state.armed;
-      document.body.classList.toggle("hcc-ann-armed", state.armed);
-      event.target.textContent = state.armed ? "Annotate on" : "Annotate off";
+      setArmed(!state.armed);
+      setStatus(state.armed ? "Annotation mode is on. Tap an app element." : "Annotation mode is off. The app is clickable.");
     }
+    if (act === "collapse") setCollapsed(!state.collapsed);
     if (act === "save") saveSelected();
-    if (act === "export") download("health-tracker-annotations.json", JSON.stringify(state.notes, null, 2));
-    if (act === "copy") navigator.clipboard?.writeText(JSON.stringify(state.notes, null, 2));
-    if (act === "markdown") download("health-tracker-annotations.md", exportMarkdown());
+    if (act === "export") download("health-tracker-annotations.json", JSON.stringify(state.notes, null, 2), "Exported JSON.");
+    if (act === "copy") await copyText(JSON.stringify(state.notes, null, 2));
+    if (act === "markdown") download("health-tracker-annotations.md", exportMarkdown(), "Downloaded markdown.");
     if (act === "issue") submitIssue();
     if (act === "clear" && confirm("Clear all saved review notes?")) {
       state.notes = [];
+      state.selected = null;
       saveNotes();
+      renderSelected();
+      clearHighlight();
       drawPins();
+      setStatus("Cleared all notes.");
     }
+  }
+
+  function setArmed(value) {
+    state.armed = !!value;
+    localStorage.setItem("hccAnnotatorArmed", state.armed ? "1" : "0");
+    document.body.classList.toggle("hcc-ann-armed", state.armed);
+    if (!state.armed) clearHighlight();
+    renderMode();
+  }
+
+  function setCollapsed(value) {
+    state.collapsed = !!value;
+    localStorage.setItem("hccAnnotatorCollapsed", state.collapsed ? "1" : "0");
+    renderMode();
+  }
+
+  function renderMode() {
+    const panel = document.querySelector(".hcc-ann-shell");
+    if (!panel) return;
+    panel.classList.toggle("is-collapsed", state.collapsed);
+    const toggle = panel.querySelector("[data-act='toggle']");
+    const collapse = panel.querySelector("[data-act='collapse']");
+    if (toggle) {
+      toggle.textContent = state.armed ? "Annotate on" : "Annotate off";
+      toggle.classList.toggle("is-off", !state.armed);
+      toggle.setAttribute("aria-pressed", state.armed ? "true" : "false");
+    }
+    if (collapse) collapse.textContent = state.collapsed ? "Show panel" : "Collapse";
+  }
+
+  function setStatus(message) {
+    const el = document.querySelector("[data-status]");
+    if (!el) return;
+    el.textContent = message || "";
+    clearTimeout(setStatus._timer);
+    if (message) setStatus._timer = setTimeout(() => { el.textContent = ""; }, 2600);
   }
 
   function renderSelected() {
@@ -239,10 +300,12 @@
 
   function saveSelected() {
     if (!state.selected) {
+      setStatus("Click an app element first.");
       alert("Click an app element first.");
       return;
     }
     if (!state.selected.note.trim()) {
+      setStatus("Add the requested change first.");
       alert("Add the requested change first.");
       return;
     }
@@ -251,6 +314,7 @@
     saveNotes();
     renderSelected();
     drawPins();
+    setStatus("Saved note.");
   }
 
   function updateHighlight(el) {
@@ -264,6 +328,12 @@
     box.style.top = `${r.top}px`;
     box.style.width = `${r.width}px`;
     box.style.height = `${r.height}px`;
+  }
+
+  function clearHighlight() {
+    const box = document.querySelector(".hcc-ann-highlight");
+    if (box) box.remove();
+    state.hover = null;
   }
 
   function drawPins() {
@@ -292,6 +362,7 @@
 
   function submitIssue() {
     if (!state.notes.length) {
+      setStatus("Save at least one note before submitting.");
       alert("Save at least one note before submitting.");
       return;
     }
@@ -311,17 +382,44 @@
     const url = new URL("https://github.com/dreamxlogic/Health-Tracker/issues/new");
     url.searchParams.set("title", `UI review notes - ${new Date().toISOString().slice(0, 10)}`);
     url.searchParams.set("body", body);
+    setStatus("Opening GitHub issue draft.");
     window.open(url.toString(), "_blank", "noopener,noreferrer");
   }
 
-  function download(name, content) {
+  async function copyText(text) {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.setAttribute("readonly", "");
+        ta.style.cssText = "position:fixed;left:-9999px;top:0";
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        ta.remove();
+      }
+      setStatus("Copied JSON.");
+    } catch (err) {
+      setStatus("Copy failed. Use Export instead.");
+    }
+  }
+
+  function download(name, content, statusMessage) {
     const jsonName = name.endsWith(".json");
     const blob = new Blob([content], { type: jsonName ? "application/json" : "text/markdown" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
     a.download = name;
+    a.className = SKIP;
+    document.body.appendChild(a);
     a.click();
-    setTimeout(() => URL.revokeObjectURL(a.href), 500);
+    setTimeout(() => {
+      URL.revokeObjectURL(a.href);
+      a.remove();
+    }, 500);
+    setStatus(statusMessage || "Download started.");
   }
 
   function escapeHtml(value) {
@@ -330,13 +428,16 @@
 
   function eventTarget(event) {
     const path = event.composedPath ? event.composedPath() : [];
-    return path.find((el) => el && el.nodeType === 1 && !el.classList?.contains(SKIP) && !el.closest?.("." + SKIP));
+    if (path.some((el) => el && el.nodeType === 1 && (el.classList?.contains(SKIP) || el.closest?.("." + SKIP)))) return null;
+    return path.find((el) => el && el.nodeType === 1 && el !== document && el !== window);
   }
 
   function init() {
+    state.armed = localStorage.getItem("hccAnnotatorArmed") !== "0";
+    state.collapsed = localStorage.getItem("hccAnnotatorCollapsed") === "1";
     installStyles();
     createPanel();
-    document.body.classList.add("hcc-ann-armed");
+    setArmed(state.armed);
     document.addEventListener("mousemove", (event) => {
       if (!state.armed) return;
       const target = eventTarget(event);
@@ -353,6 +454,13 @@
       state.selected = snapshot(target, event);
       renderSelected();
       updateHighlight(target);
+      setStatus("Element selected. Add a note, then save.");
+    }, true);
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && state.armed) {
+        setArmed(false);
+        setStatus("Annotation mode is off. The app is clickable.");
+      }
     }, true);
     window.addEventListener("scroll", drawPins, true);
     window.addEventListener("resize", drawPins);
