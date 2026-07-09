@@ -139,6 +139,7 @@
   function installStyles() {
     const style = document.createElement("style");
     style.textContent = `
+      body.hcc-ann-review-layout{--hcc-ann-panel-open:min(40vw,520px);--hcc-ann-panel-closed:168px}
       .hcc-ann-shell{position:fixed;inset:max(14px,env(safe-area-inset-top,0px)) 14px auto auto;z-index:2147483600;width:min(380px,calc(100vw - 28px));max-height:calc(100dvh - 28px - env(safe-area-inset-top,0px));display:flex;flex-direction:column;background:#fff;color:#23262f;border:1px solid #dedcea;border-radius:14px;box-shadow:0 18px 60px rgba(35,38,47,.24);font:13px/1.35 Figtree,system-ui,sans-serif;overflow:hidden;touch-action:none}
       .hcc-ann-shell.is-collapsed{width:auto;max-width:calc(100vw - 28px)}
       .hcc-ann-shell.is-collapsed .hcc-ann-body{display:none}
@@ -166,6 +167,19 @@
       .hcc-ann-highlight{position:fixed;z-index:2147483598;pointer-events:none;border:2px solid #6a57c9;border-radius:10px;box-shadow:0 0 0 9999px rgba(35,38,47,.16);transition:all .08s ease}
       .hcc-ann-pin{position:fixed;z-index:2147483599;width:24px;height:24px;border-radius:50%;background:#6a57c9;color:#fff;display:flex;align-items:center;justify-content:center;font:800 12px/1 Figtree,system-ui,sans-serif;box-shadow:0 6px 18px rgba(106,87,201,.35);pointer-events:none}
       body.hcc-ann-armed *{cursor:crosshair !important}
+      @media (min-width:760px){
+        body.hcc-ann-review-layout{overflow:hidden !important;background:#f5f3fb !important}
+        body.hcc-ann-review-layout .hcc-app-root{left:0 !important;top:0 !important;bottom:0 !important;right:var(--hcc-ann-panel-open) !important;width:auto !important;height:100dvh !important;min-height:100dvh !important;display:flex !important;align-items:center !important;justify-content:center !important;padding:18px !important;background:#f5f3fb !important}
+        body.hcc-ann-review-layout.hcc-ann-panel-collapsed .hcc-app-root{right:var(--hcc-ann-panel-closed) !important}
+        body.hcc-ann-review-layout #hcc-phone-sizer{width:min(430px,calc(100vw - var(--hcc-ann-panel-open) - 44px)) !important;height:min(932px,calc(100dvh - 36px)) !important;max-width:100% !important;max-height:100% !important;flex:none !important;border-radius:30px;overflow:hidden;box-shadow:0 24px 70px rgba(35,38,47,.18),0 0 0 1px rgba(255,255,255,.8)}
+        body.hcc-ann-review-layout.hcc-ann-panel-collapsed #hcc-phone-sizer{width:min(430px,calc(100vw - var(--hcc-ann-panel-closed) - 44px)) !important}
+        body.hcc-ann-review-layout #hcc-phone{width:100% !important;height:100% !important}
+        body.hcc-ann-review-layout .hcc-ann-shell{left:auto !important;right:0 !important;top:0 !important;bottom:0 !important;width:var(--hcc-ann-panel-open) !important;max-width:40vw !important;height:100dvh !important;max-height:none !important;border-radius:0 !important;border-width:0 0 0 1px !important;box-shadow:-18px 0 50px rgba(35,38,47,.12) !important;touch-action:auto}
+        body.hcc-ann-review-layout .hcc-ann-shell.is-collapsed{width:var(--hcc-ann-panel-closed) !important;max-width:var(--hcc-ann-panel-closed) !important}
+        body.hcc-ann-review-layout .hcc-ann-head{cursor:default}
+        body.hcc-ann-review-layout .hcc-ann-body{flex:1}
+        body.hcc-ann-review-layout .hcc-ann-list{flex:1;max-height:none;min-height:120px}
+      }
       @media (max-width:520px){
         .hcc-ann-shell{left:10px;right:10px;width:auto}
         .hcc-ann-head{gap:6px;padding:9px 10px}
@@ -260,6 +274,7 @@
     const panel = document.querySelector(".hcc-ann-shell");
     if (!panel) return;
     panel.classList.toggle("is-collapsed", state.collapsed);
+    document.body.classList.toggle("hcc-ann-panel-collapsed", state.collapsed);
     const toggle = panel.querySelector("[data-act='toggle']");
     const collapse = panel.querySelector("[data-act='collapse']");
     if (toggle) {
@@ -294,10 +309,12 @@
   function applySavedPosition() {
     const panel = document.querySelector(".hcc-ann-shell");
     if (!panel || !state.position) return;
+    if (isReviewLayout()) return;
     requestAnimationFrame(() => applyPosition(state.position.x, state.position.y));
   }
 
   function onDragStart(event) {
+    if (isReviewLayout()) return;
     if (event.target.closest("button,select,input,textarea")) return;
     const panel = document.querySelector(".hcc-ann-shell");
     if (!panel) return;
@@ -313,6 +330,7 @@
   }
 
   function onDragMove(event) {
+    if (isReviewLayout()) return;
     if (!state.drag) return;
     applyPosition(event.clientX - state.drag.dx, event.clientY - state.drag.dy);
   }
@@ -326,6 +344,10 @@
     }
     if (state.position) localStorage.setItem("hccAnnotatorPosition", JSON.stringify(state.position));
     state.drag = null;
+  }
+
+  function isReviewLayout() {
+    return window.matchMedia && window.matchMedia("(min-width: 760px)").matches;
   }
 
   function setStatus(message) {
@@ -507,6 +529,7 @@
   function init() {
     state.armed = localStorage.getItem("hccAnnotatorArmed") !== "0";
     state.collapsed = localStorage.getItem("hccAnnotatorCollapsed") === "1";
+    document.body.classList.add("hcc-ann-review-layout");
     installStyles();
     createPanel();
     setArmed(state.armed);
