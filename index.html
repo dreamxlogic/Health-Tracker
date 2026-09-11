@@ -1894,12 +1894,20 @@
         <div style="display:flex;flex-direction:column;gap:8px"><div style="font-size:11px;font-weight:800;letter-spacing:.08em;color:#9AA0B4">DOSE</div><div style="display:flex;gap:8px"><sc-for list="{{ historicMed.doseSlots }}" as="d" hint-placeholder-count="2"><div onClick="{{ d.onClick }}" style="cursor:pointer;flex:1;text-align:center;font-size:13px;font-weight:{{ d.weight }};padding:11px;border-radius:13px;background:{{ d.bg }};color:{{ d.color }}">{{ d.label }}</div></sc-for></div></div>
         </sc-if>
 
+        <sc-if value="{{ historicMed.isPrn }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;gap:12px">
+          <div style="flex:1;display:flex;flex-direction:column;gap:7px"><div style="font-size:12px;font-weight:700;color:#565B6E">Dose</div><input value="{{ historicMed.prnDose }}" onInput="{{ historicMed.onPrnDose }}" placeholder="Dose" style="width:100%;border:none;background:#F6F5FB;border-radius:12px;padding:12px 13px;font-size:14px;font-weight:600;color:#23262F;outline:none;font-family:inherit"></div>
+          <div style="flex:none;display:flex;flex-direction:column;gap:7px"><div style="font-size:12px;font-weight:700;color:#565B6E">Quantity</div><div style="display:flex;align-items:center;gap:10px;background:#F6F5FB;border-radius:12px;padding:6px 10px"><div onClick="{{ historicMed.onQtyDec }}" style="cursor:pointer;width:30px;height:30px;border-radius:50%;background:#fff;color:var(--ac-deep);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700">−</div><div style="font-size:18px;font-weight:800;min-width:20px;text-align:center">{{ historicMed.qty }}</div><div onClick="{{ historicMed.onQtyInc }}" style="cursor:pointer;width:30px;height:30px;border-radius:50%;background:#fff;color:var(--ac-deep);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700">＋</div></div></div>
+        </div>
+        </sc-if>
+
         <div style="display:flex;gap:10px">
           <div style="flex:1;display:flex;flex-direction:column;gap:7px"><div style="font-size:12px;font-weight:700;color:#565B6E">Date</div><div onClick="{{ historicMed.onDateOpen }}" style="cursor:pointer;background:#F6F5FB;border-radius:12px;padding:12px 13px;font-size:13px;font-weight:800;color:var(--ac-deep);display:flex;align-items:center;gap:8px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M16 3v4M8 3v4M3 10h18"></path></svg><span>{{ historicMed.dateLabel }}</span></div></div>
           <div style="flex:1;display:flex;flex-direction:column;gap:7px"><div style="font-size:12px;font-weight:700;color:#565B6E">Time taken</div><div onClick="{{ historicMed.onTimeOpen }}" style="cursor:pointer;background:#F6F5FB;border-radius:12px;padding:12px 13px;font-size:13px;font-weight:800;color:var(--ac-deep);display:flex;align-items:center;gap:8px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5V12l3 2"></path></svg><span>{{ historicMed.timeLabel }}</span></div></div>
         </div>
 
-        <div style="display:flex;flex-direction:column;gap:8px"><div style="font-size:11px;font-weight:800;letter-spacing:.08em;color:#9AA0B4">STATUS</div><div style="display:flex;gap:7px"><sc-for list="{{ historicMed.statuses }}" as="s" hint-placeholder-count="3"><div onClick="{{ s.onClick }}" style="cursor:pointer;flex:1;text-align:center;font-size:12.5px;font-weight:{{ s.weight }};padding:10px 0;border-radius:12px;background:{{ s.bg }};color:{{ s.color }}">{{ s.label }}</div></sc-for></div></div>
+        <sc-if value="{{ historicMed.showStatus }}" hint-placeholder-val="{{ true }}"><div style="display:flex;flex-direction:column;gap:8px"><div style="font-size:11px;font-weight:800;letter-spacing:.08em;color:#9AA0B4">STATUS</div><div style="display:flex;gap:7px"><sc-for list="{{ historicMed.statuses }}" as="s" hint-placeholder-count="3"><div onClick="{{ s.onClick }}" style="cursor:pointer;flex:1;text-align:center;font-size:12.5px;font-weight:{{ s.weight }};padding:10px 0;border-radius:12px;background:{{ s.bg }};color:{{ s.color }}">{{ s.label }}</div></sc-for></div></div></sc-if>
+        <sc-if value="{{ historicMed.isPrn }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:8px"><div style="font-size:11px;font-weight:800;letter-spacing:.08em;color:#9AA0B4">REASON (OPTIONAL)</div><div style="display:flex;gap:8px;flex-wrap:wrap"><sc-for list="{{ historicMed.reasons }}" as="r" hint-placeholder-count="5"><div onClick="{{ r.onClick }}" style="cursor:pointer;font-size:12.5px;font-weight:{{ r.weight }};padding:9px 14px;border-radius:999px;background:{{ r.bg }};color:{{ r.color }}">{{ r.label }}</div></sc-for></div></div></sc-if>
         <sc-if value="{{ historicMed.hasExisting }}" hint-placeholder-val="{{ false }}"><div style="background:var(--ac-050);color:var(--ac-deep);font-size:11.5px;font-weight:700;padding:9px 12px;border-radius:11px">A record already exists for this dose. Saving will update it.</div></sc-if>
         <sc-if value="{{ historicMed.hasErr }}" hint-placeholder-val="{{ false }}"><div style="background:#FADFD4;color:#B3502E;font-size:12px;font-weight:700;padding:10px 13px;border-radius:12px">{{ historicMed.err }}</div></sc-if>
         <div style="display:flex;gap:10px;margin-top:2px"><div onClick="{{ historicMed.onCancel }}" style="cursor:pointer;background:#F6F5FB;color:#565B6E;font-size:15px;font-weight:700;padding:15px 22px;border-radius:999px">Cancel</div><div onClick="{{ historicMed.onSave }}" style="cursor:pointer;flex:1;text-align:center;background:linear-gradient(90deg,var(--ac-soft),var(--ac));color:#fff;font-size:15px;font-weight:700;padding:15px;border-radius:999px;box-shadow:0 10px 22px rgba(var(--ac-rgb),.35)">{{ historicMed.saveLabel }}</div></div>
@@ -2672,11 +2680,14 @@ class Component extends DCLogic {
       doseSlot: chosen.doseSlot,
       status: existing?.status || 'taken',
       time: existingTime || chosen.timing || '08:00',
+      qty: 1,
+      reason: null,
+      prnDose: m?.dose || '',
       err: m ? null : 'Add a medication profile first.',
     };
   }
   openHistoricMed = () => {
-    const choices = (this.raw.meds || []).filter(m => !m.prn && !m.weekly);
+    const choices = (this.raw.meds || []).filter(m => !m.weekly);
     const date = this.isoShift(this.db.todayISO(), -1);
     this.setState({ historicMed: this.historicMedDefaults(choices[0]?.id || null, date) });
   };
@@ -2684,12 +2695,21 @@ class Component extends DCLogic {
   selectHistoricMed = (medId) => () => this.setState(st => ({ historicMed: this.historicMedDefaults(medId, st.historicMed?.date || this.isoShift(this.db.todayISO(), -1)) }));
   selectHistoricDose = (doseSlot) => () => this.setState(st => ({ historicMed: this.historicMedDefaults(st.historicMed?.medId, st.historicMed?.date || this.isoShift(this.db.todayISO(), -1), doseSlot) }));
   setHistoricStatus = (status) => () => this.setState(st => ({ historicMed: st.historicMed ? { ...st.historicMed, status, err: null } : st.historicMed }));
+  setHistoricPrnQty = (delta) => () => this.setState(st => ({ historicMed: st.historicMed ? { ...st.historicMed, qty: Math.max(1, Math.min(10, (st.historicMed.qty || 1) + delta)) } : st.historicMed }));
+  setHistoricPrnReason = (reason) => () => this.setState(st => ({ historicMed: st.historicMed ? { ...st.historicMed, reason: st.historicMed.reason === reason ? null : reason } : st.historicMed }));
+  setHistoricPrnDose = (e) => this.setState(st => ({ historicMed: st.historicMed ? { ...st.historicMed, prnDose: e.target.value, err: null } : st.historicMed }));
   saveHistoricMed = async () => {
     const h = this.state.historicMed;
     if (!h?.medId) return this.setState(st => ({ historicMed: { ...st.historicMed, err: 'Add a medication profile first.' } }));
     if (!h.date) return this.setState(st => ({ historicMed: { ...st.historicMed, err: 'Choose a date.' } }));
     if (h.date > this.db.todayISO()) return this.setState(st => ({ historicMed: { ...st.historicMed, err: 'Past doses cannot use a future date.' } }));
     const m = (this.raw.meds || []).find(x => x.id === h.medId);
+    if (m?.prn) {
+      await this.db.logPrnDose({ medId: h.medId, eventDate: h.date, dose: h.prnDose || m.dose || null, quantity: h.qty || 1, time: `${h.date}T${h.time || '08:00'}:00`, reason: h.reason || null });
+      await this.refresh();
+      this.setState({ historicMed: null, medDate: h.date });
+      return;
+    }
     const dose = this.medDoses(m).find(d => d.doseSlot === h.doseSlot) || this.medDoses(m)[0];
     const takenTime = h.status === 'taken' || h.status === 'late' ? `${h.date}T${h.time || dose?.timing || '08:00'}:00` : null;
     await this.db.setMedDailyStatus({ medId: h.medId, eventDate: h.date, status: h.status, doseSlot: h.doseSlot, scheduledTime: dose?.timing, takenTime });
@@ -2699,13 +2719,14 @@ class Component extends DCLogic {
   viewHistoricMed() {
     const h = this.state.historicMed;
     if (!h) return { open: false };
-    const allMeds = (this.raw.meds || []).filter(m => !m.prn && !m.weekly);
+    const allMeds = (this.raw.meds || []).filter(m => !m.weekly);
     const selected = allMeds.find(m => m.id === h.medId);
+    const isPrn = !!selected?.prn;
     const doses = this.medDoses(selected);
     const selectedDose = doses.find(d => d.doseSlot === h.doseSlot) || doses[0];
     const existing = selected ? this.medLogFor(selected.id, h.date, selectedDose?.doseSlot) : null;
     const pill = (active, selectedBg = 'var(--ac)') => ({ bg: active ? selectedBg : '#F6F5FB', color: active ? '#fff' : '#7A7F92', weight: active ? 800 : 700 });
-    const medications = allMeds.map(m => { const active = m.id === h.medId; const p = pill(active); return { label: `${m.name}${m.active === false ? ' · inactive' : ''}`, onClick: this.selectHistoricMed(m.id), bg: p.bg, color: p.color, weight: p.weight, border: active ? '1px solid transparent' : '1px solid #ECEAF4' }; });
+    const medications = allMeds.map(m => { const active = m.id === h.medId; const p = pill(active); return { label: `${m.name}${m.prn ? ' · PRN' : ''}${m.active === false ? ' · inactive' : ''}`, onClick: this.selectHistoricMed(m.id), bg: p.bg, color: p.color, weight: p.weight, border: active ? '1px solid transparent' : '1px solid #ECEAF4' }; });
     const doseSlots = doses.map(d => { const active = d.doseSlot === h.doseSlot; const p = pill(active); return { label: `${d.slotLabel || 'Dose'}${d.timing ? ' · ' + this.fmtTime(d.timing) : ''}`, onClick: this.selectHistoricDose(d.doseSlot), ...p }; });
     const statusDefs = [
       ['taken', 'Taken', '#2E8B5B'],
@@ -2713,13 +2734,15 @@ class Component extends DCLogic {
       ['skipped', 'Skipped', '#B3502E'],
     ];
     const statuses = statusDefs.map(([key, label, color]) => { const active = h.status === key; return { label, onClick: this.setHistoricStatus(key), bg: active ? color : '#F6F5FB', color: active ? '#fff' : '#9AA0B4', weight: active ? 800 : 700 }; });
+    const reasons = ['Panic', 'Anxiety', 'Nausea', 'Sleep', 'Pain'].map(reason => { const active = h.reason === reason; return { label: reason, onClick: this.setHistoricPrnReason(reason), bg: active ? 'var(--ac)' : '#F6F5FB', color: active ? '#fff' : '#565B6E', weight: active ? 700 : 600 }; });
     const dateObj = h.date ? new Date(h.date + 'T12:00:00') : null;
     return {
-      open: true, medications, showDoseSlots: doses.length > 1, doseSlots, statuses,
+      open: true, medications, isPrn, showDoseSlots: !isPrn && doses.length > 1, doseSlots, showStatus: !isPrn, statuses,
+      prnDose: h.prnDose || '', qty: h.qty || 1, reasons, onPrnDose: this.setHistoricPrnDose, onQtyDec: this.setHistoricPrnQty(-1), onQtyInc: this.setHistoricPrnQty(1),
       dateLabel: dateObj ? dateObj.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : 'Choose date',
       timeLabel: this.fmtTime(h.time || selectedDose?.timing || '08:00'),
       onDateOpen: this.openDatePick('historicDate', h.date), onTimeOpen: this.openTimePick('historicMedTime', null, h.time || selectedDose?.timing || '08:00'),
-      hasExisting: !!existing, saveLabel: existing ? 'Update past dose' : 'Save past dose', hasErr: !!h.err, err: h.err,
+      hasExisting: !isPrn && !!existing, saveLabel: isPrn ? 'Save PRN dose' : existing ? 'Update past dose' : 'Save past dose', hasErr: !!h.err, err: h.err,
       onCancel: this.closeHistoricMed, onSave: this.saveHistoricMed,
     };
   }
@@ -2818,7 +2841,7 @@ class Component extends DCLogic {
     if (f === 'historicDate') {
       const base = st.historicMed || {};
       const next = this.historicMedDefaults(base.medId, value || base.date || this.isoShift(this.db.todayISO(), -1), base.doseSlot);
-      return { dp: null, historicMed: next };
+      return { dp: null, historicMed: { ...next, qty: base.qty || 1, reason: base.reason || null, prnDose: base.prnDose ?? next.prnDose } };
     }
     return { dp: null, medEdit: st.medEdit ? { ...st.medEdit, [f]: value } : st.medEdit };
   });
