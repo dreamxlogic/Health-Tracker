@@ -28,6 +28,10 @@
   .hcc-app-root::after{content:"";position:fixed;left:0;right:0;bottom:0;height:190px;z-index:0;pointer-events:none;background:linear-gradient(180deg,rgba(235,231,250,0),#E4E8F8 58%,#E4E8F8)}
   #hcc-phone-sizer{position:relative;z-index:1}
   .hcc-home-scroll>*{flex-shrink:0}
+  [style*="overflow-y:auto"],[style*="overflow-y: auto"]{touch-action:pan-y;overscroll-behavior-x:none;overscroll-behavior-y:contain;-webkit-overflow-scrolling:auto}
+  [style*="overflow-x:auto"],[style*="overflow-x: auto"],.chp{touch-action:pan-x;overscroll-behavior-x:contain;overscroll-behavior-y:none;-webkit-overflow-scrolling:auto}
+  .hcc-time-wheel{touch-action:pan-y;overscroll-behavior:contain;overflow-x:hidden!important;scroll-snap-type:y mandatory;scroll-padding-block:66px;-webkit-overflow-scrolling:auto}
+  .hcc-time-option{scroll-snap-align:center;scroll-snap-stop:always}
   @keyframes hcFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
   @keyframes hcSpin{to{transform:rotate(360deg)}}
   @media print{
@@ -329,7 +333,7 @@
     <sc-if value="{{ isMeds }}" hint-placeholder-val="{{ false }}">
     <div style="flex:1;min-height:0;display:flex;flex-direction:column">
       <div style="flex:1;overflow-y:auto;padding:12px 20px 28px;display:flex;flex-direction:column;gap:16px">
-        <div style="display:flex;align-items:center"><div style="font-size:22px;font-weight:800;letter-spacing:-.02em;flex:1">Medications</div></div>
+        <div style="display:flex;align-items:center;gap:10px"><div style="font-size:22px;font-weight:800;letter-spacing:-.02em;flex:1">Medications</div><div onClick="{{ meds.onAddHistoric }}" title="Log a past dose" style="cursor:pointer;width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.94);color:var(--ac-deep);display:flex;align-items:center;justify-content:center;font-size:25px;font-weight:500;box-shadow:0 6px 16px rgba(120,110,180,.18);border:1px solid rgba(255,255,255,.95)">＋</div></div>
         <div style="display:flex;gap:7px">
           <sc-for list="{{ meds.dayStrip }}" as="d" hint-placeholder-count="6">
             <div onClick="{{ d.onClick }}" style="cursor:pointer;flex:1;text-align:center;padding:9px 0;border-radius:14px;font-size:12px;font-weight:700;background:{{ d.bg }};box-shadow:{{ d.shadow }}"><div style="color:{{ d.fg2 }}">{{ d.dow }}</div><div style="font-size:14px;color:{{ d.fg }}">{{ d.dom }}</div></div>
@@ -376,7 +380,7 @@
         </sc-for>
         </sc-if>
         <sc-if value="{{ meds.empty }}" hint-placeholder-val="{{ false }}">
-          <div style="background:rgba(255,255,255,.7);border:1px dashed rgba(var(--ac-rgb),.35);border-radius:var(--r-lg);padding:28px;text-align:center;font-size:13px;color:#7A7F92">No medications yet.<br>Add one with the ＋ button.</div>
+          <div style="background:rgba(255,255,255,.7);border:1px dashed rgba(var(--ac-rgb),.35);border-radius:var(--r-lg);padding:28px;text-align:center;font-size:13px;color:#7A7F92">No medications yet.<br>Add one from Profile → Medications.</div>
         </sc-if>
       </div>
     </div>
@@ -1873,6 +1877,36 @@
     </div>
     </sc-if>
 
+    <!-- ============================ HISTORIC MEDICATION LOG ============================ -->
+    <sc-if value="{{ historicMed.open }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;background:rgba(40,34,70,.35);backdrop-filter:blur(4px);display:flex;flex-direction:column;justify-content:flex-end;z-index:72">
+      <div onClick="{{ historicMed.onCancel }}" style="flex:1"></div>
+      <div style="background:linear-gradient(155deg,rgba(255,255,255,.96),rgba(255,255,255,.88));backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.95);border-radius:var(--r-sheet) var(--r-sheet) 0 0;padding:20px 22px calc(30px + var(--hcc-safe-bottom));display:flex;flex-direction:column;gap:14px;box-shadow:0 -20px 50px rgba(70,60,130,.3);max-height:90%;overflow-y:auto">
+        <div style="width:40px;height:5px;border-radius:99px;background:#E4E2EE;align-self:center"></div>
+        <div style="display:flex;align-items:flex-start;gap:10px"><div style="flex:1"><div style="font-size:20px;font-weight:800;letter-spacing:-.01em">Log a past dose</div><div style="font-size:12.5px;color:#7A7F92;margin-top:4px;line-height:1.45">Add medication history from any earlier date.</div></div><div onClick="{{ historicMed.onCancel }}" style="cursor:pointer;width:30px;height:30px;border-radius:50%;background:#F6F5FB;display:flex;align-items:center;justify-content:center;color:#565B6E;font-size:16px">✕</div></div>
+
+        <div style="font-size:11px;font-weight:800;letter-spacing:.08em;color:#9AA0B4">MEDICATION</div>
+        <div class="chp" style="display:flex;gap:8px;overflow-x:auto;padding:2px 2px 6px">
+          <sc-for list="{{ historicMed.medications }}" as="m" hint-placeholder-count="4"><div onClick="{{ m.onClick }}" style="cursor:pointer;flex:none;white-space:nowrap;font-size:12.5px;font-weight:{{ m.weight }};padding:10px 14px;border-radius:999px;background:{{ m.bg }};color:{{ m.color }};border:{{ m.border }}">{{ m.label }}</div></sc-for>
+        </div>
+
+        <sc-if value="{{ historicMed.showDoseSlots }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:8px"><div style="font-size:11px;font-weight:800;letter-spacing:.08em;color:#9AA0B4">DOSE</div><div style="display:flex;gap:8px"><sc-for list="{{ historicMed.doseSlots }}" as="d" hint-placeholder-count="2"><div onClick="{{ d.onClick }}" style="cursor:pointer;flex:1;text-align:center;font-size:13px;font-weight:{{ d.weight }};padding:11px;border-radius:13px;background:{{ d.bg }};color:{{ d.color }}">{{ d.label }}</div></sc-for></div></div>
+        </sc-if>
+
+        <div style="display:flex;gap:10px">
+          <div style="flex:1;display:flex;flex-direction:column;gap:7px"><div style="font-size:12px;font-weight:700;color:#565B6E">Date</div><div onClick="{{ historicMed.onDateOpen }}" style="cursor:pointer;background:#F6F5FB;border-radius:12px;padding:12px 13px;font-size:13px;font-weight:800;color:var(--ac-deep);display:flex;align-items:center;gap:8px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M16 3v4M8 3v4M3 10h18"></path></svg><span>{{ historicMed.dateLabel }}</span></div></div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:7px"><div style="font-size:12px;font-weight:700;color:#565B6E">Time taken</div><div onClick="{{ historicMed.onTimeOpen }}" style="cursor:pointer;background:#F6F5FB;border-radius:12px;padding:12px 13px;font-size:13px;font-weight:800;color:var(--ac-deep);display:flex;align-items:center;gap:8px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5V12l3 2"></path></svg><span>{{ historicMed.timeLabel }}</span></div></div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:8px"><div style="font-size:11px;font-weight:800;letter-spacing:.08em;color:#9AA0B4">STATUS</div><div style="display:flex;gap:7px"><sc-for list="{{ historicMed.statuses }}" as="s" hint-placeholder-count="3"><div onClick="{{ s.onClick }}" style="cursor:pointer;flex:1;text-align:center;font-size:12.5px;font-weight:{{ s.weight }};padding:10px 0;border-radius:12px;background:{{ s.bg }};color:{{ s.color }}">{{ s.label }}</div></sc-for></div></div>
+        <sc-if value="{{ historicMed.hasExisting }}" hint-placeholder-val="{{ false }}"><div style="background:var(--ac-050);color:var(--ac-deep);font-size:11.5px;font-weight:700;padding:9px 12px;border-radius:11px">A record already exists for this dose. Saving will update it.</div></sc-if>
+        <sc-if value="{{ historicMed.hasErr }}" hint-placeholder-val="{{ false }}"><div style="background:#FADFD4;color:#B3502E;font-size:12px;font-weight:700;padding:10px 13px;border-radius:12px">{{ historicMed.err }}</div></sc-if>
+        <div style="display:flex;gap:10px;margin-top:2px"><div onClick="{{ historicMed.onCancel }}" style="cursor:pointer;background:#F6F5FB;color:#565B6E;font-size:15px;font-weight:700;padding:15px 22px;border-radius:999px">Cancel</div><div onClick="{{ historicMed.onSave }}" style="cursor:pointer;flex:1;text-align:center;background:linear-gradient(90deg,var(--ac-soft),var(--ac));color:#fff;font-size:15px;font-weight:700;padding:15px;border-radius:999px;box-shadow:0 10px 22px rgba(var(--ac-rgb),.35)">{{ historicMed.saveLabel }}</div></div>
+      </div>
+    </div>
+    </sc-if>
+
     <!-- ============================ GLASS TIME PICKER ============================ -->
     <sc-if value="{{ tp.open }}" hint-placeholder-val="{{ false }}">
     <div style="position:absolute;inset:0;background:rgba(40,34,70,.35);backdrop-filter:blur(4px);display:flex;flex-direction:column;justify-content:flex-end;z-index:75">
@@ -1882,14 +1916,14 @@
         <div style="display:flex;align-items:baseline"><div style="font-size:17px;font-weight:800;flex:1">Time taken</div><div style="font-size:15px;font-weight:800;color:var(--ac)">{{ tp.preview }}</div></div>
         <div style="position:relative;display:flex;gap:10px;height:176px">
           <div style="position:absolute;left:0;right:0;top:66px;height:44px;border-radius:14px;background:rgba(var(--ac-rgb),.1);border:1px solid rgba(var(--ac-rgb),.28);pointer-events:none"></div>
-          <div id="hcc-tp-h" onScroll="{{ tp.onHourScroll }}" style="flex:1;overflow-y:auto;padding:66px 0;scrollbar-width:none">
+          <div id="hcc-tp-h" class="hcc-time-wheel" onScroll="{{ tp.onHourScroll }}" style="flex:1;overflow-y:auto;padding:66px 0;scrollbar-width:none">
             <sc-for list="{{ tp.hours }}" as="h" hint-placeholder-count="8">
-              <div onClick="{{ h.onClick }}" style="cursor:pointer;height:44px;display:flex;align-items:center;justify-content:center;font-size:{{ h.size }};font-weight:{{ h.weight }};color:{{ h.color }};opacity:{{ h.op }};transform:{{ h.scale }};transition:all .12s">{{ h.label }}</div>
+              <div class="hcc-time-option" onClick="{{ h.onClick }}" style="cursor:pointer;height:44px;display:flex;align-items:center;justify-content:center;font-size:{{ h.size }};font-weight:{{ h.weight }};color:{{ h.color }};opacity:{{ h.op }};transform:{{ h.scale }};transition:all .12s">{{ h.label }}</div>
             </sc-for>
           </div>
-          <div id="hcc-tp-m" onScroll="{{ tp.onMinScroll }}" style="flex:1;overflow-y:auto;padding:66px 0;scrollbar-width:none">
+          <div id="hcc-tp-m" class="hcc-time-wheel" onScroll="{{ tp.onMinScroll }}" style="flex:1;overflow-y:auto;padding:66px 0;scrollbar-width:none">
             <sc-for list="{{ tp.mins }}" as="mi" hint-placeholder-count="8">
-              <div onClick="{{ mi.onClick }}" style="cursor:pointer;height:44px;display:flex;align-items:center;justify-content:center;font-size:{{ mi.size }};font-weight:{{ mi.weight }};color:{{ mi.color }};opacity:{{ mi.op }};transform:{{ mi.scale }};transition:all .12s">{{ mi.label }}</div>
+              <div class="hcc-time-option" onClick="{{ mi.onClick }}" style="cursor:pointer;height:44px;display:flex;align-items:center;justify-content:center;font-size:{{ mi.size }};font-weight:{{ mi.weight }};color:{{ mi.color }};opacity:{{ mi.op }};transform:{{ mi.scale }};transition:all .12s">{{ mi.label }}</div>
             </sc-for>
           </div>
         </div>
@@ -1915,10 +1949,10 @@
         </div>
         <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px">
           <sc-for list="{{ dp.dow }}" as="d" hint-placeholder-count="7"><div style="text-align:center;font-size:9.5px;font-weight:800;letter-spacing:.04em;color:#9AA0B4;padding-bottom:2px">{{ d }}</div></sc-for>
-          <sc-for list="{{ dp.cells }}" as="c" hint-placeholder-count="35"><div onClick="{{ c.onClick }}" style="cursor:pointer;aspect-ratio:1;border-radius:11px;background:{{ c.bg }};box-shadow:{{ c.shadow }};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:{{ c.weight }};color:{{ c.fg }}">{{ c.day }}</div></sc-for>
+          <sc-for list="{{ dp.cells }}" as="c" hint-placeholder-count="35"><div onClick="{{ c.onClick }}" style="cursor:{{ c.cursor }};opacity:{{ c.op }};aspect-ratio:1;border-radius:11px;background:{{ c.bg }};box-shadow:{{ c.shadow }};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:{{ c.weight }};color:{{ c.fg }}">{{ c.day }}</div></sc-for>
         </div>
         <div style="display:flex;gap:10px">
-          <div onClick="{{ dp.onClear }}" style="cursor:pointer;background:#F6F5FB;color:#E9695E;font-size:14px;font-weight:700;padding:14px 18px;border-radius:999px">Clear</div>
+          <sc-if value="{{ dp.showClear }}" hint-placeholder-val="{{ true }}"><div onClick="{{ dp.onClear }}" style="cursor:pointer;background:#F6F5FB;color:#E9695E;font-size:14px;font-weight:700;padding:14px 18px;border-radius:999px">Clear</div></sc-if>
           <div onClick="{{ dp.onCancel }}" style="cursor:pointer;background:#F6F5FB;color:#565B6E;font-size:14px;font-weight:700;padding:14px 18px;border-radius:999px">Cancel</div>
           <div onClick="{{ dp.onSave }}" style="cursor:pointer;flex:1;text-align:center;background:linear-gradient(90deg,var(--ac-soft),var(--ac));color:#fff;font-size:14px;font-weight:700;padding:14px;border-radius:999px;box-shadow:0 10px 22px rgba(var(--ac-rgb),.35)">Set date</div>
         </div>
@@ -2019,7 +2053,7 @@
 </sc-if></x-dc>
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
-  state = { loading: true, route: 'home', ci: null, draft: null, medDate: null, err: null };
+  state = { loading: true, route: 'home', ci: null, draft: null, medDate: null, historicMed: null, err: null };
   raw = { settings: null, meds: [], symptoms: [], checkIns: [], medLogs: [], episodes: [], changes: [], stress: [], backup: null };
 
   // ---------- expressive theming (Tweaks) ----------
@@ -2619,6 +2653,71 @@ class Component extends DCLogic {
     await this.refresh();
   };
 
+  // ---------- historic medication logging ----------
+  historicMedDefaults(medId, date, doseSlot = undefined) {
+    const m = (this.raw.meds || []).find(x => x.id === medId);
+    const doses = this.medDoses(m);
+    const chosen = doses.find(d => d.doseSlot === doseSlot) || doses[0] || { doseSlot: null, timing: '08:00' };
+    const existing = m ? this.medLogFor(m.id, date, chosen.doseSlot) : null;
+    const existingTime = existing?.takenTime ? this.hhmm(new Date(existing.takenTime)) : null;
+    return {
+      medId: m?.id || null,
+      date,
+      doseSlot: chosen.doseSlot,
+      status: existing?.status || 'taken',
+      time: existingTime || chosen.timing || '08:00',
+      err: m ? null : 'Add a medication profile first.',
+    };
+  }
+  openHistoricMed = () => {
+    const choices = (this.raw.meds || []).filter(m => !m.prn && !m.weekly);
+    const date = this.isoShift(this.db.todayISO(), -1);
+    this.setState({ historicMed: this.historicMedDefaults(choices[0]?.id || null, date) });
+  };
+  closeHistoricMed = () => this.setState({ historicMed: null });
+  selectHistoricMed = (medId) => () => this.setState(st => ({ historicMed: this.historicMedDefaults(medId, st.historicMed?.date || this.isoShift(this.db.todayISO(), -1)) }));
+  selectHistoricDose = (doseSlot) => () => this.setState(st => ({ historicMed: this.historicMedDefaults(st.historicMed?.medId, st.historicMed?.date || this.isoShift(this.db.todayISO(), -1), doseSlot) }));
+  setHistoricStatus = (status) => () => this.setState(st => ({ historicMed: st.historicMed ? { ...st.historicMed, status, err: null } : st.historicMed }));
+  saveHistoricMed = async () => {
+    const h = this.state.historicMed;
+    if (!h?.medId) return this.setState(st => ({ historicMed: { ...st.historicMed, err: 'Add a medication profile first.' } }));
+    if (!h.date) return this.setState(st => ({ historicMed: { ...st.historicMed, err: 'Choose a date.' } }));
+    if (h.date > this.db.todayISO()) return this.setState(st => ({ historicMed: { ...st.historicMed, err: 'Past doses cannot use a future date.' } }));
+    const m = (this.raw.meds || []).find(x => x.id === h.medId);
+    const dose = this.medDoses(m).find(d => d.doseSlot === h.doseSlot) || this.medDoses(m)[0];
+    const takenTime = h.status === 'taken' || h.status === 'late' ? `${h.date}T${h.time || dose?.timing || '08:00'}:00` : null;
+    await this.db.setMedDailyStatus({ medId: h.medId, eventDate: h.date, status: h.status, doseSlot: h.doseSlot, scheduledTime: dose?.timing, takenTime });
+    await this.refresh();
+    this.setState({ historicMed: null, medDate: h.date });
+  };
+  viewHistoricMed() {
+    const h = this.state.historicMed;
+    if (!h) return { open: false };
+    const allMeds = (this.raw.meds || []).filter(m => !m.prn && !m.weekly);
+    const selected = allMeds.find(m => m.id === h.medId);
+    const doses = this.medDoses(selected);
+    const selectedDose = doses.find(d => d.doseSlot === h.doseSlot) || doses[0];
+    const existing = selected ? this.medLogFor(selected.id, h.date, selectedDose?.doseSlot) : null;
+    const pill = (active, selectedBg = 'var(--ac)') => ({ bg: active ? selectedBg : '#F6F5FB', color: active ? '#fff' : '#7A7F92', weight: active ? 800 : 700 });
+    const medications = allMeds.map(m => { const active = m.id === h.medId; const p = pill(active); return { label: `${m.name}${m.active === false ? ' · inactive' : ''}`, onClick: this.selectHistoricMed(m.id), bg: p.bg, color: p.color, weight: p.weight, border: active ? '1px solid transparent' : '1px solid #ECEAF4' }; });
+    const doseSlots = doses.map(d => { const active = d.doseSlot === h.doseSlot; const p = pill(active); return { label: `${d.slotLabel || 'Dose'}${d.timing ? ' · ' + this.fmtTime(d.timing) : ''}`, onClick: this.selectHistoricDose(d.doseSlot), ...p }; });
+    const statusDefs = [
+      ['taken', 'Taken', '#2E8B5B'],
+      ['late', 'Late', '#B35F1E'],
+      ['skipped', 'Skipped', '#B3502E'],
+    ];
+    const statuses = statusDefs.map(([key, label, color]) => { const active = h.status === key; return { label, onClick: this.setHistoricStatus(key), bg: active ? color : '#F6F5FB', color: active ? '#fff' : '#9AA0B4', weight: active ? 800 : 700 }; });
+    const dateObj = h.date ? new Date(h.date + 'T12:00:00') : null;
+    return {
+      open: true, medications, showDoseSlots: doses.length > 1, doseSlots, statuses,
+      dateLabel: dateObj ? dateObj.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : 'Choose date',
+      timeLabel: this.fmtTime(h.time || selectedDose?.timing || '08:00'),
+      onDateOpen: this.openDatePick('historicDate', h.date), onTimeOpen: this.openTimePick('historicMedTime', null, h.time || selectedDose?.timing || '08:00'),
+      hasExisting: !!existing, saveLabel: existing ? 'Update past dose' : 'Save past dose', hasErr: !!h.err, err: h.err,
+      onCancel: this.closeHistoricMed, onSave: this.saveHistoricMed,
+    };
+  }
+
   // ---------- glass time picker ----------
   openTimePick = (kind, refId, value) => () => {
     const [h, mi] = (value || this.hhmm()).split(':').map(Number);
@@ -2631,8 +2730,16 @@ class Component extends DCLogic {
     }, 60);
   };
   tpScroll = (field) => (e) => {
-    const idx = Math.max(0, Math.round(e.target.scrollTop / 44));
+    const el = e.currentTarget || e.target;
+    const max = field === 'hour' ? 23 : 11;
+    const idx = Math.max(0, Math.min(max, Math.round(el.scrollTop / 44)));
     this.setState(st => st.tp && st.tp[field] !== idx ? { tp: { ...st.tp, [field]: idx } } : null);
+    this._tpSnapTimers = this._tpSnapTimers || {};
+    clearTimeout(this._tpSnapTimers[field]);
+    this._tpSnapTimers[field] = setTimeout(() => {
+      const snapped = Math.max(0, Math.min(max, Math.round(el.scrollTop / 44))) * 44;
+      if (Math.abs(el.scrollTop - snapped) > 1) el.scrollTo({ top: snapped, behavior: 'smooth' });
+    }, 90);
   };
   tpPick = (field, idx, el) => () => {
     this.setState(st => ({ tp: { ...st.tp, [field]: idx } }));
@@ -2656,6 +2763,8 @@ class Component extends DCLogic {
       this.setState(st => ({ medEdit: st.medEdit ? { ...st.medEdit, morningTiming: val } : st.medEdit }));
     } else if (tp.kind === 'medTimingPM') {
       this.setState(st => ({ medEdit: st.medEdit ? { ...st.medEdit, nightTiming: val } : st.medEdit }));
+    } else if (tp.kind === 'historicMedTime') {
+      this.setState(st => ({ historicMed: st.historicMed ? { ...st.historicMed, time: val, err: null } : st.historicMed }));
     } else if (tp.kind === 'medSchedule') {
       // set a med's scheduled time straight from the Home row (logged as a timing change)
       const ref = typeof tp.refId === 'object' ? tp.refId : { medId: tp.refId, doseSlot: null };
@@ -2687,6 +2796,11 @@ class Component extends DCLogic {
   dpSelect = (iso) => () => this.setState(st => ({ dp: { ...st.dp, sel: iso } }));
   dpApply = (value) => this.setState(st => {
     const f = st.dp.field;
+    if (f === 'historicDate') {
+      const base = st.historicMed || {};
+      const next = this.historicMedDefaults(base.medId, value || base.date || this.isoShift(this.db.todayISO(), -1), base.doseSlot);
+      return { dp: null, historicMed: next };
+    }
     return { dp: null, medEdit: st.medEdit ? { ...st.medEdit, [f]: value } : st.medEdit };
   });
   viewDp() {
@@ -2694,21 +2808,22 @@ class Component extends DCLogic {
     const first = new Date(dp.y, dp.m, 1, 12);
     const nDays = new Date(dp.y, dp.m + 1, 0).getDate();
     const cells = [];
-    for (let i = 0; i < first.getDay(); i++) cells.push({ day: '', bg: 'transparent', fg: 'transparent', weight: 600, shadow: 'none', onClick: () => {} });
+    for (let i = 0; i < first.getDay(); i++) cells.push({ day: '', bg: 'transparent', fg: 'transparent', weight: 600, shadow: 'none', op: 0, cursor: 'default', onClick: () => {} });
     for (let d = 1; d <= nDays; d++) {
       const iso = `${dp.y}-${String(dp.m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
       const sel = dp.sel === iso;
-      cells.push({ day: d, onClick: this.dpSelect(iso),
+      const disabled = dp.field === 'historicDate' && iso > this.db.todayISO();
+      cells.push({ day: d, onClick: disabled ? () => {} : this.dpSelect(iso), cursor: disabled ? 'default' : 'pointer', op: disabled ? .28 : 1,
         bg: sel ? 'linear-gradient(135deg,var(--ac-soft),var(--ac))' : 'rgba(255,255,255,.75)',
         fg: sel ? '#fff' : '#3a3f52', weight: sel ? 800 : 600,
         shadow: sel ? '0 6px 14px rgba(var(--ac-rgb),.4)' : '0 2px 6px rgba(120,110,180,.08)' });
     }
-    const titles = { startDate: 'Start date', endDate: 'End date' };
+    const titles = { startDate: 'Start date', endDate: 'End date', historicDate: 'When did you take it?' };
     return { open: true, title: titles[dp.field] || 'Pick a date',
       monthLabel: first.toLocaleDateString(undefined, { month: 'long', year: 'numeric' }),
       dow: ['S', 'M', 'T', 'W', 'T', 'F', 'S'], cells,
       onPrev: this.dpNav(-1), onNext: this.dpNav(1),
-      onCancel: () => this.setState({ dp: null }), onClear: () => this.dpApply(''), onSave: () => this.dpApply(this.state.dp.sel || '') };
+      showClear: dp.field !== 'historicDate', onCancel: () => this.setState({ dp: null }), onClear: () => this.dpApply(''), onSave: () => this.dpApply(this.state.dp.sel || '') };
   }
 
   // ---------- PRN overlay ----------
@@ -3261,7 +3376,7 @@ class Component extends DCLogic {
         cMore: route === 'settings' ? 'var(--ac)' : '#9AA0B4',
       },
     };
-    const emptyOverlays = { prn: { open: false }, medEdit: { open: false }, symEdit: { open: false }, sp: { open: false, showBrowse: false, showDone: false }, exp: { open: false }, tp: { open: false }, dp: { open: false }, rep: { open: false } };
+    const emptyOverlays = { prn: { open: false }, historicMed: { open: false }, medEdit: { open: false }, symEdit: { open: false }, sp: { open: false, showBrowse: false, showDone: false }, exp: { open: false }, tp: { open: false }, dp: { open: false }, rep: { open: false } };
     if (st.loading || !db) return { ...base, ...emptyOverlays, home: {}, meds: {}, ci: {}, log: {}, settings: {}, ins: {}, activity: {} };
 
     const today = db.todayISO();
@@ -3274,6 +3389,7 @@ class Component extends DCLogic {
       log: this.viewLog(),
       settings: this.viewSettings(),
       prn: this.viewPrn(),
+      historicMed: this.viewHistoricMed(),
       medEdit: this.viewMedEdit(),
       symEdit: this.viewSymEdit(),
       sp: this.viewSymPicker(),
@@ -3380,14 +3496,18 @@ class Component extends DCLogic {
 
   viewMeds() {
     const raw = this.raw, date = this.state.medDate || this.db.todayISO();
-    const scheduledDefs = (raw.meds || []).filter(m => !m.prn && m.active && !m.weekly);
+    const scheduledDefs = (raw.meds || []).filter(m => !m.prn && !m.weekly && (m.active !== false || (raw.medLogs || []).some(l => !l.isPrn && l.medId === m.id && l.eventDate === date)));
     const prnDefs = (raw.meds || []).filter(m => m.prn && m.active);
     const weeklyDefs = (raw.meds || []).filter(m => m.weekly && m.active);
 
-    // day strip: 6 days ending today
+    // Keep the normal recent strip stable. When a much older dose is opened,
+    // move the strip to that period so the saved record is immediately visible.
     const dayStrip = [];
+    const today = this.db.todayISO();
+    const recentStart = this.isoShift(today, -5);
+    const stripEnd = date >= recentStart && date <= today ? today : date;
     for (let i = 5; i >= 0; i--) {
-      const d = new Date(); d.setHours(12, 0, 0, 0); d.setDate(d.getDate() - i);
+      const d = new Date(stripEnd + 'T12:00:00'); d.setDate(d.getDate() - i);
       const iso = this.db.todayISO(d);
       const active = iso === date;
       dayStrip.push({
@@ -3429,10 +3549,10 @@ class Component extends DCLogic {
     const prn = prnDefs.map(m => prnRow(m));
     const weekly = weeklyDefs.map(m => prnRow(m, m.frequency || 'weekly'));
     const takenN = scheduled.filter(row => row.isTaken).length;
-    const isToday = date === this.db.todayISO();
+    const isToday = date === today;
 
     return {
-      dayStrip, hasScheduled: scheduled.length > 0, scheduled,
+      dayStrip, onAddHistoric: this.openHistoricMed, hasScheduled: scheduled.length > 0, scheduled,
       progressTitle: isToday ? "Today's progress" : 'Progress', takenText: `${takenN} of ${scheduled.length} taken`,
       progressPct: scheduled.length ? Math.round(takenN / scheduled.length * 100) : 0,
       hasPrn: prn.length > 0, prn, hasWeekly: weekly.length > 0, weekly,
