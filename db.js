@@ -161,11 +161,11 @@ export function stamp(partial, eventDate) {
 // ---------- domain writers ----------
 
 // Fields on a MedicationProfile that, when changed, spawn a MedicationChangeEvent.
-const TRACKED_MED_FIELDS = ['dose', 'schedule', 'timing', 'frequency', 'active'];
+const TRACKED_MED_FIELDS = ['dose', 'schedule', 'timing', 'morningTiming', 'nightTiming', 'slot', 'frequency', 'active'];
 
 const CHANGE_TYPE_FOR = {
-  dose: 'dose', schedule: 'schedule', timing: 'timing',
-  frequency: 'frequency', active: 'status',
+  dose: 'dose', schedule: 'schedule', timing: 'timing', morningTiming: 'timing', nightTiming: 'timing',
+  slot: 'schedule', frequency: 'frequency', active: 'status',
 };
 
 // Save a med profile. Any change to dose/schedule/timing/frequency/active
@@ -235,13 +235,25 @@ function makeChangeEvent(medId, changeType, prev, next, opts = {}) {
   }, opts.eventDate);
 }
 
-// Log a scheduled med for a day (Taken / Late / Skipped / Missed).
-export async function setMedDailyStatus({ medId, eventDate, status, scheduledTime, takenTime }) {
-  const id = `mdl-${medId}-${eventDate}`;   // deterministic: one status per med per day
-  const existing = await get('medicationDailyLogs', id);
+// Log a scheduled dose for a day (Taken / Late / Skipped / Missed).
+// Twice-daily meds use separate morning/night IDs; once-daily records retain
+// the original ID shape so existing user data remains compatible.
+export async function setMedDailyStatus({ medId, eventDate, status, scheduledTime, takenTime, doseSlot = null }) {
+  const baseId = `mdl-${medId}-${eventDate}`;
+  const id = doseSlot ? `${baseId}-${doseSlot}` : baseId;
+  let existing = await get('medicationDailyLogs', id);
+  // A med that was changed from once daily to Both may already have today's
+  // unslotted record. Treat it as the morning dose and migrate it on first edit.
+  if (!existing && doseSlot === 'morning') {
+    const legacy = await get('medicationDailyLogs', baseId);
+    if (legacy) {
+      existing = legacy;
+      await remove('medicationDailyLogs', baseId);
+    }
+  }
   const rec = stamp({
     ...(existing || {}),
-    id, medId, status, isPrn: false,
+    id, medId, status, isPrn: false, doseSlot,
     scheduledTime: scheduledTime ?? existing?.scheduledTime ?? null,
     takenTime: takenTime ?? (status === 'skipped' ? null : nowISO()),
   }, eventDate);

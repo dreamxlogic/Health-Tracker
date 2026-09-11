@@ -1653,7 +1653,9 @@
         <div style="display:flex;flex-direction:column;gap:7px"><div style="font-size:12px;font-weight:700;color:#565B6E">Name</div><input id="hcc-med-name" defaultValue="{{ medEdit.name }}" placeholder="e.g. Wellbutrin XL" style="border:none;background:#F6F5FB;border-radius:12px;padding:12px 13px;font-size:14px;font-weight:600;color:#23262F;outline:none;font-family:inherit"></div>
         <div style="display:flex;gap:12px">
           <div style="flex:1;display:flex;flex-direction:column;gap:7px"><div style="font-size:12px;font-weight:700;color:#565B6E">Dose</div><input id="hcc-med-dose" defaultValue="{{ medEdit.dose }}" placeholder="e.g. 300 mg" style="border:none;background:#F6F5FB;border-radius:12px;padding:12px 13px;font-size:14px;font-weight:600;color:#23262F;outline:none;font-family:inherit"></div>
+          <sc-if value="{{ medEdit.showSingleTime }}" hint-placeholder-val="{{ true }}">
           <div style="flex:1;display:flex;flex-direction:column;gap:7px"><div style="font-size:12px;font-weight:700;color:#565B6E">Time</div><div onClick="{{ medEdit.onTimeOpen }}" style="cursor:pointer;background:#F6F5FB;border-radius:12px;padding:12px 13px;font-size:14px;font-weight:700;color:var(--ac-deep)">{{ medEdit.timingLabel }}</div></div>
+          </sc-if>
         </div>
         <div style="display:flex;flex-direction:column;gap:8px"><div style="font-size:12px;font-weight:700;color:#565B6E">Schedule</div>
           <div style="display:flex;gap:7px;flex-wrap:wrap"><sc-for list="{{ medEdit.freqs }}" as="f" hint-placeholder-count="4"><div onClick="{{ f.onClick }}" style="cursor:pointer;font-size:12.5px;font-weight:{{ f.weight }};padding:9px 14px;border-radius:999px;background:{{ f.bg }};color:{{ f.color }}">{{ f.label }}</div></sc-for></div>
@@ -1661,6 +1663,12 @@
         <sc-if value="{{ medEdit.showSlot }}" hint-placeholder-val="{{ false }}">
         <div style="display:flex;flex-direction:column;gap:8px"><div style="font-size:12px;font-weight:700;color:#565B6E">Time of day</div>
           <div style="display:flex;gap:7px"><sc-for list="{{ medEdit.slots }}" as="sl" hint-placeholder-count="3"><div onClick="{{ sl.onClick }}" style="cursor:pointer;flex:1;text-align:center;font-size:12.5px;font-weight:{{ sl.weight }};padding:9px 0;border-radius:12px;background:{{ sl.bg }};color:{{ sl.color }}">{{ sl.label }}</div></sc-for></div>
+        </div>
+        </sc-if>
+        <sc-if value="{{ medEdit.showBothTimes }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;gap:12px">
+          <div style="flex:1;display:flex;flex-direction:column;gap:7px"><div style="font-size:12px;font-weight:700;color:#565B6E">Morning time</div><div onClick="{{ medEdit.onMorningTimeOpen }}" style="cursor:pointer;background:#F6F5FB;border-radius:12px;padding:12px 13px;font-size:14px;font-weight:700;color:var(--ac-deep)">{{ medEdit.morningTimingLabel }}</div></div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:7px"><div style="font-size:12px;font-weight:700;color:#565B6E">Night time</div><div onClick="{{ medEdit.onNightTimeOpen }}" style="cursor:pointer;background:#F6F5FB;border-radius:12px;padding:12px 13px;font-size:14px;font-weight:700;color:var(--ac-deep)">{{ medEdit.nightTimingLabel }}</div></div>
         </div>
         </sc-if>
         <div style="display:flex;flex-direction:column;gap:8px"><div style="font-size:12px;font-weight:700;color:#565B6E">Purpose</div>
@@ -2567,23 +2575,47 @@ class Component extends DCLogic {
   saveName = () => { const v = this.val('hcc-name-input') || 'there'; this.db.saveSettings({ displayName: v }).then(() => { this.refresh(); this.setState({ nameSaved: true }); setTimeout(() => this.setState({ nameSaved: false }), 1600); }); };
 
   // ---------- meds ----------
-  setMedStatus = (medId, status) => async () => {
-    const date = this.state.medDate || this.db.todayISO();
+  medDoses(m) {
+    const both = m && (m.slot === 'both' || m.frequency === 'twice daily');
+    if (both) {
+      const legacy = m.timing || '';
+      const legacyHour = parseInt(legacy.split(':')[0], 10);
+      return [
+        { doseSlot: 'morning', slotLabel: 'AM', timing: m.morningTiming || (legacy && legacyHour < 15 ? legacy : '08:00') },
+        { doseSlot: 'night', slotLabel: 'PM', timing: m.nightTiming || (legacy && legacyHour >= 15 ? legacy : '20:00') },
+      ];
+    }
+    return [{ doseSlot: null, slotLabel: '', timing: m?.timing || null }];
+  }
+  medScheduleText(m) {
+    const doses = this.medDoses(m).filter(d => d.timing);
+    return doses.map(d => `${d.slotLabel ? d.slotLabel + ' ' : ''}${this.fmtTime(d.timing)}`).join(' · ');
+  }
+  medLogId(medId, date, doseSlot = null) { return `mdl-${medId}-${date}${doseSlot ? '-' + doseSlot : ''}`; }
+  medLogFor(medId, date, doseSlot = null) {
+    const logs = (this.raw.medLogs || []).filter(l => !l.isPrn && l.medId === medId && l.eventDate === date);
+    if (!doseSlot) return logs.find(l => !l.doseSlot) || null;
+    return logs.find(l => l.doseSlot === doseSlot) || (doseSlot === 'morning' ? logs.find(l => !l.doseSlot) : null) || null;
+  }
+  setMedStatus = (medId, status, doseSlot = null) => async () => {
+    const date = this.state.ci?.date || (this.state.route === 'meds' ? this.state.medDate : null) || this.db.todayISO();
     const m = (this.raw.meds || []).find(x => x.id === medId);
+    const dose = this.medDoses(m).find(d => d.doseSlot === doseSlot) || this.medDoses(m)[0];
     if (!status) {
-      await this.db.remove('medicationDailyLogs', `mdl-${medId}-${date}`);
+      await this.db.remove('medicationDailyLogs', this.medLogId(medId, date, doseSlot));
+      if (doseSlot === 'morning') await this.db.remove('medicationDailyLogs', this.medLogId(medId, date));
     } else {
-      await this.db.setMedDailyStatus({ medId, eventDate: date, status, scheduledTime: m?.timing, takenTime: status === 'taken' || status === 'late' ? undefined : null });
+      await this.db.setMedDailyStatus({ medId, eventDate: date, status, doseSlot, scheduledTime: dose?.timing, takenTime: status === 'taken' || status === 'late' ? undefined : null });
     }
     await this.refresh();
   };
-  medLogFor(medId, date) { return (this.raw.medLogs || []).find(l => !l.isPrn && l.medId === medId && l.eventDate === date) || null; }
-  setMedTime = (medId) => async (e) => {
+  setMedTime = (medId, doseSlot = null) => async (e) => {
     const val = e.target.value; if (!val) return;
     const date = this.state.medDate || this.db.todayISO();
-    const log = this.medLogFor(medId, date);
+    const log = this.medLogFor(medId, date, doseSlot);
     const m = (this.raw.meds || []).find(x => x.id === medId);
-    await this.db.setMedDailyStatus({ medId, eventDate: date, status: log?.status || 'taken', scheduledTime: m?.timing, takenTime: `${date}T${val}:00` });
+    const dose = this.medDoses(m).find(d => d.doseSlot === doseSlot) || this.medDoses(m)[0];
+    await this.db.setMedDailyStatus({ medId, eventDate: date, status: log?.status || 'taken', doseSlot, scheduledTime: dose?.timing, takenTime: `${date}T${val}:00` });
     await this.refresh();
   };
 
@@ -2612,16 +2644,26 @@ class Component extends DCLogic {
     const val = `${String(Math.min(23, tp.hour)).padStart(2, '0')}:${String((tp.minIdx % 12) * 5).padStart(2, '0')}`;
     if (tp.kind === 'med') {
       const date = this.state.medDate || this.db.todayISO();
-      const log = this.medLogFor(tp.refId, date);
-      const m = (this.raw.meds || []).find(x => x.id === tp.refId);
-      await this.db.setMedDailyStatus({ medId: tp.refId, eventDate: date, status: log?.status || 'taken', scheduledTime: m?.timing, takenTime: `${date}T${val}:00` });
+      const ref = typeof tp.refId === 'object' ? tp.refId : { medId: tp.refId, doseSlot: null };
+      const log = this.medLogFor(ref.medId, date, ref.doseSlot);
+      const m = (this.raw.meds || []).find(x => x.id === ref.medId);
+      const dose = this.medDoses(m).find(d => d.doseSlot === ref.doseSlot) || this.medDoses(m)[0];
+      await this.db.setMedDailyStatus({ medId: ref.medId, eventDate: date, status: log?.status || 'taken', doseSlot: ref.doseSlot, scheduledTime: dose?.timing, takenTime: `${date}T${val}:00` });
       await this.refresh();
     } else if (tp.kind === 'medTiming') {
       this.setState(st => ({ medEdit: st.medEdit ? { ...st.medEdit, timing: val } : st.medEdit }));
+    } else if (tp.kind === 'medTimingAM') {
+      this.setState(st => ({ medEdit: st.medEdit ? { ...st.medEdit, morningTiming: val } : st.medEdit }));
+    } else if (tp.kind === 'medTimingPM') {
+      this.setState(st => ({ medEdit: st.medEdit ? { ...st.medEdit, nightTiming: val } : st.medEdit }));
     } else if (tp.kind === 'medSchedule') {
       // set a med's scheduled time straight from the Home row (logged as a timing change)
-      const m = (this.raw.meds || []).find(x => x.id === tp.refId);
-      if (m) { await this.db.saveMedicationProfile({ ...m, timing: val }); await this.refresh(); }
+      const ref = typeof tp.refId === 'object' ? tp.refId : { medId: tp.refId, doseSlot: null };
+      const m = (this.raw.meds || []).find(x => x.id === ref.medId);
+      if (m) {
+        const timingField = ref.doseSlot === 'morning' ? 'morningTiming' : ref.doseSlot === 'night' ? 'nightTiming' : 'timing';
+        await this.db.saveMedicationProfile({ ...m, [timingField]: val }); await this.refresh();
+      }
     }
     this.setState({ tp: null });
   };
@@ -2709,9 +2751,19 @@ class Component extends DCLogic {
   }
   openMedEditor = (m) => {
     const normFreq = (f) => (f === 'once daily' || f === 'nightly' || f === 'twice daily') ? 'daily' : (f || 'daily');
-    this.setState({ medEdit: m
-      ? { id: m.id, name: m.name || '', dose: m.dose || '', timing: m.timing || '', purpose: m.purpose || '', frequency: normFreq(m.frequency), slot: m.slot || (m.frequency === 'nightly' ? 'night' : 'morning'), startDate: m.startDate || '', endDate: m.endDate || '', active: m.active !== false, color: m.color || '#C9BDF6', icon: m.icon || 'pill', notes: (m.notes || []).slice(), category: m.category }
-      : { id: null, name: '', dose: '', timing: '08:00', purpose: '', frequency: 'daily', slot: 'morning', startDate: '', endDate: '', active: true, color: '#C9BDF6', icon: 'pill', notes: [], category: 'meds' } });
+    if (!m) {
+      this.setState({ medEdit: { id: null, name: '', dose: '', timing: '08:00', morningTiming: '08:00', nightTiming: '20:00', purpose: '', frequency: 'daily', slot: 'morning', startDate: '', endDate: '', active: true, color: '#C9BDF6', icon: 'pill', notes: [], category: 'meds' } });
+      return;
+    }
+    const slot = m.slot || (m.frequency === 'nightly' ? 'night' : m.frequency === 'twice daily' ? 'both' : 'morning');
+    const timing = m.timing || '';
+    const timingHour = parseInt(timing.split(':')[0], 10);
+    this.setState({ medEdit: {
+      id: m.id, name: m.name || '', dose: m.dose || '', timing, purpose: m.purpose || '', frequency: normFreq(m.frequency), slot,
+      morningTiming: m.morningTiming || (timing && timingHour < 15 ? timing : '08:00'),
+      nightTiming: m.nightTiming || (timing && timingHour >= 15 ? timing : '20:00'),
+      startDate: m.startDate || '', endDate: m.endDate || '', active: m.active !== false, color: m.color || '#C9BDF6', icon: m.icon || 'pill', notes: (m.notes || []).slice(), category: m.category,
+    } });
   };
   medColor = (c) => () => this.setState(st => ({ medEdit: { ...st.medEdit, color: c } }));
   medIcon = (k) => () => this.setState(st => ({ medEdit: { ...st.medEdit, icon: k } }));
@@ -2723,7 +2775,11 @@ class Component extends DCLogic {
   medRemoveNote = (ts) => () => this.setState(st => ({ medEdit: { ...st.medEdit, notes: (st.medEdit.notes || []).filter(n => n.ts !== ts) } }));
   medFreq = (f) => () => this.setState(st => ({ medEdit: { ...st.medEdit, frequency: f } }));
   medPurpose = (p) => () => this.setState(st => ({ medEdit: { ...st.medEdit, purpose: st.medEdit.purpose === p ? '' : p } }));
-  medSlot = (sl) => () => this.setState(st => ({ medEdit: { ...st.medEdit, slot: sl } }));
+  medSlot = (sl) => () => this.setState(st => {
+    const me = st.medEdit;
+    const timing = sl === 'morning' ? (me.morningTiming || me.timing || '08:00') : sl === 'night' ? (me.nightTiming || me.timing || '20:00') : me.timing;
+    return { medEdit: { ...me, slot: sl, timing, morningTiming: me.morningTiming || '08:00', nightTiming: me.nightTiming || '20:00' } };
+  });
   medActive = () => this.setState(st => ({ medEdit: { ...st.medEdit, active: !st.medEdit.active } }));
   closeMedEditor = () => this.setState({ medEdit: null });
   saveMed = async () => {
@@ -2732,9 +2788,14 @@ class Component extends DCLogic {
     if (!name) { this.setState(st => ({ medEdit: { ...st.medEdit, err: true } })); return; }
     const prn = /as needed/.test(me.frequency);
     const weekly = me.frequency === 'weekly';
+    const both = !prn && !weekly && me.slot === 'both';
+    const singleTiming = me.slot === 'night' ? (me.nightTiming || me.timing) : (me.morningTiming || me.timing);
     await this.db.saveMedicationProfile({
       id: me.id || undefined, name, dose: this.val('hcc-med-dose'),
-      timing: (prn || weekly) ? null : (me.timing || null), frequency: me.frequency,
+      timing: (prn || weekly || both) ? null : (singleTiming || null),
+      morningTiming: both ? (me.morningTiming || '08:00') : null,
+      nightTiming: both ? (me.nightTiming || '20:00') : null,
+      frequency: me.frequency,
       slot: me.slot,
       startDate: me.startDate || null, endDate: me.endDate || null,
       purpose: me.purpose || null, prn, weekly, active: me.active,
@@ -3228,6 +3289,7 @@ class Component extends DCLogic {
   viewHome(today, now) {
     const raw = this.raw;
     const meds = (raw.meds || []).filter(m => !m.prn && m.active && !m.weekly);
+    const scheduledDoses = meds.flatMap(m => this.medDoses(m).map(d => ({ med: m, ...d })));
     const settings = raw.settings || {};
     const name = settings.displayName || 'there';
     const avatar = settings.displayAvatar || null;
@@ -3244,7 +3306,7 @@ class Component extends DCLogic {
       if (ex.occurrences && Object.keys(ex.occurrences).length) done++;
       if (ex.ratings?.memory != null) done++;
       if (ex.proteinRange != null || ex.proteinG != null || ex.ratings?.appetite != null) done++;
-      if ((raw.medLogs || []).some(l => !l.isPrn && l.eventDate === today)) done++;
+      if (scheduledDoses.length === 0 || scheduledDoses.every(({ med, doseSlot }) => !!this.medLogFor(med.id, today, doseSlot))) done++;
     }
     const total = 6, circ = 163.36;
     const ringDash = `${(done / total * circ).toFixed(1)} ${circ}`;
@@ -3261,9 +3323,9 @@ class Component extends DCLogic {
       missedDays.push({ iso, label: dt.toLocaleDateString(undefined, { weekday: 'short' }), day: String(dt.getDate()), onClick: () => this.openCheckin(iso) });
     }
 
-    // meds today — pill toggles taken ↔ not taken (Late/Skipped are set from the Meds screen)
-    const medsToday = meds.map(m => {
-      const log = this.medLogFor(m.id, today);
+    // meds today — twice-daily profiles expand into independently logged AM/PM doses
+    const medsToday = scheduledDoses.map(({ med: m, doseSlot, slotLabel, timing }) => {
+      const log = this.medLogFor(m.id, today, doseSlot);
       const cur = log?.status || null;
       let status = 'Not taken', pillBg = 'var(--ac-050)', pillColor = 'var(--ac-deep)';
       if (cur === 'taken') { status = '✓ Taken'; pillBg = '#E4F4EA'; pillColor = '#2E8B5B'; }
@@ -3271,14 +3333,14 @@ class Component extends DCLogic {
       else if (cur === 'skipped') { status = 'Skipped'; pillBg = '#FADFD4'; pillColor = '#B3502E'; }
       const next = cur === 'taken' ? null : 'taken';
       // scheduled time — tap to set it (saved to the med profile) when missing
-      const hasTime = !!m.timing;
-      return { name: m.name, dose: m.dose,
-        time: hasTime ? `Scheduled ${this.fmtTime(m.timing)}` : 'No time set — tap to add',
+      const hasTime = !!timing;
+      return { name: m.name, dose: `${m.dose}${slotLabel ? ' · ' + slotLabel : ''}`,
+        time: hasTime ? `Scheduled ${this.fmtTime(timing)}` : 'No time set — tap to add',
         timeColor: hasTime ? '#7A7F92' : '#8E7CF3', timeWeight: hasTime ? 500 : 700,
-        onTimeTap: this.openTimePick('medSchedule', m.id, m.timing || '20:00'),
-        status, pillBg, pillColor, onStatusTap: this.setMedStatus(m.id, next) };
+        onTimeTap: this.openTimePick('medSchedule', { medId: m.id, doseSlot }, timing || (doseSlot === 'night' ? '20:00' : '08:00')),
+        status, pillBg, pillColor, onStatusTap: this.setMedStatus(m.id, next, doseSlot) };
     });
-    const takenN = meds.filter(m => this.medLogFor(m.id, today)?.status === 'taken').length;
+    const takenN = scheduledDoses.filter(({ med, doseSlot }) => this.medLogFor(med.id, today, doseSlot)?.status === 'taken').length;
 
     // recent activity
     const items = [];
@@ -3289,7 +3351,7 @@ class Component extends DCLogic {
     }
     for (const l of (raw.medLogs || [])) {
       if (l.isPrn) items.push({ ts: this.tsOf(l), title: `${this.medName(l.medId)} PRN`, sub: this.fmtWhen(l), iconBg: 'linear-gradient(135deg,#FDE3CF,#F9C9A8)', dot: '#B35F1E' });
-      else if (l.status === 'taken') items.push({ ts: this.tsOf(l), title: `${this.medName(l.medId)} taken`, sub: this.fmtWhen(l), iconBg: 'linear-gradient(135deg,#D2EEDD,#AEDFC4)', dot: '#2E8B5B' });
+      else if (l.status === 'taken') items.push({ ts: this.tsOf(l), title: `${this.medName(l.medId)}${l.doseSlot === 'morning' ? ' AM' : l.doseSlot === 'night' ? ' PM' : ''} taken`, sub: this.fmtWhen(l), iconBg: 'linear-gradient(135deg,#D2EEDD,#AEDFC4)', dot: '#2E8B5B' });
     }
     for (const c of (raw.checkIns || [])) { if (c.completed) items.push({ ts: this.tsOf(c), title: 'Check-in completed', sub: this.fmtWhen(c), iconBg: 'linear-gradient(135deg,#D6E6F9,#B4D2F3)', dot: '#3A6FB0' }); }
     items.sort((a, b) => b.ts - a.ts);
@@ -3300,7 +3362,7 @@ class Component extends DCLogic {
     let backupText = 'No backup yet';
     if (backup) { const days = Math.round((Date.now() - new Date(backup.at).getTime()) / 864e5); backupText = `Last backup ${days} day${days === 1 ? '' : 's'} ago`; }
 
-    const scheduledLeft = meds.filter(m => !this.medLogFor(m.id, today)).length;
+    const scheduledLeft = scheduledDoses.filter(({ med, doseSlot }) => !this.medLogFor(med.id, today, doseSlot)).length;
     const prn = (this.raw.meds || []).find(m => m.prn);
 
     return {
@@ -3308,8 +3370,8 @@ class Component extends DCLogic {
       avatar, avatarBg: avatar ? `url(${avatar})` : 'none', hasAvatar: !!avatar, noAvatar: !avatar, onAvatar: this.onAvatar, onAvatarFile: this.onAvatarFile,
       ringDash, ringText: `${done}/${total}`, checkinSub, checkinCta,
       hasMissed: missedDays.length > 0, missedDays,
-      medsQuickSub: meds.length ? `${scheduledLeft} scheduled left` : 'Add your meds',
-      medsCount: `${takenN} of ${meds.length}`, hasMeds: meds.length > 0, noMeds: meds.length === 0, medsToday,
+      medsQuickSub: scheduledDoses.length ? `${scheduledLeft} scheduled left` : 'Add your meds',
+      medsCount: `${takenN} of ${scheduledDoses.length}`, hasMeds: scheduledDoses.length > 0, noMeds: scheduledDoses.length === 0, medsToday,
       hasRecent: recent.length > 0, noRecent: recent.length === 0, recent,
       wwHas: !!ww, wwTitle: ww?.title, wwPill: ww?.pill, wwBody: ww?.body,
       backupText,
@@ -3336,42 +3398,43 @@ class Component extends DCLogic {
       });
     }
 
-    const seg = (medId, cur, label, key, bg, color) => ({
-      label, onClick: this.setMedStatus(medId, cur === key ? null : key),
+    const seg = (medId, doseSlot, cur, label, key, bg, color) => ({
+      label, onClick: this.setMedStatus(medId, cur === key ? null : key, doseSlot),
       bg: cur === key ? bg : '#F6F5FB', color: cur === key ? color : '#9AA0B4',
     });
-    const scheduled = scheduledDefs.map(m => {
-      const log = this.medLogFor(m.id, date);
+    const scheduled = scheduledDefs.flatMap(m => this.medDoses(m).map(({ doseSlot, slotLabel, timing }) => {
+      const log = this.medLogFor(m.id, date, doseSlot);
       const cur = log?.status || null;
       let note = '', noteColor = '#8E7CF3';
-      if (cur === 'taken') { note = '✓ ' + (log?.takenTime ? this.fmtTime(this.hhmm(new Date(log.takenTime))) : this.fmtTime(m.timing)); noteColor = '#2E8B5B'; }
+      if (cur === 'taken') { note = '✓ ' + (log?.takenTime ? this.fmtTime(this.hhmm(new Date(log.takenTime))) : this.fmtTime(timing)); noteColor = '#2E8B5B'; }
       const showTime = cur === 'taken' || cur === 'late';
-      const timeVal = log?.takenTime ? this.hhmm(new Date(log.takenTime)) : (m.timing || '');
+      const timeVal = log?.takenTime ? this.hhmm(new Date(log.takenTime)) : (timing || '');
       return {
-        name: m.name, sub: `${m.dose} · ${this.fmtTime(m.timing)}`,
+        name: `${m.name}${slotLabel ? ' · ' + slotLabel : ''}`, sub: `${m.dose} · ${this.fmtTime(timing)}`,
+        isTaken: cur === 'taken',
         iconBg: `linear-gradient(135deg,${this.lighten(m.color || '#8E7CF3', 0.55)},${m.color || '#8E7CF3'})`, iconTint: this.darken(m.color || '#8E7CF3', 0.42), iconColor: this.deep(m.category), iconPath: this.medIconPath(m.icon), iconSrc: this.medIconSrc(m.icon),
-        note, noteColor, showTime, timeVal, onTime: this.setMedTime(m.id),
-        timeLabel: timeVal ? this.fmtTime(timeVal) : 'Set time', onTimeOpen: this.openTimePick('med', m.id, timeVal),
+        note, noteColor, showTime, timeVal, onTime: this.setMedTime(m.id, doseSlot),
+        timeLabel: timeVal ? this.fmtTime(timeVal) : 'Set time', onTimeOpen: this.openTimePick('med', { medId: m.id, doseSlot }, timeVal),
         segments: [
-          seg(m.id, cur, 'Taken', 'taken', '#E4F4EA', '#2E8B5B'),
-          seg(m.id, cur, 'Late', 'late', '#FCEEDC', '#B35F1E'),
-          seg(m.id, cur, 'Skipped', 'skipped', '#FADFD4', '#B3502E'),
+          seg(m.id, doseSlot, cur, 'Taken', 'taken', '#E4F4EA', '#2E8B5B'),
+          seg(m.id, doseSlot, cur, 'Late', 'late', '#FCEEDC', '#B35F1E'),
+          seg(m.id, doseSlot, cur, 'Skipped', 'skipped', '#FADFD4', '#B3502E'),
         ],
       };
-    });
+    }));
     const prnRow = (m, label) => {
       const last = (raw.medLogs || []).filter(l => l.isPrn && l.medId === m.id).sort((a, b) => this.tsOf(b) - this.tsOf(a))[0];
       return { name: m.name, dose: m.dose, lastTaken: last ? `Last taken ${this.fmtWhen(last)}${last.reason ? ' · ' + last.reason : ''}` : (label || 'Not taken recently'), onLog: this.openPrn(m.id) };
     };
     const prn = prnDefs.map(m => prnRow(m));
     const weekly = weeklyDefs.map(m => prnRow(m, m.frequency || 'weekly'));
-    const takenN = scheduledDefs.filter(m => this.medLogFor(m.id, date)?.status === 'taken').length;
+    const takenN = scheduled.filter(row => row.isTaken).length;
     const isToday = date === this.db.todayISO();
 
     return {
       dayStrip, hasScheduled: scheduled.length > 0, scheduled,
-      progressTitle: isToday ? "Today's progress" : 'Progress', takenText: `${takenN} of ${scheduledDefs.length} taken`,
-      progressPct: scheduledDefs.length ? Math.round(takenN / scheduledDefs.length * 100) : 0,
+      progressTitle: isToday ? "Today's progress" : 'Progress', takenText: `${takenN} of ${scheduled.length} taken`,
+      progressPct: scheduled.length ? Math.round(takenN / scheduled.length * 100) : 0,
       hasPrn: prn.length > 0, prn, hasWeekly: weekly.length > 0, weekly,
       empty: scheduled.length === 0 && prn.length === 0 && weekly.length === 0,
     };
@@ -3504,12 +3567,12 @@ class Component extends DCLogic {
 
     let medsList = [];
     if (step === 'meds') {
-      const date = this.db.todayISO();
-      medsList = (this.raw.meds || []).filter(m => !m.prn && m.active && !m.weekly).map(m => {
-        const cur = this.medLogFor(m.id, date)?.status || null;
-        const seg = (label, key, bg, color) => ({ label, onClick: this.setMedStatus(m.id, cur === key ? null : key), bg: cur === key ? bg : '#F6F5FB', color: cur === key ? color : '#9AA0B4' });
-        return { name: m.name, dose: m.dose, segments: [seg('Taken', 'taken', '#E4F4EA', '#2E8B5B'), seg('Late', 'late', '#FCEEDC', '#B35F1E'), seg('Skipped', 'skipped', '#FADFD4', '#B3502E')] };
-      });
+      const date = ci.date || this.db.todayISO();
+      medsList = (this.raw.meds || []).filter(m => !m.prn && m.active && !m.weekly).flatMap(m => this.medDoses(m).map(({ doseSlot, slotLabel, timing }) => {
+        const cur = this.medLogFor(m.id, date, doseSlot)?.status || null;
+        const seg = (label, key, bg, color) => ({ label, onClick: this.setMedStatus(m.id, cur === key ? null : key, doseSlot), bg: cur === key ? bg : '#F6F5FB', color: cur === key ? color : '#9AA0B4' });
+        return { name: `${m.name}${slotLabel ? ' · ' + slotLabel : ''}`, dose: `${m.dose}${timing ? ' · ' + this.fmtTime(timing) : ''}`, segments: [seg('Taken', 'taken', '#E4F4EA', '#2E8B5B'), seg('Late', 'late', '#FCEEDC', '#B35F1E'), seg('Skipped', 'skipped', '#FADFD4', '#B3502E')] };
+      }));
     }
 
     const stepDef = (this.raw.settings?.checkInSteps || []).find(s => s.key === step);
@@ -3632,7 +3695,7 @@ class Component extends DCLogic {
       ? `Loaded: ${(raw.meds || []).length} meds · ${(raw.symptoms || []).length} symptoms · ${(raw.checkIns || []).length} check-ins · ${(raw.episodes || []).length} episodes.`
       : 'No data yet. Set up your tracker and start logging — your data stays private on this device.';
     const steps = (s.checkInSteps || []).slice().sort((a, b) => (a.name || '').localeCompare(b.name || '')).map(x => ({ name: x.name, onRename: this.renameStep(x.key), onToggle: this.toggleStep(x.key), trackBg: x.enabled ? 'var(--ac)' : '#E4E2EE', knobLeft: x.enabled ? '22px' : '3px' }));
-    const meds = (raw.meds || []).map(m => ({ name: m.name, sub: `${m.dose || ''}${m.timing ? ' · ' + this.fmtTime(m.timing) : (m.prn ? ' · PRN' : (m.weekly ? ' · weekly' : ''))}${m.active === false ? ' · inactive' : ''}`, iconBg: `linear-gradient(135deg,${this.lighten(m.color || '#8E7CF3', 0.55)},${m.color || '#8E7CF3'})`, iconTint: this.darken(m.color || '#8E7CF3', 0.42), iconSrc: this.medIconSrc(m.icon), onEdit: () => this.openMedEditor(m) }));
+    const meds = (raw.meds || []).map(m => { const sched = this.medScheduleText(m); return { name: m.name, sub: `${m.dose || ''}${m.prn ? ' · PRN' : (m.weekly ? ' · weekly' : (sched ? ' · ' + sched : ''))}${m.active === false ? ' · inactive' : ''}`, iconBg: `linear-gradient(135deg,${this.lighten(m.color || '#8E7CF3', 0.55)},${m.color || '#8E7CF3'})`, iconTint: this.darken(m.color || '#8E7CF3', 0.42), iconSrc: this.medIconSrc(m.icon), onEdit: () => this.openMedEditor(m) }; });
     const symptoms = (raw.symptoms || []).filter(x => !x.archived).map(x => ({ name: x.name, dot: this.catColor(x.category), cat: x.category, meta: this.controlLabel(x.control || x.askAs), onEdit: () => this.openSymEditor(x), onToggleCheckin: this.toggleSymCheckin(x), ciBg: x.appearsInCheckIn !== false ? '#E4F4EA' : '#F6F5FB', ciColor: x.appearsInCheckIn !== false ? '#2E8B5B' : '#9AA0B4' }));
     // sub-screen navigation + grouped symptoms
     const sub = this.state.setSub || null;
@@ -3712,7 +3775,10 @@ class Component extends DCLogic {
     const notesList = (me.notes || []).map(n => ({ text: n.text, when: new Date(n.ts).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }).toUpperCase(), onRemove: this.medRemoveNote(n.ts) }));
     const fmtD = (iso) => iso ? new Date(iso + 'T12:00:00').toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : null;
     return { open: true, title: me.id ? 'Edit medication' : 'Add medication', hasErr: !!me.err, name: me.name, dose: me.dose, timing: me.timing,
-      timingLabel: me.timing ? this.fmtTime(me.timing) : 'Set time', onTimeOpen: this.openTimePick('medTiming', null, me.timing || '08:00'),
+      showSingleTime: me.slot !== 'both', showBothTimes: me.frequency === 'daily' && me.slot === 'both',
+      timingLabel: me.timing ? this.fmtTime(me.timing) : 'Set time', onTimeOpen: this.openTimePick('medTiming', null, me.timing || (me.slot === 'night' ? '20:00' : '08:00')),
+      morningTimingLabel: this.fmtTime(me.morningTiming || '08:00'), nightTimingLabel: this.fmtTime(me.nightTiming || '20:00'),
+      onMorningTimeOpen: this.openTimePick('medTimingAM', null, me.morningTiming || '08:00'), onNightTimeOpen: this.openTimePick('medTimingPM', null, me.nightTiming || '20:00'),
       startLabel: fmtD(me.startDate) || 'Not set', startColor: me.startDate ? 'var(--ac-deep)' : '#9AA0B4', onStartOpen: this.openDatePick('startDate', me.startDate),
       endLabel: fmtD(me.endDate) || 'Not set', endColor: me.endDate ? 'var(--ac-deep)' : '#9AA0B4', onEndOpen: this.openDatePick('endDate', me.endDate),
       colorChips, iconChips, notesList, onAddNote: this.medAddNote,
@@ -4131,7 +4197,7 @@ class Component extends DCLogic {
       const buckets = [['Morning', 5, 12], ['Afternoon', 12, 17], ['Evening', 17, 22], ['Night', 22, 29]];
       const counts = [0, 0, 0, 0];
       let nearMed = 0, timed = 0;
-      const medTimes = (this.raw.meds || []).filter(m => m.timing && m.active).map(m => { const [h, mi] = m.timing.split(':').map(Number); return h + mi / 60; });
+      const medTimes = (this.raw.meds || []).filter(m => m.active).flatMap(m => this.medDoses(m)).filter(d => d.timing).map(d => { const [h, mi] = d.timing.split(':').map(Number); return h + mi / 60; });
       for (const e of eps) {
         if (!e.time) continue;
         const d = new Date(e.time); if (isNaN(d)) continue;
@@ -4195,7 +4261,7 @@ class Component extends DCLogic {
         status: l.isPrn ? `PRN${l.dose ? ' · ' + l.dose : ''}${l.reason ? ' · ' + l.reason : ''}` : (l.status || 'taken'),
         color: l.status === 'skipped' || l.status === 'missed' ? '#B3502E' : l.status === 'late' ? '#B35F1E' : (l.isPrn ? 'var(--ac-deep)' : '#2E8B5B'),
       }));
-      return { id: m.id, name: m.name, meta: `${m.dose || ''}${m.prn ? ' · PRN' : (m.weekly ? ' · weekly' : (m.timing ? ' · ' + this.fmtTime(m.timing) : ''))}`.replace(/^ · /, ''),
+      return { id: m.id, name: m.name, meta: `${m.dose || ''}${m.prn ? ' · PRN' : (m.weekly ? ' · weekly' : (this.medScheduleText(m) ? ' · ' + this.medScheduleText(m) : ''))}`.replace(/^ · /, ''),
         color: m.color || 'var(--ac)', events, hasEvents: events.length > 0,
         showTimes: showTimes.has(m.id), onToggleTimes: this.toggleMedTimes(m.id),
         trackBg: showTimes.has(m.id) ? 'var(--ac)' : '#E4E2EE', knob: showTimes.has(m.id) ? '20px' : '3px',
@@ -4284,7 +4350,7 @@ class Component extends DCLogic {
     const gen = new Date().toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' });
     const prov = (this.state.exp && this.state.exp.provider) || 'psychiatrist';
     const provLabel = ({ psychiatrist: 'Psychiatrist', gi: 'GI', pcp: 'Primary care' })[prov] || '';
-    const meds = (this.raw.meds || []).filter(m => m.active !== false).map(m => ({ name: m.name, dose: m.dose || '', sched: m.prn ? 'as needed' : (m.weekly ? 'weekly' : `daily${m.timing ? ' · ' + this.fmtTime(m.timing) : ''}`), purpose: m.purpose || '' }));
+    const meds = (this.raw.meds || []).filter(m => m.active !== false).map(m => ({ name: m.name, dose: m.dose || '', sched: m.prn ? 'as needed' : (m.weekly ? 'weekly' : `daily${this.medScheduleText(m) ? ' · ' + this.medScheduleText(m) : ''}`), purpose: m.purpose || '' }));
     const changes = (this.raw.changes || []).slice().sort((a, b) => this.tsOf(b) - this.tsOf(a)).slice(0, 5).map(c => ({ date: this.shortDate(c.eventDate), med: this.medName(c.medId), what: (c.prev && c.next) ? `${c.prev} → ${c.next}` : (c.changeType || 'update'), reason: c.reason || '' }));
     const occDefs = (this.raw.symptoms || []).filter(s => !s.archived && !(s.control === 'scale' || s.control === 'face'));
     const stat = {}; for (const s of occDefs) stat[s.key] = { name: s.name, count: 0, sevSum: 0, sevN: 0 };
@@ -4349,7 +4415,7 @@ class Component extends DCLogic {
     for (const l of (raw.medLogs || [])) {
       if (l.eventDate < cutoff) continue;
       if (l.isPrn) items.push({ ts: this.tsOf(l), title: `${this.medName(l.medId)} · as-needed`, sub: `${l.dose || ''}${l.reason ? ' · ' + l.reason : ''} · ${this.fmtWhen(l)}`, dot: '#C05673', kind: 'PRN dose', store: 'medicationDailyLogs', id: l.id });
-      else items.push({ ts: this.tsOf(l), title: `${this.medName(l.medId)} · ${l.status}`, sub: this.fmtWhen(l), dot: l.status === 'taken' ? '#2E8B5B' : l.status === 'late' ? '#B35F1E' : '#B3502E', kind: 'Med', store: 'medicationDailyLogs', id: l.id });
+      else items.push({ ts: this.tsOf(l), title: `${this.medName(l.medId)}${l.doseSlot === 'morning' ? ' AM' : l.doseSlot === 'night' ? ' PM' : ''} · ${l.status}`, sub: this.fmtWhen(l), dot: l.status === 'taken' ? '#2E8B5B' : l.status === 'late' ? '#B35F1E' : '#B3502E', kind: 'Med', store: 'medicationDailyLogs', id: l.id });
     }
     for (const c of (raw.checkIns || [])) { if (c.eventDate < cutoff) continue; items.push({ ts: this.tsOf(c), title: 'Daily check-in', sub: this.fmtWhen(c), dot: 'var(--ac)', kind: 'Check-in', store: 'dailyCheckIns', id: c.id }); }
     items.sort((a, b) => b.ts - a.ts);
