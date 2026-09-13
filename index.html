@@ -416,10 +416,10 @@
                 <path d="M22,96 Q157,-8 292,96" stroke="url(#moodarch)" stroke-width="4.5" fill="none" stroke-linecap="round" opacity=".55"></path>
               </svg>
               <sc-for list="{{ ci.face.faces }}" as="fc" hint-placeholder-count="5">
-                <div style="position:absolute;left:{{ fc.left }}px;top:{{ fc.top }}px;width:{{ fc.size }}px;height:{{ fc.size }}px;border-radius:50%;background:{{ fc.puckBg }};box-shadow:{{ fc.shadow }};display:flex;align-items:center;justify-content:center;transition:all .12s">
+                <div style="position:absolute;left:calc({{ fc.leftPct }}% - {{ fc.half }}px);top:{{ fc.top }}px;width:{{ fc.size }}px;height:{{ fc.size }}px;border-radius:50%;background:{{ fc.puckBg }};box-shadow:{{ fc.shadow }};display:flex;align-items:center;justify-content:center;transition:all .12s">
                   <svg width="{{ fc.svgSize }}" height="{{ fc.svgSize }}" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="{{ fc.fill }}"></circle><circle cx="8.4" cy="9.7" r="1.35" fill="#fff"></circle><circle cx="15.6" cy="9.7" r="1.35" fill="#fff"></circle><path d="{{ fc.mouth }}" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round"></path></svg>
                 </div>
-                <div style="position:absolute;left:{{ fc.lblLeft }}px;top:{{ fc.lblTop }}px;width:60px;text-align:center;font-size:11px;font-weight:{{ fc.lblWeight }};color:{{ fc.lblCol }};transition:all .12s">{{ fc.label }}</div>
+                <div style="position:absolute;left:calc({{ fc.leftPct }}% - 30px);top:{{ fc.lblTop }}px;width:60px;text-align:center;font-size:11px;font-weight:{{ fc.lblWeight }};color:{{ fc.lblCol }};transition:all .12s">{{ fc.label }}</div>
               </sc-for>
             </div>
           </div>
@@ -1598,13 +1598,13 @@
     <div style="flex:1;min-height:0;display:flex;flex-direction:column">
       <div style="display:flex;align-items:center;gap:12px;padding:8px 20px 0">
         <div onClick="{{ nav.goHome }}" style="cursor:pointer;width:36px;height:36px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(120,110,180,.12);font-size:18px;color:#565B6E">‹</div>
-        <div style="flex:1;text-align:center;font-size:15px;font-weight:700">Recent activity</div>
+        <div style="flex:1;text-align:center;font-size:15px;font-weight:700">History</div>
         <div style="width:36px"></div>
       </div>
       <div style="flex:1;overflow-y:auto;padding:16px 20px 40px;display:flex;flex-direction:column;gap:16px">
-        <div style="font-size:13px;color:#7A7F92;line-height:1.5;padding:0 2px">Everything logged in the last 3 days. Tap the trash to remove anything you didn't mean to save.</div>
+        <div style="font-size:13px;color:#7A7F92;line-height:1.5;padding:0 2px">Your complete log history. Tap any symptom to review every detail, including notes, or make a correction.</div>
         <sc-if value="{{ activity.empty }}" hint-placeholder-val="{{ false }}">
-          <div style="background:rgba(255,255,255,.7);border:1px dashed rgba(var(--ac-rgb),.35);border-radius:var(--r-lg);padding:28px;text-align:center;font-size:13px;color:#7A7F92">Nothing logged in the last 3 days.</div>
+          <div style="background:rgba(255,255,255,.7);border:1px dashed rgba(var(--ac-rgb),.35);border-radius:var(--r-lg);padding:28px;text-align:center;font-size:13px;color:#7A7F92">Nothing logged yet.</div>
         </sc-if>
         <sc-for list="{{ activity.groups }}" as="g" hint-placeholder-count="2">
           <div style="display:flex;flex-direction:column;gap:10px">
@@ -1614,8 +1614,9 @@
                 <div style="display:flex;gap:12px">
                   <div style="position:relative;width:14px;flex:none;display:flex;justify-content:center"><div style="position:absolute;top:0;bottom:0;width:2px;background:rgba(var(--ac-rgb),.16)"></div><div style="position:relative;z-index:1;width:11px;height:11px;border-radius:50%;background:{{ it.dot }};margin-top:17px;box-shadow:0 0 0 3px #fff"></div></div>
                   <div style="flex:1;min-width:0;display:flex;align-items:center;gap:10px;padding:13px 0">
-                    <div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:700">{{ it.title }}</div><div style="font-size:11.5px;color:#7A7F92">{{ it.sub }}</div></div>
+                    <div onClick="{{ it.onOpen }}" style="cursor:{{ it.openCursor }};flex:1;min-width:0;padding:3px 0"><div style="font-size:14px;font-weight:700">{{ it.title }}</div><div style="font-size:11.5px;color:#7A7F92">{{ it.sub }}</div></div>
                     <div style="font-size:10px;font-weight:800;color:#9AA0B4;background:var(--ac-050);padding:3px 8px;border-radius:999px;flex:none">{{ it.kind }}</div>
+                    <sc-if value="{{ it.hasOpen }}" hint-placeholder-val="{{ false }}"><div onClick="{{ it.onOpen }}" style="cursor:pointer;min-height:34px;display:flex;align-items:center;color:var(--ac-deep);font-size:11px;font-weight:800;background:var(--ac-050);padding:4px 9px;border-radius:10px;flex:none">View</div></sc-if>
                     <sc-if value="{{ it.confirming }}" hint-placeholder-val="{{ false }}">
                       <div style="display:flex;gap:6px;flex:none"><div onClick="{{ it.onConfirm }}" style="cursor:pointer;background:#E9695E;color:#fff;font-size:12px;font-weight:800;padding:7px 11px;border-radius:999px">Delete</div><div onClick="{{ it.onCancel }}" style="cursor:pointer;background:#F6F5FB;color:#565B6E;font-size:12px;font-weight:700;padding:7px 11px;border-radius:999px">Keep</div></div>
                     </sc-if>
@@ -1628,6 +1629,40 @@
             </div>
           </div>
         </sc-for>
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- ============================ SYMPTOM HISTORY EDITOR ============================ -->
+    <sc-if value="{{ episodeEdit.open }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;background:rgba(40,34,70,.38);backdrop-filter:blur(4px);display:flex;flex-direction:column;justify-content:flex-end;z-index:72">
+      <div onClick="{{ episodeEdit.onCancel }}" style="flex:1"></div>
+      <div style="background:linear-gradient(165deg,#fff,#FBFAFD);border-radius:var(--r-sheet) var(--r-sheet) 0 0;padding:18px 20px calc(26px + var(--hcc-safe-bottom));display:flex;flex-direction:column;gap:14px;box-shadow:0 -20px 50px rgba(70,60,130,.3);max-height:92%;overflow-y:auto">
+        <div style="width:40px;height:5px;border-radius:99px;background:#E4E2EE;align-self:center"></div>
+        <div style="display:flex;align-items:flex-start;gap:10px"><div style="flex:1"><div style="font-size:19px;font-weight:800;letter-spacing:-.01em">Review symptom</div><div style="font-size:12px;color:#7A7F92;margin-top:3px">View or correct the full saved entry.</div></div><div onClick="{{ episodeEdit.onCancel }}" style="cursor:pointer;width:34px;height:34px;border-radius:50%;background:#F6F5FB;display:flex;align-items:center;justify-content:center;font-size:17px;color:#565B6E">×</div></div>
+
+        <div style="background:{{ episodeEdit.catBg }};border-radius:15px;padding:12px 14px;display:flex;align-items:center;gap:10px"><span style="width:10px;height:10px;border-radius:50%;background:{{ episodeEdit.catColor }}"></span><div style="flex:1"><div style="font-size:15px;font-weight:800">{{ episodeEdit.name }}</div><div style="font-size:11.5px;color:#7A7F92">{{ episodeEdit.category }}</div></div></div>
+
+        <div style="display:flex;gap:10px">
+          <div onClick="{{ episodeEdit.onDateOpen }}" style="cursor:pointer;min-height:50px;flex:1;background:#F6F5FB;border-radius:14px;padding:10px 12px"><div style="font-size:10px;font-weight:800;letter-spacing:.07em;color:#9AA0B4">DATE</div><div style="font-size:13px;font-weight:800;color:var(--ac-deep);margin-top:4px">{{ episodeEdit.dateLabel }}</div></div>
+          <div onClick="{{ episodeEdit.onTimeOpen }}" style="cursor:pointer;min-height:50px;flex:1;background:#F6F5FB;border-radius:14px;padding:10px 12px"><div style="font-size:10px;font-weight:800;letter-spacing:.07em;color:#9AA0B4">TIME</div><div style="font-size:13px;font-weight:800;color:var(--ac-deep);margin-top:4px">{{ episodeEdit.timeLabel }}</div></div>
+        </div>
+
+        <div style="background:#F6F5FB;border-radius:15px;padding:12px 14px;display:flex;align-items:center;gap:12px"><div style="flex:1"><div style="font-size:12px;font-weight:800;color:#565B6E">Severity</div><div style="font-size:11px;color:#9AA0B4;margin-top:2px">0 is none · 10 is extreme</div></div><div onClick="{{ episodeEdit.onSevDec }}" style="cursor:pointer;width:42px;height:42px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;color:var(--ac-deep);font-size:20px;font-weight:800">−</div><div style="min-width:46px;text-align:center"><div style="font-size:21px;font-weight:800;color:var(--ac-deep)">{{ episodeEdit.severity }}</div><div style="font-size:9.5px;font-weight:700;color:#9AA0B4">{{ episodeEdit.severityWord }}</div></div><div onClick="{{ episodeEdit.onSevInc }}" style="cursor:pointer;width:42px;height:42px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;color:var(--ac-deep);font-size:20px;font-weight:800">＋</div></div>
+
+        <div style="display:flex;flex-direction:column;gap:8px"><div style="font-size:11px;font-weight:800;letter-spacing:.07em;color:#9AA0B4">WHEN</div><div style="display:flex;gap:7px;flex-wrap:wrap"><sc-for list="{{ episodeEdit.whenChips }}" as="c" hint-placeholder-count="4"><div onClick="{{ c.onClick }}" style="cursor:pointer;min-height:40px;display:flex;align-items:center;font-size:12px;font-weight:{{ c.weight }};padding:8px 13px;border-radius:999px;background:{{ c.bg }};color:{{ c.color }}">{{ c.label }}</div></sc-for></div></div>
+        <div style="display:flex;flex-direction:column;gap:8px"><div style="font-size:11px;font-weight:800;letter-spacing:.07em;color:#9AA0B4">DURATION</div><div style="display:flex;gap:7px;flex-wrap:wrap"><sc-for list="{{ episodeEdit.durationChips }}" as="c" hint-placeholder-count="4"><div onClick="{{ c.onClick }}" style="cursor:pointer;min-height:40px;display:flex;align-items:center;font-size:12px;font-weight:{{ c.weight }};padding:8px 13px;border-radius:999px;background:{{ c.bg }};color:{{ c.color }}">{{ c.label }}</div></sc-for></div></div>
+        <div style="display:flex;flex-direction:column;gap:8px"><div style="font-size:11px;font-weight:800;letter-spacing:.07em;color:#9AA0B4">POSSIBLE TRIGGER</div><div style="display:flex;gap:7px;flex-wrap:wrap"><sc-for list="{{ episodeEdit.triggerChips }}" as="c" hint-placeholder-count="5"><div onClick="{{ c.onClick }}" style="cursor:pointer;min-height:40px;display:flex;align-items:center;font-size:12px;font-weight:{{ c.weight }};padding:8px 13px;border-radius:999px;background:{{ c.bg }};color:{{ c.color }}">{{ c.label }}</div></sc-for></div></div>
+
+        <sc-if value="{{ episodeEdit.hasHelp }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:8px"><div style="font-size:11px;font-weight:800;letter-spacing:.07em;color:#9AA0B4">WHAT HELPED</div><div style="display:flex;gap:7px;flex-wrap:wrap"><sc-for list="{{ episodeEdit.helpChips }}" as="c" hint-placeholder-count="5"><div onClick="{{ c.onClick }}" style="cursor:pointer;min-height:40px;display:flex;align-items:center;font-size:12px;font-weight:{{ c.weight }};padding:8px 13px;border-radius:999px;background:{{ c.bg }};color:{{ c.color }}">{{ c.label }}</div></sc-for></div></div></sc-if>
+        <sc-if value="{{ episodeEdit.hasMeds }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:8px"><div style="font-size:11px;font-weight:800;letter-spacing:.07em;color:#9AA0B4">POSSIBLY MEDICATION-RELATED</div><div style="display:flex;gap:7px;flex-wrap:wrap"><sc-for list="{{ episodeEdit.medChips }}" as="c" hint-placeholder-count="4"><div onClick="{{ c.onClick }}" style="cursor:pointer;min-height:40px;display:flex;align-items:center;font-size:12px;font-weight:{{ c.weight }};padding:8px 13px;border-radius:999px;background:{{ c.bg }};color:{{ c.color }}">{{ c.label }}</div></sc-for></div></div></sc-if>
+        <sc-if value="{{ episodeEdit.showConfidence }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:8px"><div style="font-size:11px;font-weight:800;letter-spacing:.07em;color:#9AA0B4">CONFIDENCE</div><div style="display:flex;gap:7px;flex-wrap:wrap"><sc-for list="{{ episodeEdit.confidenceChips }}" as="c" hint-placeholder-count="3"><div onClick="{{ c.onClick }}" style="cursor:pointer;min-height:40px;display:flex;align-items:center;font-size:12px;font-weight:{{ c.weight }};padding:8px 13px;border-radius:999px;background:{{ c.bg }};color:{{ c.color }}">{{ c.label }}</div></sc-for></div></div></sc-if>
+        <sc-if value="{{ episodeEdit.hasContext }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:8px"><div style="font-size:11px;font-weight:800;letter-spacing:.07em;color:#9AA0B4">LIFE FACTORS</div><div style="display:flex;gap:7px;flex-wrap:wrap"><sc-for list="{{ episodeEdit.contextChips }}" as="c" hint-placeholder-count="5"><div onClick="{{ c.onClick }}" style="cursor:pointer;min-height:40px;display:flex;align-items:center;font-size:12px;font-weight:{{ c.weight }};padding:8px 13px;border-radius:999px;background:{{ c.bg }};color:{{ c.color }}">{{ c.label }}</div></sc-for></div></div></sc-if>
+
+        <div style="display:flex;flex-direction:column;gap:7px"><div style="font-size:11px;font-weight:800;letter-spacing:.07em;color:#9AA0B4">NOTES</div><textarea id="hcc-episode-notes" defaultValue="{{ episodeEdit.notes }}" placeholder="Add any details you want to remember…" style="min-height:92px;resize:vertical;border:none;background:#F6F5FB;border-radius:14px;padding:12px 13px;font-size:13.5px;line-height:1.45;color:#23262F;outline:none;font-family:inherit"></textarea></div>
+
+        <sc-if value="{{ episodeEdit.hasDeleteConfirm }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:8px;background:#FBEFEC;border-radius:14px;padding:11px 13px"><div style="flex:1;font-size:12px;font-weight:700;color:#B3502E">Delete this symptom entry?</div><div onClick="{{ episodeEdit.onDelete }}" style="cursor:pointer;min-height:38px;display:flex;align-items:center;background:#E9695E;color:#fff;font-size:12px;font-weight:800;padding:7px 12px;border-radius:999px">Delete</div><div onClick="{{ episodeEdit.onKeep }}" style="cursor:pointer;min-height:38px;display:flex;align-items:center;background:#fff;color:#565B6E;font-size:12px;font-weight:700;padding:7px 12px;border-radius:999px">Keep</div></div></sc-if>
+        <sc-if value="{{ episodeEdit.notDeleteConfirm }}" hint-placeholder-val="{{ true }}"><div style="display:flex;gap:10px"><div onClick="{{ episodeEdit.onAskDelete }}" style="cursor:pointer;min-height:50px;display:flex;align-items:center;background:#FBEFEC;color:#B3502E;font-size:14px;font-weight:800;padding:13px 17px;border-radius:999px">Delete</div><div onClick="{{ episodeEdit.onSave }}" style="cursor:pointer;min-height:50px;display:flex;align-items:center;justify-content:center;flex:1;text-align:center;background:linear-gradient(90deg,var(--ac-soft),var(--ac));color:#fff;font-size:15px;font-weight:800;padding:13px;border-radius:999px;box-shadow:0 10px 22px rgba(var(--ac-rgb),.35)">Save changes</div></div></sc-if>
       </div>
     </div>
     </sc-if>
@@ -2828,6 +2863,8 @@ class Component extends DCLogic {
       this.setState(st => ({ medEdit: st.medEdit ? { ...st.medEdit, nightTiming: val } : st.medEdit }));
     } else if (tp.kind === 'historicMedTime') {
       this.setState(st => ({ historicMed: st.historicMed ? { ...st.historicMed, time: val, err: null } : st.historicMed }));
+    } else if (tp.kind === 'episodeTime') {
+      this.setState(st => ({ episodeEdit: st.episodeEdit ? { ...st.episodeEdit, time: val } : st.episodeEdit }));
     } else if (tp.kind === 'medSchedule') {
       // set a med's scheduled time straight from the Home row (logged as a timing change)
       const ref = typeof tp.refId === 'object' ? tp.refId : { medId: tp.refId, doseSlot: null };
@@ -2865,6 +2902,7 @@ class Component extends DCLogic {
       const next = this.historicMedDefaults(base.medId, value || base.date || this.isoShift(this.db.todayISO(), -1), base.doseSlot);
       return { dp: null, historicMed: { ...next, qty: base.qty || 1, reason: base.reason || null, prnDose: base.prnDose ?? next.prnDose } };
     }
+    if (f === 'episodeDate') return { dp: null, episodeEdit: st.episodeEdit ? { ...st.episodeEdit, date: value || st.episodeEdit.date } : st.episodeEdit };
     return { dp: null, medEdit: st.medEdit ? { ...st.medEdit, [f]: value } : st.medEdit };
   });
   viewDp() {
@@ -2876,18 +2914,18 @@ class Component extends DCLogic {
     for (let d = 1; d <= nDays; d++) {
       const iso = `${dp.y}-${String(dp.m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
       const sel = dp.sel === iso;
-      const disabled = dp.field === 'historicDate' && iso > this.db.todayISO();
+      const disabled = (dp.field === 'historicDate' || dp.field === 'episodeDate') && iso > this.db.todayISO();
       cells.push({ day: d, onClick: disabled ? () => {} : this.dpSelect(iso), cursor: disabled ? 'default' : 'pointer', op: disabled ? .28 : 1,
         bg: sel ? 'linear-gradient(135deg,var(--ac-soft),var(--ac))' : 'rgba(255,255,255,.75)',
         fg: sel ? '#fff' : '#3a3f52', weight: sel ? 800 : 600,
         shadow: sel ? '0 6px 14px rgba(var(--ac-rgb),.4)' : '0 2px 6px rgba(120,110,180,.08)' });
     }
-    const titles = { startDate: 'Start date', endDate: 'End date', historicDate: 'When did you take it?' };
+    const titles = { startDate: 'Start date', endDate: 'End date', historicDate: 'When did you take it?', episodeDate: 'Symptom date' };
     return { open: true, title: titles[dp.field] || 'Pick a date',
       monthLabel: first.toLocaleDateString(undefined, { month: 'long', year: 'numeric' }),
       dow: ['S', 'M', 'T', 'W', 'T', 'F', 'S'], cells,
       onPrev: this.dpNav(-1), onNext: this.dpNav(1),
-      showClear: dp.field !== 'historicDate', onCancel: () => this.setState({ dp: null }), onClear: () => this.dpApply(''), onSave: () => this.dpApply(this.state.dp.sel || '') };
+      showClear: dp.field !== 'historicDate' && dp.field !== 'episodeDate', onCancel: () => this.setState({ dp: null }), onClear: () => this.dpApply(''), onSave: () => this.dpApply(this.state.dp.sel || '') };
   }
 
   // ---------- PRN overlay ----------
@@ -3443,7 +3481,7 @@ class Component extends DCLogic {
         cMore: route === 'settings' ? 'var(--ac)' : '#9AA0B4',
       },
     };
-    const emptyOverlays = { prn: { open: false }, historicMed: { open: false }, medEdit: { open: false }, symEdit: { open: false }, sp: { open: false, showBrowse: false, showDone: false }, exp: { open: false }, tp: { open: false }, dp: { open: false }, rep: { open: false } };
+    const emptyOverlays = { prn: { open: false }, historicMed: { open: false }, medEdit: { open: false }, symEdit: { open: false }, episodeEdit: { open: false }, sp: { open: false, showBrowse: false, showDone: false }, exp: { open: false }, tp: { open: false }, dp: { open: false }, rep: { open: false } };
     if (st.loading || !db) return { ...base, ...emptyOverlays, home: {}, meds: {}, ci: {}, log: {}, settings: {}, ins: {}, activity: {} };
 
     const today = db.todayISO();
@@ -3459,6 +3497,7 @@ class Component extends DCLogic {
       historicMed: this.viewHistoricMed(),
       medEdit: this.viewMedEdit(),
       symEdit: this.viewSymEdit(),
+      episodeEdit: this.viewEpisodeEdit(),
       sp: this.viewSymPicker(),
       ins: this.viewInsights(),
       tp: this.viewTp(),
@@ -3646,8 +3685,12 @@ class Component extends DCLogic {
         const sel = val <= 1 ? 0 : val <= 4 ? 1 : val <= 6 ? 2 : val <= 8 ? 3 : 4;
         const faceCols = ['#E9695E', '#EE8B4E', '#F1B04C', '#7FBF86', '#3FA96A'];
         const faceWords = ['Very low', 'Low', 'Okay', 'Good', 'Great'];
-        // equally-spaced arch: face centers along M22,96 Q157,-8 292,96 (314-wide card)
-        const CX = [22, 89.5, 157, 224.5, 292], CY = [96, 57, 44, 57, 96];
+        // Keep each face centered on the exact quadratic curve at every card width.
+        // Percent-based x positions prevent the faces drifting away from the SVG
+        // when a phone renders this card narrower or wider than 314 CSS pixels.
+        const T = [0, .25, .5, .75, 1];
+        const CX_PCT = T.map(t => ((22 + 270 * t) / 314) * 100);
+        const CY = T.map(t => 96 - 208 * t * (1 - t));
         const MOUTHS = [
           'M7.5,17 Q12,13.4 16.5,17 M6.9,7 L10,8.5 M17.1,7 L14,8.5',
           'M8,16.4 Q12,13.8 16,16.4',
@@ -3656,10 +3699,10 @@ class Component extends DCLogic {
           'M7,13.8 Q12,19 17,13.8',
         ];
         const faces = faceCols.map((col, i) => { const on = i === sel; const size = on ? 54 : 36;
-          return { left: (CX[i] - size / 2).toFixed(1), top: (CY[i] - size / 2).toFixed(1), size, svgSize: on ? 38 : 26,
+          return { leftPct: CX_PCT[i].toFixed(3), half: size / 2, top: (CY[i] - size / 2).toFixed(1), size, svgSize: on ? 38 : 26,
             fill: col, mouth: MOUTHS[i], puckBg: on ? '#fff' : 'transparent', shadow: on ? '0 10px 24px rgba(70,60,130,.28)' : 'none',
             label: faceWords[i], lblCol: on ? '#23262F' : '#9AA0B4', lblWeight: on ? 800 : 700,
-            lblLeft: (CX[i] - 30).toFixed(1), lblTop: (CY[i] + size / 2 + 4).toFixed(1) };
+            lblTop: (CY[i] + size / 2 + 4).toFixed(1) };
         });
         faceItem = { label: s.name, value: Math.round(val), word: faceWords[sel], wordColor: faceCols[sel], faces,
           onDown: (e) => this.beginDrag(e, v => this.setRating(s.key, v)) };
@@ -4597,23 +4640,97 @@ class Component extends DCLogic {
   }
   shortDate(iso) { if (!iso) return ''; const d = new Date(iso + 'T12:00:00'); return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }); }
 
-  // ================= ACTIVITY (review & remove) =================
+  // ================= SYMPTOM HISTORY REVIEW / EDIT =================
+  openEpisodeEditor = (id) => () => {
+    const e = (this.raw.episodes || []).find(x => x.id === id); if (!e) return;
+    const def = (this.raw.symptoms || []).find(s => s.id === e.symptomId || s.key === e.symptomKey);
+    const parsed = new Date(e.time || `${e.eventDate}T12:00:00`);
+    const time = Number.isNaN(parsed.getTime()) ? '12:00' : this.hhmm(parsed);
+    this.setState({ episodeEdit: {
+      id: e.id, name: e.symptomName || def?.name || 'Symptom', symptomId: e.symptomId || def?.id || null,
+      category: e.category || def?.category || 'mood', date: e.eventDate || this.db.todayISO(), time,
+      severity: Math.max(0, Math.min(10, Math.round(e.severity ?? 5))), when: e.when || null,
+      duration: e.durationMin == null ? null : String(e.durationMin), trigger: e.trigger || null, whatHelped: [...(e.whatHelped || [])],
+      suspectedMedId: e.suspectedMedId || null, confidence: e.confidence || null,
+      context: [...(e.context || [])], notes: e.notes || '', confirmDelete: false,
+    } });
+  };
+  closeEpisodeEditor = () => this.setState({ episodeEdit: null });
+  episodeField = (field, value, toggle = true) => () => this.setState(st => ({ episodeEdit: st.episodeEdit ? { ...st.episodeEdit, [field]: toggle && st.episodeEdit[field] === value ? null : value } : st.episodeEdit }));
+  episodeSeverity = (delta) => () => this.setState(st => ({ episodeEdit: st.episodeEdit ? { ...st.episodeEdit, severity: Math.max(0, Math.min(10, (st.episodeEdit.severity ?? 5) + delta)) } : st.episodeEdit }));
+  episodeToggleArray = (field, value) => () => this.setState(st => { if (!st.episodeEdit) return null; let arr = [...(st.episodeEdit[field] || [])]; arr = arr.includes(value) ? arr.filter(x => x !== value) : [...arr, value]; return { episodeEdit: { ...st.episodeEdit, [field]: arr } }; });
+  episodeMedication = (id) => () => this.setState(st => { if (!st.episodeEdit) return null; const next = st.episodeEdit.suspectedMedId === id ? null : id; return { episodeEdit: { ...st.episodeEdit, suspectedMedId: next, confidence: next ? st.episodeEdit.confidence : null } }; });
+  saveEpisodeEdit = async () => {
+    const e = this.state.episodeEdit; if (!e) return;
+    const notesEl = document.getElementById('hcc-episode-notes');
+    const notes = notesEl ? String(notesEl.value || '').trim() : (e.notes || '').trim();
+    await this.db.updateEpisode(e.id, {
+      eventDate: e.date, time: `${e.date}T${e.time || '12:00'}:00`, severity: e.severity,
+      when: e.when, durationMin: e.duration, trigger: e.trigger, whatHelped: e.whatHelped,
+      suspectedMedId: e.suspectedMedId, confidence: e.suspectedMedId ? e.confidence : null,
+      context: e.context, notes: notes || null,
+    });
+    await this.refresh();
+    this.setState({ episodeEdit: null });
+  };
+  askEpisodeDelete = () => this.setState(st => ({ episodeEdit: st.episodeEdit ? { ...st.episodeEdit, confirmDelete: true } : st.episodeEdit }));
+  keepEpisode = () => this.setState(st => ({ episodeEdit: st.episodeEdit ? { ...st.episodeEdit, confirmDelete: false } : st.episodeEdit }));
+  deleteEpisodeEdit = async () => { const e = this.state.episodeEdit; if (!e) return; await this.db.remove('symptomEpisodes', e.id); await this.refresh(); this.setState({ episodeEdit: null }); };
+  viewEpisodeEdit() {
+    const e = this.state.episodeEdit; if (!e) return { open: false };
+    const chip = (label, active, onClick) => ({ label, onClick, bg: active ? 'var(--ac)' : '#F6F5FB', color: active ? '#fff' : '#565B6E', weight: active ? 800 : 600 });
+    const options = (defs, field) => defs.map(([value, label]) => chip(label, e[field] === value, this.episodeField(field, value)));
+    const whenChips = options([['now', 'Right then'], ['earlier', 'Earlier that day'], ['lastNight', 'Previous night'], ['yesterday', 'Previous day']], 'when');
+    const durationDefs = [['15', '< 15 min'], ['30', '~30 min'], ['60', '~1 hour'], ['ongoing', 'Ongoing']];
+    if (e.duration && !durationDefs.some(([value]) => value === e.duration)) durationDefs.push([e.duration, /^\d+$/.test(e.duration) ? `${e.duration} min` : e.duration]);
+    const durationChips = options(durationDefs, 'duration');
+    const triggerChips = options([['stress', 'Stress'], ['skippedMeal', 'Skipped meal'], ['food', 'Food'], ['heat', 'Heat'], ['unknown', 'Not sure']], 'trigger');
+    const settings = this.raw.settings || {};
+    const inCat = (x) => (x.cats || ['all']).includes('all') || (x.cats || []).includes(e.category);
+    const configuredHelp = [
+      ...(this.raw.meds || []).filter(m => m.prn).map(m => m.name),
+      ...(settings.whatHelped || []).filter(inCat).map(w => w.label),
+    ];
+    const helpLabels = [...new Set([...configuredHelp, ...(e.whatHelped || [])])];
+    const helpChips = helpLabels.map(label => chip(label, (e.whatHelped || []).includes(label), this.episodeToggleArray('whatHelped', label)));
+    const configuredContexts = (settings.contexts || []).filter(inCat);
+    const contextMap = new Map(configuredContexts.map(c => [c.key, c.label]));
+    for (const key of (e.context || [])) if (!contextMap.has(key)) contextMap.set(key, key);
+    const contextChips = [...contextMap].map(([key, label]) => chip(label, (e.context || []).includes(key), this.episodeToggleArray('context', key)));
+    const meds = (this.raw.meds || []).filter(m => m.active !== false || m.id === e.suspectedMedId);
+    const medChips = meds.map(m => chip(m.name, e.suspectedMedId === m.id, this.episodeMedication(m.id)));
+    const confidenceChips = options([['unsure', 'Unsure'], ['possible', 'Possible'], ['likely', 'Likely']], 'confidence');
+    const date = new Date((e.date || this.db.todayISO()) + 'T12:00:00');
+    const catBg = ({ sleep: '#F1ECFC', mood: '#FCF4DF', gi: '#E7F6EE', cognition: '#EAF2FB', body: '#FCEEE1' })[e.category] || '#F4F2FD';
+    return {
+      open: true, name: e.name, category: this.catLabel(e.category), catColor: this.catColor(e.category), catBg,
+      dateLabel: date.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }), timeLabel: this.fmtTime(e.time || '12:00'),
+      severity: String(e.severity ?? 5), severityWord: this.sevWord(e.severity ?? 5), onSevDec: this.episodeSeverity(-1), onSevInc: this.episodeSeverity(1),
+      whenChips, durationChips, triggerChips, helpChips, hasHelp: helpChips.length > 0,
+      medChips, hasMeds: medChips.length > 0, showConfidence: !!e.suspectedMedId, confidenceChips,
+      contextChips, hasContext: contextChips.length > 0, notes: e.notes || '',
+      onDateOpen: this.openDatePick('episodeDate', e.date), onTimeOpen: this.openTimePick('episodeTime', null, e.time || '12:00'),
+      hasDeleteConfirm: !!e.confirmDelete, notDeleteConfirm: !e.confirmDelete,
+      onAskDelete: this.askEpisodeDelete, onDelete: this.deleteEpisodeEdit, onKeep: this.keepEpisode,
+      onSave: this.saveEpisodeEdit, onCancel: this.closeEpisodeEditor,
+    };
+  }
+
+  // ================= ACTIVITY (complete history, review & remove) =================
   dayLabel(ts) { const iso = this.db.todayISO(new Date(ts)); const today = this.db.todayISO(); const y = this.db.todayISO(new Date(Date.now() - 864e5)); if (iso === today) return 'Today'; if (iso === y) return 'Yesterday'; return new Date(ts).toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' }); }
   viewActivity() {
     if (!this.db) return { empty: true, groups: [] };
     const raw = this.raw, conf = this.state.confirmDel;
-    const cutoff = this.db.todayISO(new Date(Date.now() - 2 * 864e5));
     const items = [];
-    for (const e of (raw.episodes || [])) { if (e.eventDate < cutoff) continue; const def = (raw.symptoms || []).find(s => s.id === e.symptomId); items.push({ ts: this.tsOf(e), title: e.symptomName || 'Symptom', sub: `${this.sevWord(e.severity)} · ${this.fmtWhen(e)}`, dot: def ? this.catColor(def.category) : '#8E7CF3', kind: 'Symptom', store: 'symptomEpisodes', id: e.id }); }
+    for (const e of (raw.episodes || [])) { const def = (raw.symptoms || []).find(s => s.id === e.symptomId || s.key === e.symptomKey); items.push({ ts: this.tsOf(e), title: e.symptomName || 'Symptom', sub: `${this.sevWord(e.severity)} · ${this.fmtWhen(e)}${e.notes ? ' · has notes' : ''}`, dot: def ? this.catColor(def.category) : '#8E7CF3', kind: 'Symptom', store: 'symptomEpisodes', id: e.id, hasOpen: true, openCursor: 'pointer', onOpen: this.openEpisodeEditor(e.id) }); }
     for (const l of (raw.medLogs || [])) {
-      if (l.eventDate < cutoff) continue;
       if (l.isPrn) items.push({ ts: this.tsOf(l), title: `${this.medName(l.medId)} · as-needed`, sub: `${l.dose || ''}${l.reason ? ' · ' + l.reason : ''} · ${this.fmtWhen(l)}`, dot: '#C05673', kind: 'PRN dose', store: 'medicationDailyLogs', id: l.id });
       else items.push({ ts: this.tsOf(l), title: `${this.medName(l.medId)}${l.doseSlot === 'morning' ? ' AM' : l.doseSlot === 'night' ? ' PM' : ''} · ${l.status}`, sub: this.fmtWhen(l), dot: l.status === 'taken' ? '#2E8B5B' : l.status === 'late' ? '#B35F1E' : '#B3502E', kind: 'Med', store: 'medicationDailyLogs', id: l.id });
     }
-    for (const c of (raw.checkIns || [])) { if (c.eventDate < cutoff) continue; items.push({ ts: this.tsOf(c), title: 'Daily check-in', sub: this.fmtWhen(c), dot: 'var(--ac)', kind: 'Check-in', store: 'dailyCheckIns', id: c.id }); }
+    for (const c of (raw.checkIns || [])) { items.push({ ts: this.tsOf(c), title: 'Daily check-in', sub: this.fmtWhen(c), dot: 'var(--ac)', kind: 'Check-in', store: 'dailyCheckIns', id: c.id }); }
     items.sort((a, b) => b.ts - a.ts);
     const groups = [];
-    for (const it of items) { const day = this.dayLabel(it.ts); let g = groups.find(x => x.day === day); if (!g) { g = { day, items: [] }; groups.push(g); } const key = `${it.store}:${it.id}`; g.items.push({ ...it, key, confirming: conf === key, notConfirming: conf !== key, onAsk: this.askDelete(key), onCancel: this.cancelDelete, onConfirm: this.confirmDelete(it.store, it.id) }); }
+    for (const it of items) { const day = this.dayLabel(it.ts); let g = groups.find(x => x.day === day); if (!g) { g = { day, items: [] }; groups.push(g); } const key = `${it.store}:${it.id}`; g.items.push({ hasOpen: false, openCursor: 'default', onOpen: () => {}, ...it, key, confirming: conf === key, notConfirming: conf !== key, onAsk: this.askDelete(key), onCancel: this.cancelDelete, onConfirm: this.confirmDelete(it.store, it.id) }); }
     return { empty: items.length === 0, groups, count: items.length };
   }
 

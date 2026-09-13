@@ -302,6 +302,7 @@ export async function saveEpisode(ep) {
     confidence: ep.confidence ?? null,       // unsure | possible | likely
     context: ep.context ?? [],               // ['poorSleep','skippedMeal',...]
     retro: ep.retro ?? false,
+    notes: ep.notes ?? null,
   }, ep.eventDate);
   await put('symptomEpisodes', rec);
 
@@ -320,6 +321,17 @@ export async function saveEpisode(ep) {
       await put('symptomEpisodes', rec);
     }
   }
+  return rec;
+}
+
+// Update an existing symptom episode in place. This preserves its original id,
+// creation date and linked records while allowing corrections to any logged field.
+export async function updateEpisode(id, patch) {
+  const prev = await get('symptomEpisodes', id);
+  if (!prev) return null;
+  const eventDate = patch.eventDate || prev.eventDate;
+  const rec = stamp({ ...prev, ...patch, id, createdAt: prev.createdAt }, eventDate);
+  await put('symptomEpisodes', rec);
   return rec;
 }
 
