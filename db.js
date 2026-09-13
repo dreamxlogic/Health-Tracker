@@ -390,7 +390,7 @@ export async function saveSymptomDefinition(next) {
   const prev = next.id ? await get('symptomDefinitions', next.id) : null;
   const key = next.key || (prev && prev.key) || ('c' + uuid().slice(0, 6));
   const rec = stamp({
-    archived: false, pinned: false, appearsInCheckIn: true,
+    archived: false, pinned: false, appearsInCheckIn: true, availableInQuickLog: true,
     trackingStyle: 'both', askAs: 'scale', control: 'scale', color: '#8E7CF3',
     ...(prev || {}), ...next, key, id: next.id || `sym-${key}`,
   });

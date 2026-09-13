@@ -99,7 +99,7 @@ export async function loadSampleData() {
       pinned: s.pinned, archived: false,
       trackingStyle: s.control === 'toggle' || s.control === 'toggleSev' ? 'both' : 'daily',
       askAs: s.control === 'toggle' || s.control === 'toggleSev' ? 'toggle' : 'scale',
-      control: s.control, appearsInCheckIn: true, checkInStep: s.step,
+      control: s.control, appearsInCheckIn: true, availableInQuickLog: true, checkInStep: s.step,
     }, todayISO());
     symById[s.key] = rec.id;
     return rec;

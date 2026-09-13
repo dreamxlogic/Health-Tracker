@@ -822,15 +822,23 @@
 
         <!-- SUB: SYMPTOMS -->
         <sc-if value="{{ settings.isSymptoms }}" hint-placeholder-val="{{ false }}">
-        <div style="font-size:13px;color:#7A7F92;line-height:1.5;padding:0 2px">Grouped by category. Tap a symptom to edit how it's asked, or ＋ to add a new one.</div>
+        <div style="font-size:13px;color:#7A7F92;line-height:1.5;padding:0 2px">Create your own symptom or choose one from the library. Each can be available in Quick Log, included in your daily check-in, or both.</div>
+        <div style="display:flex;gap:10px">
+          <div onClick="{{ settings.onAddSym }}" style="cursor:pointer;min-height:48px;flex:1;display:flex;align-items:center;justify-content:center;gap:7px;text-align:center;background:linear-gradient(90deg,var(--ac-soft),var(--ac));color:#fff;font-size:13px;font-weight:800;padding:11px 12px;border-radius:15px;box-shadow:0 8px 18px rgba(var(--ac-rgb),.25)"><span style="font-size:19px;line-height:1">＋</span><span>Create custom</span></div>
+          <div onClick="{{ settings.onBrowseSymptoms }}" style="cursor:pointer;min-height:48px;flex:1;display:flex;align-items:center;justify-content:center;text-align:center;background:rgba(255,255,255,.92);border:1.5px solid rgba(var(--ac-rgb),.22);color:var(--ac-deep);font-size:13px;font-weight:800;padding:11px 12px;border-radius:15px">Browse library</div>
+        </div>
+        <sc-if value="{{ settings.noSymptoms }}" hint-placeholder-val="{{ false }}"><div style="background:rgba(255,255,255,.82);border:1px dashed rgba(var(--ac-rgb),.3);border-radius:var(--r-lg);padding:20px 18px;text-align:center;font-size:13px;color:#7A7F92;line-height:1.5">No symptoms yet. Create one above or browse the library.</div></sc-if>
         <sc-for list="{{ settings.symGroups }}" as="g" hint-placeholder-count="5">
           <div style="display:flex;align-items:center;gap:8px;padding-top:2px"><span style="width:9px;height:9px;border-radius:50%;background:{{ g.dot }}"></span><div style="font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--head);flex:1">{{ g.label }}</div><div style="font-size:11.5px;font-weight:700;color:#B0A8CE">{{ g.count }}</div></div>
           <div style="background:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:2px 18px;box-shadow:0 2px 6px rgba(120,110,180,.06),0 16px 36px rgba(120,110,180,.15)">
             <sc-for list="{{ g.items }}" as="s" hint-placeholder-count="3">
               <div data-hcc-sep="1" style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid #F1F0F7">
                 <span style="width:9px;height:9px;border-radius:50%;background:{{ s.dot }}"></span>
-                <div onClick="{{ s.onEdit }}" style="cursor:pointer;flex:1"><div style="font-size:14px;font-weight:600">{{ s.name }}</div><div style="font-size:11px;color:#9AA0B4">{{ s.meta }}</div></div>
-                <div onClick="{{ s.onToggleCheckin }}" style="cursor:pointer;font-size:10.5px;font-weight:800;padding:5px 9px;border-radius:999px;background:{{ s.ciBg }};color:{{ s.ciColor }}">in check-in</div>
+                <div onClick="{{ s.onEdit }}" style="cursor:pointer;flex:1;min-width:0"><div style="font-size:14px;font-weight:600">{{ s.name }}</div><div style="font-size:11px;color:#9AA0B4">{{ s.meta }}</div></div>
+                <div style="display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end;max-width:126px">
+                  <div onClick="{{ s.onToggleQuick }}" style="cursor:pointer;min-height:28px;display:flex;align-items:center;font-size:10px;font-weight:800;padding:4px 8px;border-radius:999px;background:{{ s.quickBg }};color:{{ s.quickColor }}">Quick Log</div>
+                  <div onClick="{{ s.onToggleCheckin }}" style="cursor:pointer;min-height:28px;display:flex;align-items:center;font-size:10px;font-weight:800;padding:4px 8px;border-radius:999px;background:{{ s.ciBg }};color:{{ s.ciColor }}">Check-in</div>
+                </div>
               </div>
             </sc-for>
             <sc-if value="{{ g.empty }}" hint-placeholder-val="{{ false }}"><div style="padding:14px 0;font-size:12.5px;color:#9AA0B4">Nothing here yet.</div></sc-if>
@@ -1739,11 +1747,17 @@
         <div style="display:flex;flex-direction:column;gap:8px"><div style="font-size:12px;font-weight:700;color:#565B6E">Answer style</div>
           <div style="display:flex;gap:7px;flex-wrap:wrap"><sc-for list="{{ symEdit.controls }}" as="c" hint-placeholder-count="4"><div onClick="{{ c.onClick }}" style="cursor:pointer;font-size:12.5px;font-weight:{{ c.weight }};padding:9px 14px;border-radius:999px;background:{{ c.bg }};color:{{ c.color }}">{{ c.label }}</div></sc-for></div>
         </div>
-        <div style="display:flex;flex-direction:column;gap:8px"><div style="font-size:12px;font-weight:700;color:#565B6E">Check-in step</div>
-          <div style="display:flex;gap:7px;flex-wrap:wrap"><sc-for list="{{ symEdit.steps }}" as="c" hint-placeholder-count="5"><div onClick="{{ c.onClick }}" style="cursor:pointer;font-size:12.5px;font-weight:{{ c.weight }};padding:9px 14px;border-radius:999px;background:{{ c.bg }};color:{{ c.color }}">{{ c.label }}</div></sc-for></div>
+        <div style="font-size:12px;font-weight:800;color:#565B6E;letter-spacing:.06em;text-transform:uppercase;margin-top:2px">Where to show it</div>
+        <div style="display:flex;align-items:center;gap:12px;background:#F6F5FB;border-radius:14px;padding:12px 14px;min-height:50px"><div style="flex:1"><div style="font-size:13.5px;font-weight:700">Allow ad-hoc logging</div><div style="font-size:11px;color:#8D92A6;line-height:1.35;margin-top:2px">Find it under the center ＋ whenever you need it.</div></div><div onClick="{{ symEdit.onToggleQuick }}" style="cursor:pointer;width:46px;height:27px;border-radius:99px;position:relative;background:{{ symEdit.quickBg }};flex:none"><div style="position:absolute;top:3px;width:21px;height:21px;border-radius:50%;background:#fff;left:{{ symEdit.quickKnob }}"></div></div></div>
+        <div style="display:flex;align-items:center;gap:12px;background:#F6F5FB;border-radius:14px;padding:12px 14px;min-height:50px"><div style="flex:1"><div style="font-size:13.5px;font-weight:700">Include in daily check-in</div><div style="font-size:11px;color:#8D92A6;line-height:1.35;margin-top:2px">Ask about it during your regular check-in.</div></div><div onClick="{{ symEdit.onToggleCheckin }}" style="cursor:pointer;width:46px;height:27px;border-radius:99px;position:relative;background:{{ symEdit.ciBg }};flex:none"><div style="position:absolute;top:3px;width:21px;height:21px;border-radius:50%;background:#fff;left:{{ symEdit.ciKnob }}"></div></div></div>
+        <sc-if value="{{ symEdit.showCheckinStep }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:8px;padding:0 2px"><div style="font-size:12px;font-weight:700;color:#565B6E">Ask during</div>
+          <div style="display:flex;gap:7px;flex-wrap:wrap"><sc-for list="{{ symEdit.steps }}" as="c" hint-placeholder-count="5"><div onClick="{{ c.onClick }}" style="cursor:pointer;min-height:42px;display:flex;align-items:center;font-size:12.5px;font-weight:{{ c.weight }};padding:9px 14px;border-radius:999px;background:{{ c.bg }};color:{{ c.color }}">{{ c.label }}</div></sc-for></div>
         </div>
-        <div style="display:flex;align-items:center;gap:10px;background:#F6F5FB;border-radius:12px;padding:11px 14px"><div style="font-size:13.5px;font-weight:600;flex:1">Appears in check-in</div><div onClick="{{ symEdit.onToggleCheckin }}" style="cursor:pointer;width:46px;height:27px;border-radius:99px;position:relative;background:{{ symEdit.ciBg }}"><div style="position:absolute;top:3px;width:21px;height:21px;border-radius:50%;background:#fff;left:{{ symEdit.ciKnob }}"></div></div></div>
-        <div style="display:flex;align-items:center;gap:10px;background:#F6F5FB;border-radius:12px;padding:11px 14px"><div style="font-size:13.5px;font-weight:600;flex:1">Pinned</div><div onClick="{{ symEdit.onTogglePin }}" style="cursor:pointer;width:46px;height:27px;border-radius:99px;position:relative;background:{{ symEdit.pinBg }}"><div style="position:absolute;top:3px;width:21px;height:21px;border-radius:50%;background:#fff;left:{{ symEdit.pinKnob }}"></div></div></div>
+        </sc-if>
+        <sc-if value="{{ symEdit.showQuickPin }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;align-items:center;gap:12px;background:#FBFAFD;border:1px solid #F0EDF7;border-radius:14px;padding:11px 14px;min-height:48px"><div style="flex:1"><div style="font-size:13px;font-weight:700">Pin to Quick Add</div><div style="font-size:11px;color:#8D92A6;line-height:1.35;margin-top:2px">Keep it at the top for one-tap access.</div></div><div onClick="{{ symEdit.onTogglePin }}" style="cursor:pointer;width:46px;height:27px;border-radius:99px;position:relative;background:{{ symEdit.pinBg }};flex:none"><div style="position:absolute;top:3px;width:21px;height:21px;border-radius:50%;background:#fff;left:{{ symEdit.pinKnob }}"></div></div></div>
+        </sc-if>
         <sc-if value="{{ symEdit.hasErr }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:9px;background:#FADFD4;border-radius:13px;padding:11px 14px;margin-top:2px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#B3502E" stroke-width="2.2" stroke-linecap="round" style="flex:none"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4M12 16h.01"></path></svg><div style="font-size:12.5px;font-weight:700;color:#B3502E;line-height:1.4">Name is required — scroll up and add a symptom name, then tap Save.</div></div></sc-if>
         <div style="display:flex;gap:10px;margin-top:2px">
           <sc-if value="{{ symEdit.canDelete }}" hint-placeholder-val="{{ false }}"><div onClick="{{ symEdit.onDelete }}" style="cursor:pointer;background:#FADFD4;color:#B3502E;font-size:15px;font-weight:700;padding:15px 18px;border-radius:999px">Delete</div></sc-if>
@@ -2974,8 +2988,8 @@ class Component extends DCLogic {
   // ---------- symptom editor ----------
   openSymEditor = (s) => {
     this.setState({ symEdit: s
-      ? { id: s.id, key: s.key, name: s.name || '', category: s.category || 'mood', control: s.control || (s.askAs === 'toggle' ? 'toggle' : 'scale'), step: s.checkInStep || 'feeling', appearsInCheckIn: s.appearsInCheckIn !== false, pinned: !!s.pinned, color: s.color || '#8E7CF3' }
-      : { id: null, key: null, name: '', category: 'mood', control: 'scale', step: 'feeling', appearsInCheckIn: true, pinned: false, color: '#8E7CF3' } });
+      ? { id: s.id, key: s.key, name: s.name || '', category: s.category || 'mood', control: s.control || (s.askAs === 'toggle' ? 'toggle' : 'scale'), step: s.checkInStep || 'feeling', appearsInCheckIn: s.appearsInCheckIn !== false, availableInQuickLog: s.availableInQuickLog !== false, pinned: !!s.pinned, color: s.color || '#8E7CF3' }
+      : { id: null, key: null, name: '', category: 'mood', control: 'scale', step: 'feeling', appearsInCheckIn: true, availableInQuickLog: true, pinned: false, color: '#8E7CF3' } });
   };
   symField = (f, v) => () => this.setState(st => ({ symEdit: { ...st.symEdit, [f]: v } }));
   symToggle = (f) => () => this.setState(st => ({ symEdit: { ...st.symEdit, [f]: !st.symEdit[f] } }));
@@ -2992,7 +3006,8 @@ class Component extends DCLogic {
         const staged = { ...(sp.staged || {}) };
         staged[se.stagingKey] = {
           key: se.stagingKey, name, category: se.category, control: se.control, step: se.step,
-          appearsInCheckIn: se.appearsInCheckIn, pinned: se.pinned, color: se.color || '#8E7CF3', customized: true,
+          appearsInCheckIn: se.appearsInCheckIn, availableInQuickLog: se.availableInQuickLog,
+          pinned: se.pinned, color: se.color || '#8E7CF3', customized: true,
         };
         return { symPicker: { ...sp, staged }, symEdit: null };
       });
@@ -3002,20 +3017,22 @@ class Component extends DCLogic {
     await this.db.saveSymptomDefinition({
       id: se.id || undefined, key: se.key || undefined, name, category: se.category,
       control: se.control, askAs, checkInStep: se.step, appearsInCheckIn: se.appearsInCheckIn,
-      pinned: se.pinned, color: se.color || '#8E7CF3',
+      availableInQuickLog: se.availableInQuickLog, pinned: se.availableInQuickLog ? se.pinned : false,
+      color: se.color || '#8E7CF3',
     });
     await this.refresh();
     this.setState({ symEdit: null });
   };
   deleteSym = async () => { const se = this.state.symEdit; if (se?.id) await this.db.deleteSymptomDefinition(se.id); await this.refresh(); this.setState({ symEdit: null }); };
   toggleSymCheckin = (s) => async () => { await this.db.saveSymptomDefinition({ id: s.id, appearsInCheckIn: !(s.appearsInCheckIn !== false) }); await this.refresh(); };
+  toggleSymQuick = (s) => async () => { const enabled = !(s.availableInQuickLog !== false); await this.db.saveSymptomDefinition({ id: s.id, availableInQuickLog: enabled, ...(!enabled ? { pinned: false } : {}) }); await this.refresh(); };
 
   // ---------- add-symptoms picker (browse a library, multi-select, configure, commit) ----------
   symLibrary() {
     const added = new Set((this.raw.symptoms || []).map(x => x.key));
     return (this.seed?.SEED_SYMPTOMS || []).filter(d => !added.has(d.key));
   }
-  defStaged(lib) { return { key: lib.key, name: lib.name, category: lib.category, control: lib.control, step: lib.step, appearsInCheckIn: true, pinned: !!lib.pinned, color: lib.color || '#8E7CF3' }; }
+  defStaged(lib) { return { key: lib.key, name: lib.name, category: lib.category, control: lib.control, step: lib.step, appearsInCheckIn: true, availableInQuickLog: true, pinned: !!lib.pinned, color: lib.color || '#8E7CF3' }; }
   openSymPicker = () => this.setState({ symPicker: { open: true, q: '', cat: null, staged: {}, done: false, added: [] } });
   closeSymPicker = () => this.setState({ symPicker: null });
   symPickerQ = (e) => { const v = e.target.value; this.setState(st => ({ symPicker: { ...st.symPicker, q: v } })); };
@@ -3036,7 +3053,7 @@ class Component extends DCLogic {
     staged[key] = cur;
     return {
       symPicker: { ...sp, staged },
-      symEdit: { id: null, key, name: cur.name, category: cur.category, control: cur.control, step: cur.step, appearsInCheckIn: cur.appearsInCheckIn !== false, pinned: !!cur.pinned, color: cur.color || '#8E7CF3', fromPicker: true, stagingKey: key },
+      symEdit: { id: null, key, name: cur.name, category: cur.category, control: cur.control, step: cur.step, appearsInCheckIn: cur.appearsInCheckIn !== false, availableInQuickLog: cur.availableInQuickLog !== false, pinned: !!cur.pinned, color: cur.color || '#8E7CF3', fromPicker: true, stagingKey: key },
     };
   });
   symPickerCommit = async () => {
@@ -3044,7 +3061,7 @@ class Component extends DCLogic {
     if (!items.length) return;
     for (const it of items) {
       const askAs = (it.control === 'toggle' || it.control === 'toggleSev') ? 'toggle' : 'scale';
-      await this.db.saveSymptomDefinition({ key: it.key, name: it.name, category: it.category, control: it.control, askAs, checkInStep: it.step, appearsInCheckIn: it.appearsInCheckIn, pinned: it.pinned, color: it.color || '#8E7CF3' });
+      await this.db.saveSymptomDefinition({ key: it.key, name: it.name, category: it.category, control: it.control, askAs, checkInStep: it.step, appearsInCheckIn: it.appearsInCheckIn, availableInQuickLog: it.availableInQuickLog !== false, pinned: it.availableInQuickLog !== false ? it.pinned : false, color: it.color || '#8E7CF3' });
     }
     await this.refresh();
     this.setState(st => ({ symPicker: { ...(st.symPicker || {}), open: true, done: true, added: items.map(i => i.name) } }));
@@ -3059,7 +3076,7 @@ class Component extends DCLogic {
       const n = (sp.added || []).length;
       return { open: true, showBrowse: false, showDone: true,
         doneTitle: `${n} symptom${n === 1 ? '' : 's'} added`,
-        doneSub: 'They\u2019re now part of your daily check-in. Fine-tune any of them in Settings anytime.',
+        doneSub: 'They\u2019re now ready in your tracker. Choose Quick Log, daily check-in, or both in Settings anytime.',
         doneNames: (sp.added || []).map(name => ({ name })), onDone: this.symPickerDone };
     }
     const lib = this.symLibrary();
@@ -3771,7 +3788,7 @@ class Component extends DCLogic {
     const d = this.state.draft; if (!d) return { isPick: true, isDetail: false, quick: [], grid: [], list: [], chips: [] };
     const raw = this.raw;
     if (d.stage === 'pick') {
-      const syms = (raw.symptoms || []).filter(s => !s.archived);
+      const syms = (raw.symptoms || []).filter(s => !s.archived && s.availableInQuickLog !== false);
       const staged = d.staged || {};
       const stagedN = Object.keys(staged).length;
       const q = (d.q || '').trim().toLowerCase();
@@ -3866,7 +3883,11 @@ class Component extends DCLogic {
       : 'No data yet. Set up your tracker and start logging — your data stays private on this device.';
     const steps = (s.checkInSteps || []).slice().sort((a, b) => (a.name || '').localeCompare(b.name || '')).map(x => ({ name: x.name, onRename: this.renameStep(x.key), onToggle: this.toggleStep(x.key), trackBg: x.enabled ? 'var(--ac)' : '#E4E2EE', knobLeft: x.enabled ? '22px' : '3px' }));
     const meds = (raw.meds || []).map(m => { const sched = this.medScheduleText(m); return { name: m.name, sub: `${m.dose || ''}${m.prn ? ' · PRN' : (m.weekly ? ' · weekly' : (sched ? ' · ' + sched : ''))}${m.active === false ? ' · inactive' : ''}`, iconBg: `linear-gradient(135deg,${this.lighten(m.color || '#8E7CF3', 0.55)},${m.color || '#8E7CF3'})`, iconTint: this.darken(m.color || '#8E7CF3', 0.42), iconSrc: this.medIconSrc(m.icon), onEdit: () => this.openMedEditor(m) }; });
-    const symptoms = (raw.symptoms || []).filter(x => !x.archived).map(x => ({ name: x.name, dot: this.catColor(x.category), cat: x.category, meta: this.controlLabel(x.control || x.askAs), onEdit: () => this.openSymEditor(x), onToggleCheckin: this.toggleSymCheckin(x), ciBg: x.appearsInCheckIn !== false ? '#E4F4EA' : '#F6F5FB', ciColor: x.appearsInCheckIn !== false ? '#2E8B5B' : '#9AA0B4' }));
+    const symptoms = (raw.symptoms || []).filter(x => !x.archived).map(x => ({
+      name: x.name, dot: this.catColor(x.category), cat: x.category, meta: this.controlLabel(x.control || x.askAs), onEdit: () => this.openSymEditor(x),
+      onToggleQuick: this.toggleSymQuick(x), quickBg: x.availableInQuickLog !== false ? '#EEEAFE' : '#F6F5FB', quickColor: x.availableInQuickLog !== false ? 'var(--ac-deep)' : '#9AA0B4',
+      onToggleCheckin: this.toggleSymCheckin(x), ciBg: x.appearsInCheckIn !== false ? '#E4F4EA' : '#F6F5FB', ciColor: x.appearsInCheckIn !== false ? '#2E8B5B' : '#9AA0B4'
+    }));
     // sub-screen navigation + grouped symptoms
     const sub = this.state.setSub || null;
     const SYM_CATS = [['sleep', 'Sleep'], ['mood', 'Mood'], ['gi', 'GI'], ['cognition', 'Cognition'], ['body', 'Body']].map(([k, l]) => [k, l, this.catColor(k)]);
@@ -3891,7 +3912,7 @@ class Component extends DCLogic {
     const ambianceOpts = Object.keys(this.AMBIANCES).map(k => ({ label: k, note: ambNote[k] || '', active: t.ambiance === k, wash: this.AMBIANCES[k], brd: t.ambiance === k ? '2px solid var(--ac)' : '1px solid rgba(255,255,255,.9)', badge: t.ambiance === k, onClick: this.setTheme('themeAmbiance', k) }));
     const headerOpts = Object.keys(this.HEADS).map(k => ({ label: k, sw: this.HEADS[k] === null ? this.ACCENTS[t.accent].ac : this.HEADS[k], active: t.header === k, ring: t.header === k ? '2.5px solid #23262F' : '2.5px solid transparent', onClick: this.setTheme('headerColor', k) }));
     const showAdd = sub === 'meds' || sub === 'symptoms';
-    const onHeaderAdd = sub === 'meds' ? (() => this.openMedEditor(null)) : sub === 'symptoms' ? (() => this.openSymPicker()) : (() => {});
+    const onHeaderAdd = sub === 'meds' ? (() => this.openMedEditor(null)) : sub === 'symptoms' ? (() => this.openSymEditor(null)) : (() => {});
     const catChips = (item, field) => this.CAT_OPTS.map(c => ({ label: c.label, onClick: this.toggleItemCat(field, item.id, c.key), bg: (item.cats || []).includes(c.key) ? 'var(--ac)' : '#F6F5FB', color: (item.cats || []).includes(c.key) ? '#fff' : '#9AA0B4' }));
     const whatHelped = (s.whatHelped || []).map(w => ({ label: w.label, onRemove: this.removeListItem('whatHelped', w.id), cats: catChips(w, 'whatHelped') }));
     const contexts = (s.contexts || []).map(w => ({ label: w.label, onRemove: this.removeListItem('contexts', w.id), cats: catChips(w, 'contexts') }));
@@ -3899,8 +3920,8 @@ class Component extends DCLogic {
       dataSummary: summary, loadLabel: loaded ? 'Reload sample data' : 'Load sample data', onLoad: this.loadSample, onWipe: this.wipe,
       onName: this.onName, onNameSave: this.saveName,
       nameSaveLabel: this.state.nameSaved ? 'Saved ✓' : 'Save', nameSaveBg: this.state.nameSaved ? '#E4F4EA' : 'var(--ac)', nameSaveColor: this.state.nameSaved ? '#2E8B5B' : '#fff',
-      steps, meds, noMeds: meds.length === 0, symptoms, whatHelped, contexts, nameValue: s.displayName || '',
-      onAddMed: () => this.openMedEditor(null), onAddSym: () => this.openSymEditor(null),
+      steps, meds, noMeds: meds.length === 0, symptoms, noSymptoms: symptoms.length === 0, whatHelped, contexts, nameValue: s.displayName || '',
+      onAddMed: () => this.openMedEditor(null), onAddSym: () => this.openSymEditor(null), onBrowseSymptoms: this.openSymPicker,
       onAddWhatHelped: () => this.addListItem('whatHelped', 'hcc-wh-input'),
       onAddContext: () => this.addListItem('contexts', 'hcc-cx-input', { key: 'c' + Date.now().toString(36) }),
       isMain: !sub, isSteps: sub === 'steps', isMeds: sub === 'meds', isSymptoms: sub === 'symptoms', isWhatHelped: sub === 'whatHelped', isContexts: sub === 'contexts', isTheme: sub === 'theme',
@@ -3962,6 +3983,8 @@ class Component extends DCLogic {
     const controls = [['scale', '0–10'], ['face', 'Faces'], ['seg3', '3 levels'], ['toggle', 'Yes/no'], ['toggleSev', 'Yes/no + severity']].map(([k, l]) => chip(l, se.control === k, this.symField('control', k)));
     const steps = ((this.raw.settings?.checkInSteps) || []).map(x => chip(x.name, se.step === x.key, this.symField('step', x.key)));
     return { open: true, title: se.id ? 'Edit symptom' : 'Add symptom', hasErr: !!se.err, name: se.name, categories, controls, steps,
+      showCheckinStep: !!se.appearsInCheckIn, showQuickPin: !!se.availableInQuickLog,
+      quickBg: se.availableInQuickLog ? 'var(--ac)' : '#E4E2EE', quickKnob: se.availableInQuickLog ? '22px' : '3px', onToggleQuick: this.symToggle('availableInQuickLog'),
       ciBg: se.appearsInCheckIn ? 'var(--ac)' : '#E4E2EE', ciKnob: se.appearsInCheckIn ? '22px' : '3px', onToggleCheckin: this.symToggle('appearsInCheckIn'),
       pinBg: se.pinned ? 'var(--ac)' : '#E4E2EE', pinKnob: se.pinned ? '22px' : '3px', onTogglePin: this.symToggle('pinned'),
       canDelete: !!se.id, onSave: this.saveSym, onCancel: this.closeSymEditor, onDelete: this.deleteSym };
