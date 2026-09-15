@@ -335,6 +335,16 @@ export async function updateEpisode(id, patch) {
   return rec;
 }
 
+// Correct a previously logged medication occurrence without changing the
+// medication profile or its normal schedule.
+export async function updateMedicationLog(id, patch) {
+  const prev = await get('medicationDailyLogs', id);
+  if (!prev) return null;
+  const rec = stamp({ ...prev, ...patch, id, createdAt: prev.createdAt }, prev.eventDate);
+  await put('medicationDailyLogs', rec);
+  return rec;
+}
+
 export async function saveStressEvent(ev) {
   return put('stressEvents', stamp({ intensity: ev.intensity ?? null, label: ev.label ?? null, ...ev }, ev.eventDate));
 }

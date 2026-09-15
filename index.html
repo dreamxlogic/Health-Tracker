@@ -262,13 +262,6 @@
           </div>
         </div>
 
-        <sc-if value="{{ home.hasMissed }}" hint-placeholder-val="{{ false }}">
-          <div class="chp" style="display:flex;align-items:center;gap:8px;flex-wrap:nowrap;overflow-x:auto;min-height:38px;padding:4px 20px;margin:-4px -20px 0;flex:none">
-            <div style="flex:none;font-size:12px;font-weight:700;color:#7A7F92;white-space:nowrap">Missed a day?</div>
-            <sc-for list="{{ home.missedDays }}" as="d" hint-placeholder-count="3"><div onClick="{{ d.onClick }}" style="cursor:pointer;flex:1 0 48px;min-width:48px;display:flex;align-items:center;justify-content:center;gap:4px;background:rgba(255,255,255,.85);border:1px solid rgba(var(--ac-rgb),.28);border-radius:999px;padding:6px 8px;box-shadow:0 4px 12px rgba(120,110,180,.08)"><span style="font-size:14px;font-weight:800;color:var(--ac-deep);line-height:1">+</span><span style="font-size:12px;font-weight:700;color:#565B6E;white-space:nowrap">{{ d.label }}</span></div></sc-for>
-          </div>
-        </sc-if>
-
         <div style="display:flex;flex-direction:column;gap:10px">
           <div style="font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--head)">QUICK LOG</div>
           <div style="display:flex;background:rgba(255,255,255,.94);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);box-shadow:0 2px 6px rgba(120,110,180,.06),0 16px 36px rgba(120,110,180,.15);overflow:hidden">
@@ -298,7 +291,7 @@
         </div>
 
         <div style="display:flex;flex-direction:column;gap:10px">
-          <div style="display:flex;align-items:baseline"><div style="font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--head);flex:1">RECENT ACTIVITY</div><div onClick="{{ nav.goActivity }}" style="cursor:pointer;font-size:12px;font-weight:800;color:var(--ac);flex:none;white-space:nowrap">Review &amp; edit ›</div></div>
+          <div style="display:flex;align-items:baseline"><div style="font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--head);flex:1">RECENT ACTIVITY</div><div onClick="{{ nav.goCalendar }}" style="cursor:pointer;font-size:12px;font-weight:800;color:var(--ac);flex:none;white-space:nowrap">Calendar ›</div></div>
           <sc-if value="{{ home.hasRecent }}" hint-placeholder-val="{{ true }}">
           <div style="background:rgba(255,255,255,.94);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:6px 18px;box-shadow:0 2px 6px rgba(120,110,180,.06),0 16px 36px rgba(120,110,180,.15)">
             <sc-for list="{{ home.recent }}" as="r" hint-placeholder-count="4">
@@ -789,7 +782,7 @@
             </div>
           </sc-for>
         </div>
-        <div style="font-size:11.5px;color:#9AA0B4;line-height:1.5;padding:0 4px">Local-first · data lives only in this browser (IndexedDB). No account, no cloud. Insights engine, reports, backup &amp; PIN lock arrive in later steps.</div>
+        <div style="font-size:11.5px;color:#9AA0B4;line-height:1.5;padding:0 4px">Local-first · data lives only in this browser (IndexedDB). No account or cloud storage.</div>
         </sc-if>
 
         <!-- SUB: CHECK-IN CATEGORIES -->
@@ -1593,42 +1586,34 @@
     </div>
     </sc-if>
 
-    <!-- ============================ ACTIVITY (review & remove) ============================ -->
+    <!-- ============================ CALENDAR ============================ -->
     <sc-if value="{{ isActivity }}" hint-placeholder-val="{{ false }}">
     <div style="flex:1;min-height:0;display:flex;flex-direction:column">
       <div style="display:flex;align-items:center;gap:12px;padding:8px 20px 0">
         <div onClick="{{ nav.goHome }}" style="cursor:pointer;width:36px;height:36px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(120,110,180,.12);font-size:18px;color:#565B6E">‹</div>
-        <div style="flex:1;text-align:center;font-size:15px;font-weight:700">History</div>
-        <div style="width:36px"></div>
+        <div style="flex:1;text-align:center;font-size:15px;font-weight:700">Calendar</div>
+        <div onClick="{{ activity.onToday }}" style="cursor:pointer;min-width:36px;text-align:right;font-size:11.5px;font-weight:800;color:var(--ac-deep)">Today</div>
       </div>
-      <div style="flex:1;overflow-y:auto;padding:16px 20px 40px;display:flex;flex-direction:column;gap:16px">
-        <div style="font-size:13px;color:#7A7F92;line-height:1.5;padding:0 2px">Your complete log history. Tap any symptom to review every detail, including notes, or make a correction.</div>
-        <sc-if value="{{ activity.empty }}" hint-placeholder-val="{{ false }}">
-          <div style="background:rgba(255,255,255,.7);border:1px dashed rgba(var(--ac-rgb),.35);border-radius:var(--r-lg);padding:28px;text-align:center;font-size:13px;color:#7A7F92">Nothing logged yet.</div>
-        </sc-if>
-        <sc-for list="{{ activity.groups }}" as="g" hint-placeholder-count="2">
-          <div style="display:flex;flex-direction:column;gap:10px">
-            <div style="font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--head)">{{ g.day }}</div>
-            <div style="background:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:6px 16px;box-shadow:0 2px 6px rgba(120,110,180,.06),0 16px 36px rgba(120,110,180,.15)">
-              <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="3">
-                <div style="display:flex;gap:12px">
-                  <div style="position:relative;width:14px;flex:none;display:flex;justify-content:center"><div style="position:absolute;top:0;bottom:0;width:2px;background:rgba(var(--ac-rgb),.16)"></div><div style="position:relative;z-index:1;width:11px;height:11px;border-radius:50%;background:{{ it.dot }};margin-top:17px;box-shadow:0 0 0 3px #fff"></div></div>
-                  <div style="flex:1;min-width:0;display:flex;align-items:center;gap:10px;padding:13px 0">
-                    <div onClick="{{ it.onOpen }}" style="cursor:{{ it.openCursor }};flex:1;min-width:0;padding:3px 0"><div style="font-size:14px;font-weight:700">{{ it.title }}</div><div style="font-size:11.5px;color:#7A7F92">{{ it.sub }}</div></div>
-                    <div style="font-size:10px;font-weight:800;color:#9AA0B4;background:var(--ac-050);padding:3px 8px;border-radius:999px;flex:none">{{ it.kind }}</div>
-                    <sc-if value="{{ it.hasOpen }}" hint-placeholder-val="{{ false }}"><div onClick="{{ it.onOpen }}" style="cursor:pointer;min-height:34px;display:flex;align-items:center;color:var(--ac-deep);font-size:11px;font-weight:800;background:var(--ac-050);padding:4px 9px;border-radius:10px;flex:none">View</div></sc-if>
-                    <sc-if value="{{ it.confirming }}" hint-placeholder-val="{{ false }}">
-                      <div style="display:flex;gap:6px;flex:none"><div onClick="{{ it.onConfirm }}" style="cursor:pointer;background:#E9695E;color:#fff;font-size:12px;font-weight:800;padding:7px 11px;border-radius:999px">Delete</div><div onClick="{{ it.onCancel }}" style="cursor:pointer;background:#F6F5FB;color:#565B6E;font-size:12px;font-weight:700;padding:7px 11px;border-radius:999px">Keep</div></div>
-                    </sc-if>
-                    <sc-if value="{{ it.notConfirming }}" hint-placeholder-val="{{ true }}">
-                      <div onClick="{{ it.onAsk }}" style="cursor:pointer;width:32px;height:32px;border-radius:10px;background:#FBEFEC;display:flex;align-items:center;justify-content:center;flex:none"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#E9695E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13"></path></svg></div>
-                    </sc-if>
-                  </div>
-                </div>
-              </sc-for>
-            </div>
+      <div style="flex:1;overflow-y:auto;padding:14px 20px 110px;display:flex;flex-direction:column;gap:16px">
+        <div style="background:rgba(255,255,255,.94);border:1px solid rgba(255,255,255,.92);border-radius:var(--r-lg);padding:16px;box-shadow:0 2px 6px rgba(120,110,180,.06),0 16px 36px rgba(120,110,180,.15);display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;align-items:center;gap:10px"><div onClick="{{ activity.onPrevMonth }}" style="cursor:pointer;width:38px;height:38px;border-radius:50%;background:#F6F5FB;display:flex;align-items:center;justify-content:center;color:var(--ac-deep);font-size:18px;font-weight:800">‹</div><div style="flex:1;text-align:center;font-size:16px;font-weight:800">{{ activity.monthLabel }}</div><div onClick="{{ activity.onNextMonth }}" style="cursor:pointer;width:38px;height:38px;border-radius:50%;background:#F6F5FB;display:flex;align-items:center;justify-content:center;color:var(--ac-deep);font-size:18px;font-weight:800;opacity:{{ activity.nextOpacity }}">›</div></div>
+          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:5px"><sc-for list="{{ activity.dow }}" as="d" hint-placeholder-count="7"><div style="text-align:center;font-size:9.5px;font-weight:800;letter-spacing:.05em;color:#9AA0B4">{{ d }}</div></sc-for></div>
+          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:5px">
+            <sc-for list="{{ activity.cells }}" as="c" hint-placeholder-count="35">
+              <div onClick="{{ c.onClick }}" style="cursor:{{ c.cursor }};opacity:{{ c.opacity }};position:relative;aspect-ratio:1;border-radius:13px;background:{{ c.bg }};border:{{ c.border }};box-shadow:{{ c.shadow }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:{{ c.color }}">
+                <div style="font-size:12.5px;font-weight:{{ c.weight }};line-height:1">{{ c.day }}</div>
+                <div style="height:7px;display:flex;align-items:center;justify-content:center;gap:2px"><sc-if value="{{ c.hasCheck }}" hint-placeholder-val="{{ false }}"><span style="font-size:8.5px;font-weight:900;color:{{ c.checkColor }}">✓</span></sc-if><sc-for list="{{ c.dots }}" as="dot" hint-placeholder-count="2"><span style="width:4px;height:4px;border-radius:50%;background:{{ dot.color }}"></span></sc-for></div>
+              </div>
+            </sc-for>
           </div>
-        </sc-for>
+          <div style="display:flex;align-items:center;justify-content:center;gap:12px;font-size:9.5px;font-weight:700;color:#9AA0B4"><span style="color:#2E8B5B">✓ check-in</span><span style="color:var(--ac-deep)">● symptom</span><span style="color:#B35F1E">● medication</span></div>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:10px"><div style="font-size:15px;font-weight:800;flex:1">{{ activity.selectedLabel }}</div><div style="font-size:11px;font-weight:800;color:#9AA0B4">{{ activity.itemCount }}</div></div>
+        <div style="background:{{ activity.checkinBg }};border:1px solid {{ activity.checkinBorder }};border-radius:var(--r-md);padding:14px 15px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 20px rgba(120,110,180,.1)"><div style="width:38px;height:38px;border-radius:13px;background:{{ activity.checkinIconBg }};display:flex;align-items:center;justify-content:center;color:{{ activity.checkinColor }};font-size:18px;font-weight:900">{{ activity.checkinIcon }}</div><div style="flex:1"><div style="font-size:13.5px;font-weight:800">Daily check-in</div><div style="font-size:11.5px;color:#7A7F92;margin-top:2px">{{ activity.checkinStatus }}</div></div><div onClick="{{ activity.onCheckin }}" style="cursor:pointer;min-height:40px;display:flex;align-items:center;background:{{ activity.checkinButtonBg }};color:#fff;font-size:12px;font-weight:800;padding:8px 14px;border-radius:999px">{{ activity.checkinCta }}</div></div>
+
+        <sc-if value="{{ activity.empty }}" hint-placeholder-val="{{ false }}"><div style="background:rgba(255,255,255,.72);border:1px dashed rgba(var(--ac-rgb),.3);border-radius:var(--r-lg);padding:24px 20px;text-align:center;font-size:13px;color:#7A7F92;line-height:1.5">No medication or symptom activity saved for this date.</div></sc-if>
+        <sc-if value="{{ activity.hasItems }}" hint-placeholder-val="{{ false }}"><div style="background:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:5px 16px;box-shadow:0 2px 6px rgba(120,110,180,.06),0 16px 36px rgba(120,110,180,.15)"><sc-for list="{{ activity.items }}" as="it" hint-placeholder-count="4"><div onClick="{{ it.onOpen }}" data-hcc-sep="1" style="cursor:pointer;min-height:62px;display:flex;align-items:center;gap:11px;padding:10px 0;border-bottom:1px solid #F1F0F7"><div style="width:10px;height:10px;border-radius:50%;background:{{ it.dot }};flex:none"></div><div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:800">{{ it.title }}</div><div style="font-size:11.5px;color:#7A7F92;margin-top:2px">{{ it.sub }}</div></div><div style="font-size:9.5px;font-weight:800;color:{{ it.kindColor }};background:{{ it.kindBg }};padding:4px 8px;border-radius:999px;flex:none">{{ it.kind }}</div><div style="font-size:19px;color:#B0B4C4">›</div></div></sc-for></div></sc-if>
       </div>
     </div>
     </sc-if>
@@ -1663,6 +1648,24 @@
 
         <sc-if value="{{ episodeEdit.hasDeleteConfirm }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:8px;background:#FBEFEC;border-radius:14px;padding:11px 13px"><div style="flex:1;font-size:12px;font-weight:700;color:#B3502E">Delete this symptom entry?</div><div onClick="{{ episodeEdit.onDelete }}" style="cursor:pointer;min-height:38px;display:flex;align-items:center;background:#E9695E;color:#fff;font-size:12px;font-weight:800;padding:7px 12px;border-radius:999px">Delete</div><div onClick="{{ episodeEdit.onKeep }}" style="cursor:pointer;min-height:38px;display:flex;align-items:center;background:#fff;color:#565B6E;font-size:12px;font-weight:700;padding:7px 12px;border-radius:999px">Keep</div></div></sc-if>
         <sc-if value="{{ episodeEdit.notDeleteConfirm }}" hint-placeholder-val="{{ true }}"><div style="display:flex;gap:10px"><div onClick="{{ episodeEdit.onAskDelete }}" style="cursor:pointer;min-height:50px;display:flex;align-items:center;background:#FBEFEC;color:#B3502E;font-size:14px;font-weight:800;padding:13px 17px;border-radius:999px">Delete</div><div onClick="{{ episodeEdit.onSave }}" style="cursor:pointer;min-height:50px;display:flex;align-items:center;justify-content:center;flex:1;text-align:center;background:linear-gradient(90deg,var(--ac-soft),var(--ac));color:#fff;font-size:15px;font-weight:800;padding:13px;border-radius:999px;box-shadow:0 10px 22px rgba(var(--ac-rgb),.35)">Save changes</div></div></sc-if>
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- ============================ MEDICATION LOG EDITOR ============================ -->
+    <sc-if value="{{ medLogEdit.open }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;background:rgba(40,34,70,.38);backdrop-filter:blur(4px);display:flex;flex-direction:column;justify-content:flex-end;z-index:72">
+      <div onClick="{{ medLogEdit.onCancel }}" style="flex:1"></div>
+      <div style="background:linear-gradient(165deg,#fff,#FBFAFD);border-radius:var(--r-sheet) var(--r-sheet) 0 0;padding:18px 20px calc(26px + var(--hcc-safe-bottom));display:flex;flex-direction:column;gap:15px;box-shadow:0 -20px 50px rgba(70,60,130,.3);max-height:88%;overflow-y:auto">
+        <div style="width:40px;height:5px;border-radius:99px;background:#E4E2EE;align-self:center"></div>
+        <div style="display:flex;align-items:flex-start;gap:10px"><div style="flex:1"><div style="font-size:19px;font-weight:800">Edit medication log</div><div style="font-size:12px;color:#7A7F92;margin-top:3px">Correct this date’s recorded dose without changing its schedule.</div></div><div onClick="{{ medLogEdit.onCancel }}" style="cursor:pointer;width:34px;height:34px;border-radius:50%;background:#F6F5FB;display:flex;align-items:center;justify-content:center;font-size:17px;color:#565B6E">×</div></div>
+        <div style="background:#FCEEE1;border-radius:15px;padding:13px 14px;display:flex;align-items:center;gap:11px"><div style="width:38px;height:38px;border-radius:13px;background:linear-gradient(135deg,#FDE3CF,#F9C9A8);display:flex;align-items:center;justify-content:center"><div style="width:27px;height:27px;background-image:url('uploads/Medication.png');background-size:contain;background-position:center;background-repeat:no-repeat"></div></div><div style="flex:1"><div style="font-size:15px;font-weight:800">{{ medLogEdit.name }}</div><div style="font-size:11.5px;color:#7A7F92;margin-top:2px">{{ medLogEdit.meta }}</div></div></div>
+        <div style="display:flex;gap:10px"><div style="min-height:50px;flex:1;background:#F6F5FB;border-radius:14px;padding:10px 12px"><div style="font-size:10px;font-weight:800;letter-spacing:.07em;color:#9AA0B4">DATE</div><div style="font-size:13px;font-weight:800;color:#565B6E;margin-top:4px">{{ medLogEdit.dateLabel }}</div></div><div onClick="{{ medLogEdit.onTimeOpen }}" style="cursor:pointer;min-height:50px;flex:1;background:#F6F5FB;border-radius:14px;padding:10px 12px"><div style="font-size:10px;font-weight:800;letter-spacing:.07em;color:#9AA0B4">ACTUAL TIME</div><div style="font-size:13px;font-weight:800;color:var(--ac-deep);margin-top:4px">{{ medLogEdit.timeLabel }}</div></div></div>
+        <sc-if value="{{ medLogEdit.showStatus }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:8px"><div style="font-size:11px;font-weight:800;letter-spacing:.07em;color:#9AA0B4">STATUS</div><div style="display:flex;gap:8px"><sc-for list="{{ medLogEdit.statuses }}" as="s" hint-placeholder-count="3"><div onClick="{{ s.onClick }}" style="cursor:pointer;min-height:44px;flex:1;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:{{ s.weight }};border-radius:13px;background:{{ s.bg }};color:{{ s.color }}">{{ s.label }}</div></sc-for></div></div></sc-if>
+        <sc-if value="{{ medLogEdit.isPrn }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:10px"><div style="flex:1;display:flex;flex-direction:column;gap:7px"><div style="font-size:11px;font-weight:800;letter-spacing:.07em;color:#9AA0B4">DOSE</div><input id="hcc-medlog-dose" defaultValue="{{ medLogEdit.dose }}" style="border:none;background:#F6F5FB;border-radius:13px;padding:12px 13px;font-size:13.5px;font-weight:700;color:#23262F;outline:none;font-family:inherit"></div><div style="display:flex;flex-direction:column;gap:7px"><div style="font-size:11px;font-weight:800;letter-spacing:.07em;color:#9AA0B4">QUANTITY</div><div style="display:flex;align-items:center;gap:9px;background:#F6F5FB;border-radius:13px;padding:5px 8px"><div onClick="{{ medLogEdit.onQtyDec }}" style="cursor:pointer;width:34px;height:34px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;color:var(--ac-deep);font-size:18px;font-weight:800">−</div><div style="font-size:17px;font-weight:800;min-width:18px;text-align:center">{{ medLogEdit.qty }}</div><div onClick="{{ medLogEdit.onQtyInc }}" style="cursor:pointer;width:34px;height:34px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;color:var(--ac-deep);font-size:18px;font-weight:800">＋</div></div></div></div><div style="display:flex;flex-direction:column;gap:7px"><div style="font-size:11px;font-weight:800;letter-spacing:.07em;color:#9AA0B4">REASON</div><input id="hcc-medlog-reason" defaultValue="{{ medLogEdit.reason }}" placeholder="Optional" style="border:none;background:#F6F5FB;border-radius:13px;padding:12px 13px;font-size:13.5px;color:#23262F;outline:none;font-family:inherit"></div></sc-if>
+        <div style="font-size:11.5px;color:#7A7F92;line-height:1.45;background:var(--ac-050);border-radius:12px;padding:10px 12px">This changes only the recorded occurrence on {{ medLogEdit.dateLabel }}. Your normal medication schedule stays the same.</div>
+        <sc-if value="{{ medLogEdit.hasDeleteConfirm }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:8px;background:#FBEFEC;border-radius:14px;padding:11px 13px"><div style="flex:1;font-size:12px;font-weight:700;color:#B3502E">Delete this medication entry?</div><div onClick="{{ medLogEdit.onDelete }}" style="cursor:pointer;min-height:38px;display:flex;align-items:center;background:#E9695E;color:#fff;font-size:12px;font-weight:800;padding:7px 12px;border-radius:999px">Delete</div><div onClick="{{ medLogEdit.onKeep }}" style="cursor:pointer;min-height:38px;display:flex;align-items:center;background:#fff;color:#565B6E;font-size:12px;font-weight:700;padding:7px 12px;border-radius:999px">Keep</div></div></sc-if>
+        <sc-if value="{{ medLogEdit.notDeleteConfirm }}" hint-placeholder-val="{{ true }}"><div style="display:flex;gap:10px"><div onClick="{{ medLogEdit.onAskDelete }}" style="cursor:pointer;min-height:50px;display:flex;align-items:center;background:#FBEFEC;color:#B3502E;font-size:14px;font-weight:800;padding:13px 17px;border-radius:999px">Delete</div><div onClick="{{ medLogEdit.onSave }}" style="cursor:pointer;min-height:50px;display:flex;align-items:center;justify-content:center;flex:1;background:linear-gradient(90deg,var(--ac-soft),var(--ac));color:#fff;font-size:15px;font-weight:800;padding:13px;border-radius:999px;box-shadow:0 10px 22px rgba(var(--ac-rgb),.35)">Save changes</div></div></sc-if>
       </div>
     </div>
     </sc-if>
@@ -2028,7 +2031,7 @@
       <div onClick="{{ nav.goHome }}" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;color:{{ nav.cHome }}"><svg width="22" height="22" viewBox="0 0 504 398" fill="currentColor"><path fill-rule="evenodd" d="M86 170L90 162L95 157L97 157L109 144L111 144L123 131L125 131L137 118L139 118L151 105L153 105L165 92L167 92L232 30L242 25L255 27L280 51L282 51L294 64L296 64L308 77L310 77L322 90L324 90L336 103L338 103L350 116L352 116L364 129L366 129L378 142L380 142L392 155L394 155L402 163L405 169L405 181L397 192L388 195L375 195L375 313L372 322L360 337L353 340L352 342L340 345L152 345L136 340L130 336L122 327L116 313L116 195L103 195L93 191L86 181ZM205 254L205 315L286 315L286 253L284 244L276 232L262 225L230 225L218 230L210 238Z"></path></svg><div style="font-size:10px;font-weight:700">Home</div></div>
       <div onClick="{{ nav.goMeds }}" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;color:{{ nav.cMeds }}"><svg width="22" height="22" viewBox="0 0 532 410" fill="currentColor"><path fill-rule="evenodd" d="M94 97L102 73L108 64L112 61L112 59L121 51L130 45L145 39L170 37L185 40L194 45L197 45L210 54L221 66L227 76L232 90L233 118L235 118L247 107L257 102L271 98L299 99L309 102L325 111L342 129L383 191L397 209L407 226L421 244L429 259L433 274L433 297L429 312L422 326L405 344L389 353L379 356L350 356L339 353L327 347L317 338L315 338L313 334L307 329L247 239L233 221L233 298L228 315L217 333L199 348L182 355L171 357L157 357L142 354L121 343L112 335L112 333L103 323L98 313L94 297ZM133 106L133 177L194 177L194 105L192 96L186 86L180 81L170 77L158 77L152 79L146 82L138 90ZM253 168L254 176L259 188L264 193L299 246L303 245L308 240L350 212L308 149L295 139L280 137L272 139L264 144L255 157Z"></path></svg><div style="font-size:10px;font-weight:600">Meds</div></div>
       <div onClick="{{ nav.goLog }}" style="cursor:pointer;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--ac-soft),var(--ac));display:flex;align-items:center;justify-content:center;margin-top:-26px;box-shadow:0 10px 22px rgba(var(--ac-rgb),.45),inset 0 1px 0 rgba(255,255,255,.4)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></div>
-      <div onClick="{{ nav.goInsights }}" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;color:{{ nav.cInsights }}"><svg width="22" height="22" viewBox="0 0 478 424" fill="currentColor"><path fill-rule="evenodd" d="M66 246L70 230L75 221L84 212L93 207L112 203L133 203L138 205L144 211L145 352L142 358L138 361L133 363L112 363L99 361L84 354L72 341L66 321ZM178 96L181 81L185 73L192 66L208 60L234 59L253 63L259 66L267 74L271 83L273 94L273 352L269 359L261 363L191 363L184 360L178 352ZM306 151L309 145L318 139L339 139L355 142L364 146L376 156L384 174L385 322L381 337L376 346L365 356L353 361L340 363L319 363L312 360L306 352Z"></path></svg><div style="font-size:10px;font-weight:600">Insights</div></div>
+      <div onClick="{{ nav.goCalendar }}" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;color:{{ nav.cCalendar }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"></rect><path d="M8 3v4M16 3v4M3 10h18"></path><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"></path></svg><div style="font-size:10px;font-weight:600">Calendar</div></div>
       <div onClick="{{ nav.goSettings }}" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;color:{{ nav.cMore }}"><svg width="22" height="22" viewBox="0 0 434 412" fill="currentColor"><path fill-rule="evenodd" d="M94 335L97 308L103 289L112 275L129 261L144 255L173 250L254 249L287 252L305 257L323 267L333 277L338 287L340 288L346 306L349 325L349 348L346 356L339 365L330 370L322 372L250 377L168 376L123 372L108 367L100 360L96 353ZM142 126L144 114L152 94L159 84L170 73L179 67L196 60L213 57L230 57L247 60L269 70L283 82L283 84L291 93L297 106L301 123L301 150L299 161L294 175L285 190L274 201L264 206L263 208L239 216L205 216L179 207L170 201L166 196L164 196L157 188L152 178L150 177L143 156Z"></path></svg><div style="font-size:10px;font-weight:600">Profile</div></div>
     </div>
     </sc-if>
@@ -2346,7 +2349,7 @@ class Component extends DCLogic {
   openInsights = () => {
     const st = this.state;
     if (st.route !== 'insights') {
-      // from another screen: always land on a fresh hub (Week range, Visuals)
+      // Insights now lives inside Settings. Always enter through a fresh hub.
       this.setState({ route: 'insights', insView: 'hub', insCat: null, heroSel: null, insMode: 'visuals', insRange: '7' });
     } else if ((st.insView || 'hub') !== 'hub') {
       // inside a category: jump back to the hub
@@ -2356,7 +2359,7 @@ class Component extends DCLogic {
       this.setState({ insMode: 'cards' });
     }
   };
-  openActivity = () => this.setState({ route: 'activity', confirmDel: null });
+  openActivity = () => { const today = this.db.todayISO(); const d = new Date(today + 'T12:00:00'); this.setState({ route: 'activity', activityDate: today, activityYear: d.getFullYear(), activityMonth: d.getMonth(), confirmDel: null }); };
   askDelete = (key) => () => this.setState({ confirmDel: key });
   cancelDelete = () => this.setState({ confirmDel: null });
   confirmDelete = (store, id) => async () => { await this.db.remove(store, id); this.setState({ confirmDel: null }); await this.refresh(); };
@@ -2364,7 +2367,7 @@ class Component extends DCLogic {
   openRHelp = () => this.setState({ rHelpOpen: true });
   closeRHelp = () => this.setState({ rHelpOpen: false });
   insGoCat = (view, cat) => () => this.setState({ insView: view, insCat: cat || null, insMode: 'visuals', heroSel: null });
-  insBack = () => { if ((this.state.insView || 'hub') !== 'hub') this.setState({ insView: 'hub', insCat: null, heroSel: null, insMode: 'visuals' }); };
+  insBack = () => { if ((this.state.insView || 'hub') !== 'hub') this.setState({ insView: 'hub', insCat: null, heroSel: null, insMode: 'visuals' }); else this.setState({ route: 'settings', setSub: null }); };
   setInsRange = (r) => () => this.setState({ insRange: r });
   setInsSymptom = (k) => () => this.setState({ insSymptom: k });
   setInsMode = (m) => () => this.setState({ insMode: m });
@@ -2595,6 +2598,7 @@ class Component extends DCLogic {
   openCheckin = (date) => {
     const today = this.db.todayISO();
     const target = (typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date)) ? date : today;
+    const ciReturnRoute = this.state.route === 'activity' ? 'activity' : 'home';
     const isBackfill = target !== today;
     const dLabel = new Date(target + 'T00:00').toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
     const ex = (this.raw.checkIns || []).find(c => c.eventDate === target);
@@ -2610,7 +2614,7 @@ class Component extends DCLogic {
       proteinRange: ex?.proteinRange ?? null,
       notes: ex?.notes || '',
     };
-    this.setState({ ci, route: 'checkin' });
+    this.setState({ ci, ciReturnRoute, route: 'checkin' });
   };
   openLog = () => {
     this.setState({
@@ -2640,7 +2644,7 @@ class Component extends DCLogic {
     return { ci: { ...st.ci, [field]: v } };
   });
   ciNotes = (e) => { const v = e.target.value; this.setState(st => ({ ci: { ...st.ci, notes: v } })); };
-  ciBack = () => { if (this.state.ci.stepIndex === 0) { this.setState({ route: 'home', ci: null }); } else { this.setState(st => ({ ci: { ...st.ci, stepIndex: st.ci.stepIndex - 1 } })); } };
+  ciBack = () => { if (this.state.ci.stepIndex === 0) { this.setState({ route: this.state.ciReturnRoute || 'home', ci: null, ciReturnRoute: null }); } else { this.setState(st => ({ ci: { ...st.ci, stepIndex: st.ci.stepIndex - 1 } })); } };
   ciContinue = async () => {
     const ci = this.state.ci;
     const steps = this.activeSteps();
@@ -2655,7 +2659,7 @@ class Component extends DCLogic {
         notes: ci.notes || null, completed: true, completedSteps: steps.slice(),
       });
       await this.refresh();
-      this.setState({ route: 'home', ci: null });
+      this.setState({ route: this.state.ciReturnRoute || 'home', ci: null, ciReturnRoute: null });
     }
   };
 
@@ -2865,6 +2869,8 @@ class Component extends DCLogic {
       this.setState(st => ({ historicMed: st.historicMed ? { ...st.historicMed, time: val, err: null } : st.historicMed }));
     } else if (tp.kind === 'episodeTime') {
       this.setState(st => ({ episodeEdit: st.episodeEdit ? { ...st.episodeEdit, time: val } : st.episodeEdit }));
+    } else if (tp.kind === 'medLogTime') {
+      this.setState(st => ({ medLogEdit: st.medLogEdit ? { ...st.medLogEdit, time: val } : st.medLogEdit }));
     } else if (tp.kind === 'medSchedule') {
       // set a med's scheduled time straight from the Home row (logged as a timing change)
       const ref = typeof tp.refId === 'object' ? tp.refId : { medId: tp.refId, doseSlot: null };
@@ -3472,16 +3478,16 @@ class Component extends DCLogic {
       isSettings: !st.loading && route === 'settings',
       isInsights: !st.loading && route === 'insights',
       isActivity: !st.loading && route === 'activity',
-      showTabBar: !st.loading && (route === 'home' || route === 'meds' || route === 'insights' || route === 'settings' || (route === 'log' && (!st.draft || st.draft.stage === 'pick'))),
+      showTabBar: !st.loading && (route === 'home' || route === 'meds' || route === 'activity' || route === 'settings' || (route === 'log' && (!st.draft || st.draft.stage === 'pick'))),
       nav: {
         goHome: this.go('home'), goMeds: this.go('meds'), goSettings: this.openSettings,
-        goCheckin: this.openCheckin, goLog: this.openLog, goInsights: this.openInsights, goActivity: this.openActivity,
+        goCheckin: this.openCheckin, goLog: this.openLog, goCalendar: this.openActivity, goActivity: this.openActivity,
         cHome: route === 'home' ? 'var(--ac)' : '#9AA0B4', cMeds: route === 'meds' ? 'var(--ac)' : '#9AA0B4',
-        cInsights: route === 'insights' ? 'var(--ac)' : '#9AA0B4',
+        cCalendar: route === 'activity' ? 'var(--ac)' : '#9AA0B4',
         cMore: route === 'settings' ? 'var(--ac)' : '#9AA0B4',
       },
     };
-    const emptyOverlays = { prn: { open: false }, historicMed: { open: false }, medEdit: { open: false }, symEdit: { open: false }, episodeEdit: { open: false }, sp: { open: false, showBrowse: false, showDone: false }, exp: { open: false }, tp: { open: false }, dp: { open: false }, rep: { open: false } };
+    const emptyOverlays = { prn: { open: false }, historicMed: { open: false }, medEdit: { open: false }, medLogEdit: { open: false }, symEdit: { open: false }, episodeEdit: { open: false }, sp: { open: false, showBrowse: false, showDone: false }, exp: { open: false }, tp: { open: false }, dp: { open: false }, rep: { open: false } };
     if (st.loading || !db) return { ...base, ...emptyOverlays, home: {}, meds: {}, ci: {}, log: {}, settings: {}, ins: {}, activity: {} };
 
     const today = db.todayISO();
@@ -3496,6 +3502,7 @@ class Component extends DCLogic {
       prn: this.viewPrn(),
       historicMed: this.viewHistoricMed(),
       medEdit: this.viewMedEdit(),
+      medLogEdit: this.viewMedLogEdit(),
       symEdit: this.viewSymEdit(),
       episodeEdit: this.viewEpisodeEdit(),
       sp: this.viewSymPicker(),
@@ -3534,16 +3541,6 @@ class Component extends DCLogic {
     const ringDash = `${(done / total * circ).toFixed(1)} ${circ}`;
     const checkinSub = done === 0 ? 'Not started yet' : done >= total ? 'All done today' : `${done} of ${total} steps done`;
     const checkinCta = done >= total ? 'Review' : done === 0 ? 'Start' : 'Continue';
-
-    // missed days — up to 5 prior days without a completed check-in
-    const missedDays = [];
-    for (let i = 1; i <= 5; i++) {
-      const iso = this.isoShift(today, -i);
-      const has = (raw.checkIns || []).some(c => c.eventDate === iso && c.completed);
-      if (has) continue;
-      const dt = new Date(iso + 'T00:00');
-      missedDays.push({ iso, label: dt.toLocaleDateString(undefined, { weekday: 'short' }), day: String(dt.getDate()), onClick: () => this.openCheckin(iso) });
-    }
 
     // meds today — twice-daily profiles expand into independently logged AM/PM doses
     const medsToday = scheduledDoses.map(({ med: m, doseSlot, slotLabel, timing }) => {
@@ -3591,7 +3588,6 @@ class Component extends DCLogic {
       initial: (name[0] || 'A').toUpperCase(), greeting: `${greet}, ${name}`, date: dateStr,
       avatar, avatarBg: avatar ? `url(${avatar})` : 'none', hasAvatar: !!avatar, noAvatar: !avatar, onAvatar: this.onAvatar, onAvatarFile: this.onAvatarFile,
       ringDash, ringText: `${done}/${total}`, checkinSub, checkinCta,
-      hasMissed: missedDays.length > 0, missedDays,
       medsQuickSub: scheduledDoses.length ? `${scheduledLeft} scheduled left` : 'Add your meds',
       medsCount: `${takenN} of ${scheduledDoses.length}`, hasMeds: scheduledDoses.length > 0, noMeds: scheduledDoses.length === 0, medsToday,
       hasRecent: recent.length > 0, noRecent: recent.length === 0, recent,
@@ -3938,6 +3934,7 @@ class Component extends DCLogic {
     const catN = symGroups.length;
     const enabledSteps = (s.checkInSteps || []).filter(x => x.enabled).length;
     const manage = [
+      { title: 'Insights & reports', sub: 'Patterns, trends and exports', iconBg: 'linear-gradient(135deg,#D6E6F9,#B4D2F3)', iconColor: '#3A6FB0', glyphRadius: '4px', onClick: this.openInsights },
       { title: 'Appearance', sub: `${this.themeVals().accent} accent · ${this.themeVals().ambiance}`, iconColor: this.ACCENTS[this.themeVals().accent].ac, onClick: this.goSub('theme') },
       { title: 'Check-in categories', sub: `${enabledSteps} of ${(s.checkInSteps || []).length} on`, iconBg: 'linear-gradient(135deg,#FBEECB,#F6DA97)', iconColor: '#C88A18', glyphRadius: '4px', onClick: this.goSub('steps') },
       { title: 'Medications', sub: `${(raw.meds || []).length} tracked`, iconBg: 'linear-gradient(135deg,#FDE3CF,#F9C9A8)', iconColor: '#B35F1E', glyphRadius: '4px', onClick: this.goSub('meds') },
@@ -4052,7 +4049,7 @@ class Component extends DCLogic {
     const bgRgb = (v === 'symptoms' && cat) ? CAT_RGB[cat] : CAT_RGB[v];
     const screenBg = (catHero.has && bgRgb) ? `linear-gradient(175deg, ${this.opaqueTint(bgRgb, .3)} 0%, ${this.opaqueTint(bgRgb, .12)} 52%, #FBF9FC 100%)` : 'transparent';
     const rangeStyle = this.props.insRange || 'Segmented bar';
-    const base = { ...flags, catHero, screenBg, headerTitle: titles[v], onBack: this.insBack, showBack: v !== 'hub', showSpacer: v === 'hub', rSeg: rangeStyle === 'Segmented bar', rPills: rangeStyle !== 'Segmented bar', rangeChips, modeChips, showMode: v !== 'explore' && v !== 'side' && v !== 'medhistory' && v !== 'report', showRange: v !== 'exports' && v !== 'patterns' && v !== 'medhistory' && v !== 'report', cardsView: cardsMode ? this.insightCardsView(v) : { cards: [], styleChips: [] } };
+    const base = { ...flags, catHero, screenBg, headerTitle: titles[v], onBack: this.insBack, showBack: true, showSpacer: false, rSeg: rangeStyle === 'Segmented bar', rPills: rangeStyle !== 'Segmented bar', rangeChips, modeChips, showMode: v !== 'explore' && v !== 'side' && v !== 'medhistory' && v !== 'report', showRange: v !== 'exports' && v !== 'patterns' && v !== 'medhistory' && v !== 'report', cardsView: cardsMode ? this.insightCardsView(v) : { cards: [], styleChips: [] } };
     if (!this.db || !(this.raw.checkIns || []).length) {
       return { ...base, empty: true, hub: { cards: [], tEyebrow: true, exAiry: false, exCompact: false, exTinted: true, actSplit: true, hero: { has: false } }, medHistory: { cards: [], empty: true }, report: this.reportView(), sym: {}, sleep: {}, mood: {}, prn: {}, side: {}, explore: { has: false, hasRecs: false, recs: [] }, showCal: false, xAxis: { has: false }, tod: { has: false }, mini: { has: false }, mixRadar: { has: false }, waves: { has: false }, ranges: { has: false }, cmp: { has: false }, flowCard: { has: false }, patterns: this.patternsView([]), exportCards: this.exportCards() };
     }
@@ -4716,22 +4713,115 @@ class Component extends DCLogic {
     };
   }
 
-  // ================= ACTIVITY (complete history, review & remove) =================
-  dayLabel(ts) { const iso = this.db.todayISO(new Date(ts)); const today = this.db.todayISO(); const y = this.db.todayISO(new Date(Date.now() - 864e5)); if (iso === today) return 'Today'; if (iso === y) return 'Yesterday'; return new Date(ts).toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' }); }
+  // ================= MEDICATION LOG REVIEW / EDIT =================
+  openMedLogEditor = (id) => () => {
+    const log = (this.raw.medLogs || []).find(x => x.id === id); if (!log) return;
+    const med = (this.raw.meds || []).find(m => m.id === log.medId);
+    const parsed = new Date(log.takenTime || `${log.eventDate}T${log.scheduledTime || '12:00'}:00`);
+    this.setState({ medLogEdit: {
+      id: log.id, medId: log.medId, name: med?.name || 'Medication', date: log.eventDate,
+      time: Number.isNaN(parsed.getTime()) ? (log.scheduledTime || '12:00') : this.hhmm(parsed),
+      status: log.isPrn ? 'prn' : (log.status || 'taken'), isPrn: !!log.isPrn,
+      doseSlot: log.doseSlot || null, dose: log.dose || med?.dose || '', qty: log.quantity || 1,
+      reason: log.reason || '', confirmDelete: false,
+    } });
+  };
+  closeMedLogEditor = () => this.setState({ medLogEdit: null });
+  medLogField = (field, value) => () => this.setState(st => ({ medLogEdit: st.medLogEdit ? { ...st.medLogEdit, [field]: value } : st.medLogEdit }));
+  medLogQty = (delta) => () => this.setState(st => ({ medLogEdit: st.medLogEdit ? { ...st.medLogEdit, qty: Math.max(1, Math.min(10, (st.medLogEdit.qty || 1) + delta)) } : st.medLogEdit }));
+  saveMedLogEdit = async () => {
+    const m = this.state.medLogEdit; if (!m) return;
+    const doseEl = document.getElementById('hcc-medlog-dose');
+    const reasonEl = document.getElementById('hcc-medlog-reason');
+    const hasTime = m.isPrn || m.status === 'taken' || m.status === 'late';
+    await this.db.updateMedicationLog(m.id, {
+      status: m.isPrn ? 'prn' : m.status,
+      takenTime: hasTime ? `${m.date}T${m.time || '12:00'}:00` : null,
+      ...(m.isPrn ? { dose: doseEl ? String(doseEl.value || '').trim() || null : m.dose || null, quantity: m.qty || 1, reason: reasonEl ? String(reasonEl.value || '').trim() || null : m.reason || null } : {}),
+    });
+    await this.refresh();
+    this.setState({ medLogEdit: null });
+  };
+  askMedLogDelete = () => this.setState(st => ({ medLogEdit: st.medLogEdit ? { ...st.medLogEdit, confirmDelete: true } : st.medLogEdit }));
+  keepMedLog = () => this.setState(st => ({ medLogEdit: st.medLogEdit ? { ...st.medLogEdit, confirmDelete: false } : st.medLogEdit }));
+  deleteMedLogEdit = async () => { const m = this.state.medLogEdit; if (!m) return; await this.db.remove('medicationDailyLogs', m.id); await this.refresh(); this.setState({ medLogEdit: null }); };
+  viewMedLogEdit() {
+    const m = this.state.medLogEdit; if (!m) return { open: false };
+    const statusDefs = [['taken', 'Taken', '#2E8B5B'], ['late', 'Late', '#B35F1E'], ['skipped', 'Skipped', '#B3502E']];
+    const statuses = statusDefs.map(([key, label, color]) => ({ label, onClick: this.medLogField('status', key), bg: m.status === key ? color : '#F6F5FB', color: m.status === key ? '#fff' : '#7A7F92', weight: m.status === key ? 800 : 700 }));
+    const d = new Date(m.date + 'T12:00:00');
+    const dateLabel = d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+    const canTime = m.isPrn || m.status === 'taken' || m.status === 'late';
+    return {
+      open: true, name: m.name, meta: m.isPrn ? 'As-needed dose' : `${m.doseSlot === 'morning' ? 'AM dose' : m.doseSlot === 'night' ? 'PM dose' : 'Scheduled dose'} · ${m.status}`,
+      dateLabel, timeLabel: canTime ? this.fmtTime(m.time || '12:00') : 'Not applicable', onTimeOpen: canTime ? this.openTimePick('medLogTime', null, m.time || '12:00') : (() => {}),
+      isPrn: m.isPrn, showStatus: !m.isPrn, statuses, dose: m.dose || '', qty: m.qty || 1, reason: m.reason || '', onQtyDec: this.medLogQty(-1), onQtyInc: this.medLogQty(1),
+      hasDeleteConfirm: !!m.confirmDelete, notDeleteConfirm: !m.confirmDelete,
+      onAskDelete: this.askMedLogDelete, onDelete: this.deleteMedLogEdit, onKeep: this.keepMedLog,
+      onSave: this.saveMedLogEdit, onCancel: this.closeMedLogEditor,
+    };
+  }
+
+  // ================= CALENDAR =================
+  calendarMonth = (delta) => () => this.setState(st => {
+    const today = new Date(this.db.todayISO() + 'T12:00:00');
+    let y = st.activityYear ?? today.getFullYear(), m = (st.activityMonth ?? today.getMonth()) + delta;
+    if (m < 0) { m = 11; y--; } if (m > 11) { m = 0; y++; }
+    if (new Date(y, m, 1, 12) > new Date(today.getFullYear(), today.getMonth(), 1, 12)) return null;
+    const previous = new Date((st.activityDate || this.db.todayISO()) + 'T12:00:00');
+    const day = Math.min(previous.getDate(), new Date(y, m + 1, 0, 12).getDate());
+    const activityDate = `${y}-${String(m + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    return { activityYear: y, activityMonth: m, activityDate };
+  });
+  calendarSelect = (iso) => () => this.setState({ activityDate: iso });
+  calendarToday = () => { const iso = this.db.todayISO(); const d = new Date(iso + 'T12:00:00'); this.setState({ activityDate: iso, activityYear: d.getFullYear(), activityMonth: d.getMonth() }); };
   viewActivity() {
-    if (!this.db) return { empty: true, groups: [] };
-    const raw = this.raw, conf = this.state.confirmDel;
-    const items = [];
-    for (const e of (raw.episodes || [])) { const def = (raw.symptoms || []).find(s => s.id === e.symptomId || s.key === e.symptomKey); items.push({ ts: this.tsOf(e), title: e.symptomName || 'Symptom', sub: `${this.sevWord(e.severity)} · ${this.fmtWhen(e)}${e.notes ? ' · has notes' : ''}`, dot: def ? this.catColor(def.category) : '#8E7CF3', kind: 'Symptom', store: 'symptomEpisodes', id: e.id, hasOpen: true, openCursor: 'pointer', onOpen: this.openEpisodeEditor(e.id) }); }
-    for (const l of (raw.medLogs || [])) {
-      if (l.isPrn) items.push({ ts: this.tsOf(l), title: `${this.medName(l.medId)} · as-needed`, sub: `${l.dose || ''}${l.reason ? ' · ' + l.reason : ''} · ${this.fmtWhen(l)}`, dot: '#C05673', kind: 'PRN dose', store: 'medicationDailyLogs', id: l.id });
-      else items.push({ ts: this.tsOf(l), title: `${this.medName(l.medId)}${l.doseSlot === 'morning' ? ' AM' : l.doseSlot === 'night' ? ' PM' : ''} · ${l.status}`, sub: this.fmtWhen(l), dot: l.status === 'taken' ? '#2E8B5B' : l.status === 'late' ? '#B35F1E' : '#B3502E', kind: 'Med', store: 'medicationDailyLogs', id: l.id });
+    if (!this.db) return { empty: true, hasItems: false, cells: [], dow: [] };
+    const raw = this.raw, today = this.db.todayISO();
+    const selected = this.state.activityDate || today;
+    const selectedObj = new Date(selected + 'T12:00:00');
+    const y = this.state.activityYear ?? selectedObj.getFullYear();
+    const month = this.state.activityMonth ?? selectedObj.getMonth();
+    const first = new Date(y, month, 1, 12), days = new Date(y, month + 1, 0, 12).getDate();
+    const cells = [];
+    for (let i = 0; i < first.getDay(); i++) cells.push({ day: '', dots: [], hasCheck: false, cursor: 'default', opacity: 0, bg: 'transparent', border: '1px solid transparent', shadow: 'none', color: 'transparent', weight: 600, onClick: () => {} });
+    for (let day = 1; day <= days; day++) {
+      const iso = `${y}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      const future = iso > today, active = iso === selected, isToday = iso === today;
+      const hasCheck = (raw.checkIns || []).some(c => c.eventDate === iso && c.completed);
+      const hasSymptom = (raw.episodes || []).some(e => e.eventDate === iso);
+      const hasMed = (raw.medLogs || []).some(l => l.eventDate === iso);
+      const dots = [...(hasSymptom ? [{ color: active ? '#fff' : 'var(--ac-deep)' }] : []), ...(hasMed ? [{ color: active ? '#fff' : '#B35F1E' }] : [])];
+      cells.push({ day: String(day), dots, hasCheck, checkColor: active ? '#fff' : '#2E8B5B', cursor: future ? 'default' : 'pointer', opacity: future ? .3 : 1,
+        bg: active ? 'linear-gradient(135deg,var(--ac-soft),var(--ac))' : (isToday ? 'var(--ac-050)' : '#fff'),
+        border: active ? '1px solid transparent' : (isToday ? '1.5px solid var(--ac)' : '1px solid #F0EDF7'), shadow: active ? '0 7px 15px rgba(var(--ac-rgb),.35)' : 'none',
+        color: active ? '#fff' : '#3A3F52', weight: active || isToday ? 800 : 600, onClick: future ? (() => {}) : this.calendarSelect(iso) });
     }
-    for (const c of (raw.checkIns || [])) { items.push({ ts: this.tsOf(c), title: 'Daily check-in', sub: this.fmtWhen(c), dot: 'var(--ac)', kind: 'Check-in', store: 'dailyCheckIns', id: c.id }); }
+    const items = [];
+    for (const e of (raw.episodes || []).filter(x => x.eventDate === selected)) {
+      const def = (raw.symptoms || []).find(s => s.id === e.symptomId || s.key === e.symptomKey);
+      const time = new Date(this.tsOf(e)).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+      items.push({ ts: this.tsOf(e), title: e.symptomName || def?.name || 'Symptom', sub: `${this.sevWord(e.severity)} · ${time}${e.notes ? ' · has notes' : ''}`, dot: def ? this.catColor(def.category) : 'var(--ac)', kind: 'Symptom', kindBg: 'var(--ac-050)', kindColor: 'var(--ac-deep)', onOpen: this.openEpisodeEditor(e.id) });
+    }
+    for (const l of (raw.medLogs || []).filter(x => x.eventDate === selected)) {
+      const actual = l.takenTime ? new Date(this.tsOf(l)).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }) : 'No actual time';
+      const slot = l.doseSlot === 'morning' ? ' · AM' : l.doseSlot === 'night' ? ' · PM' : '';
+      items.push({ ts: this.tsOf(l), title: `${this.medName(l.medId)}${slot}`, sub: `${l.isPrn ? 'As needed' : (l.status || 'Logged')} · ${actual}${l.reason ? ' · ' + l.reason : ''}`, dot: l.isPrn ? '#C05673' : l.status === 'taken' ? '#2E8B5B' : l.status === 'late' ? '#B35F1E' : '#B3502E', kind: 'Medication', kindBg: '#FCEEE1', kindColor: '#B35F1E', onOpen: this.openMedLogEditor(l.id) });
+    }
     items.sort((a, b) => b.ts - a.ts);
-    const groups = [];
-    for (const it of items) { const day = this.dayLabel(it.ts); let g = groups.find(x => x.day === day); if (!g) { g = { day, items: [] }; groups.push(g); } const key = `${it.store}:${it.id}`; g.items.push({ hasOpen: false, openCursor: 'default', onOpen: () => {}, ...it, key, confirming: conf === key, notConfirming: conf !== key, onAsk: this.askDelete(key), onCancel: this.cancelDelete, onConfirm: this.confirmDelete(it.store, it.id) }); }
-    return { empty: items.length === 0, groups, count: items.length };
+    const ci = (raw.checkIns || []).find(c => c.eventDate === selected);
+    const complete = !!ci?.completed;
+    const selectedLabel = selected === today ? `Today · ${selectedObj.toLocaleDateString(undefined, { month: 'long', day: 'numeric' })}` : selectedObj.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
+    const currentMonth = new Date(today + 'T12:00:00');
+    const canNext = new Date(y, month + 1, 1, 12) <= new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1, 12);
+    return {
+      monthLabel: first.toLocaleDateString(undefined, { month: 'long', year: 'numeric' }), dow: ['S', 'M', 'T', 'W', 'T', 'F', 'S'], cells,
+      onPrevMonth: this.calendarMonth(-1), onNextMonth: canNext ? this.calendarMonth(1) : (() => {}), nextOpacity: canNext ? 1 : .3, onToday: this.calendarToday,
+      selectedLabel, itemCount: `${items.length} ${items.length === 1 ? 'entry' : 'entries'}`, items, hasItems: items.length > 0, empty: items.length === 0,
+      checkinStatus: complete ? 'Completed for this date' : ci ? 'Started but not completed' : 'No check-in saved', checkinCta: ci ? 'Edit' : 'Add',
+      checkinIcon: complete ? '✓' : '+', checkinBg: complete ? '#F2FAF5' : 'rgba(255,255,255,.9)', checkinBorder: complete ? '#CFE9D9' : 'rgba(var(--ac-rgb),.2)', checkinIconBg: complete ? '#DDF2E5' : 'var(--ac-050)', checkinColor: complete ? '#2E8B5B' : 'var(--ac-deep)', checkinButtonBg: complete ? '#2E8B5B' : 'var(--ac)',
+      onCheckin: () => this.openCheckin(selected),
+    };
   }
 
   // ---------- formatting utils ----------
