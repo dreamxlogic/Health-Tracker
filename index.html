@@ -317,7 +317,7 @@
         </div>
         </sc-if>
 
-        <div style="display:flex;align-items:center;gap:8px;padding:2px 6px 4px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7A7F92" stroke-width="2" stroke-linecap="round"><path d="M12 3v12m0 0 4-4m-4 4-4-4"></path><path d="M4 17v3h16v-3"></path></svg><div style="font-size:12px;color:#7A7F92;flex:1">{{ home.backupText }}</div><div style="font-size:12px;font-weight:800;color:var(--ac)">Back up now</div></div>
+        <div onClick="{{ home.onBackup }}" style="cursor:pointer;display:flex;align-items:center;gap:8px;min-height:44px;padding:2px 6px 4px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7A7F92" stroke-width="2" stroke-linecap="round"><path d="M12 3v12m0 0 4-4m-4 4-4-4"></path><path d="M4 17v3h16v-3"></path></svg><div style="font-size:12px;color:#7A7F92;flex:1">{{ home.backupText }}</div><div style="font-size:12px;font-weight:800;color:var(--ac)">Back up now</div></div>
       </div>
     </div>
     </sc-if>
@@ -734,7 +734,7 @@
             <sc-if value="{{ home.hasAvatar }}" hint-placeholder-val="{{ false }}"><div style="width:100%;height:100%;border-radius:50%;background-image:{{ home.avatarBg }};background-size:cover;background-position:center"></div></sc-if>
             <sc-if value="{{ home.noAvatar }}" hint-placeholder-val="{{ true }}"><div style="width:100%;height:100%;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--ac);font-size:18px">{{ home.initial }}</div></sc-if>
           </div>
-          <div style="flex:1"><input id="hcc-name-input" defaultValue="{{ settings.nameValue }}" onBlur="{{ settings.onName }}" placeholder="Your name" style="width:100%;border:none;background:#F6F5FB;border-radius:12px;padding:11px 13px;font-size:14px;font-weight:600;color:#23262F;outline:none;font-family:inherit"><div style="display:flex;align-items:center;gap:8px;margin-top:6px"><div style="flex:1;font-size:11px;color:#9AA0B4">Tap the avatar to upload a photo</div><div onClick="{{ settings.onNameSave }}" style="cursor:pointer;font-size:11.5px;font-weight:800;padding:6px 14px;border-radius:999px;background:{{ settings.nameSaveBg }};color:{{ settings.nameSaveColor }}">{{ settings.nameSaveLabel }}</div></div></div>
+          <div style="flex:1"><input id="hcc-name-input" defaultValue="{{ settings.nameValue }}" onBlur="{{ settings.onName }}" placeholder="Your name" style="width:100%;border:none;background:#F6F5FB;border-radius:12px;padding:11px 13px;font-size:14px;font-weight:600;color:#23262F;outline:none;font-family:inherit"><div style="display:flex;align-items:center;gap:8px;margin-top:6px"><div style="flex:1;font-size:11px;color:{{ settings.avatarHintColor }}">{{ settings.avatarHint }}</div><div onClick="{{ settings.onNameSave }}" style="cursor:pointer;font-size:11.5px;font-weight:800;padding:6px 14px;border-radius:999px;background:{{ settings.nameSaveBg }};color:{{ settings.nameSaveColor }}">{{ settings.nameSaveLabel }}</div></div></div>
           <input id="hcc-avatar-input-2" type="file" accept="image/*" onChange="{{ home.onAvatarFile }}" style="display:none">
         </div>
 
@@ -1519,7 +1519,7 @@
               <div style="color:#B0B4C4;font-size:20px">›</div>
             </div>
           </sc-for>
-          <div style="display:flex;align-items:flex-start;gap:10px;background:rgba(255,255,255,.7);border:1px dashed rgba(var(--ac-rgb),.35);border-radius:var(--r-md);padding:14px 16px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="2" stroke-linecap="round" style="flex:none;margin-top:1px"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg><div style="font-size:12px;color:#565B6E;line-height:1.5">Nothing leaves your phone unless you export it. Backups restore everything; doctor &amp; AI exports only include what you choose.</div></div>
+          <div style="display:flex;align-items:flex-start;gap:10px;background:rgba(255,255,255,.7);border:1px dashed rgba(var(--ac-rgb),.35);border-radius:var(--r-md);padding:14px 16px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="2" stroke-linecap="round" style="flex:none;margin-top:1px"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg><div style="font-size:12px;color:#565B6E;line-height:1.5">Nothing leaves your phone unless you export it. Full backups include every data area; provider and AI exports include the selected health record.</div></div>
         </sc-if>
 
         <!-- ===== MEDICATION HISTORY ===== -->
@@ -1577,7 +1577,7 @@
             </div>
             <div style="display:flex;gap:10px">
               <div onClick="{{ ins.report.onEdit }}" style="cursor:pointer;flex:none;border:1.5px solid #CFC6EC;color:var(--ac-deep);font-weight:800;font-size:14px;padding:14px 20px;border-radius:999px">Back</div>
-              <div style="cursor:pointer;flex:1;text-align:center;background:linear-gradient(90deg,var(--ac-soft),var(--ac));color:#fff;font-size:15px;font-weight:800;padding:14px;border-radius:999px;box-shadow:0 10px 22px rgba(var(--ac-rgb),.35)">Export CSV</div>
+              <div onClick="{{ ins.report.onExport }}" style="cursor:pointer;flex:1;text-align:center;background:linear-gradient(90deg,var(--ac-soft),var(--ac));color:#fff;font-size:15px;font-weight:800;padding:14px;border-radius:999px;box-shadow:0 10px 22px rgba(var(--ac-rgb),.35)">Export CSV</div>
             </div>
           </sc-if>
         </sc-if>
@@ -1913,7 +1913,7 @@
           <div style="font-size:11px;font-weight:800;letter-spacing:.08em;color:#9AA0B4">INCLUDE SECTIONS</div>
           <div style="display:flex;gap:7px;flex-wrap:wrap"><sc-for list="{{ exp.sections }}" as="s" hint-placeholder-count="5"><div onClick="{{ s.onClick }}" style="cursor:pointer;font-size:12px;font-weight:{{ s.weight }};padding:9px 13px;border-radius:999px;background:{{ s.bg }};color:{{ s.color }}">{{ s.label }}</div></sc-for></div>
           <div style="background:#F8F7FC;border:1px solid #ECEAF4;border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:12px">
-            <div style="font-size:15px;font-weight:800;border-bottom:1px solid #ECEAF4;padding-bottom:10px">Health summary <span style="font-weight:600;color:#9AA0B4;font-size:12px">· page 1 of 1</span></div>
+            <div style="font-size:15px;font-weight:800;border-bottom:1px solid #ECEAF4;padding-bottom:10px">Health summary <span style="font-weight:600;color:#9AA0B4;font-size:12px">· full report preview</span></div>
             <sc-for list="{{ exp.lines }}" as="l" hint-placeholder-count="5"><div><div style="font-size:11px;font-weight:800;letter-spacing:.05em;color:var(--ac)">{{ l.h }}</div><div style="font-size:13px;color:#3a3f52;line-height:1.5;margin-top:2px">{{ l.t }}</div></div></sc-for>
           </div>
         </sc-if>
@@ -2112,6 +2112,18 @@
     </div>
     </sc-if>
 
+    <sc-if value="{{ rep.showDetails }}" hint-placeholder-val="{{ true }}">
+    <div style="background:rgba(255,255,255,.94);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:20px 24px;box-shadow:0 2px 6px rgba(120,110,180,.06),0 18px 40px rgba(120,110,180,.16);display:flex;flex-direction:column;gap:8px">
+      <div style="display:flex;align-items:baseline;gap:10px"><div style="font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--head);flex:1">DETAILED LOG &amp; NOTES</div><div style="font-size:11px;color:#9AA0B4">all entries in selected range</div></div>
+      <sc-for list="{{ rep.detailRows }}" as="r" hint-placeholder-count="8">
+        <div data-hcc-sep="1" style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #F1F0F7">
+          <div style="width:82px;flex:none"><div style="font-size:11.5px;font-weight:800;color:var(--ac-deep)">{{ r.date }}</div><div style="font-size:10.5px;color:#9AA0B4;margin-top:2px">{{ r.time }}</div></div>
+          <div style="flex:1;min-width:0"><div style="font-size:13.5px;font-weight:800">{{ r.title }}</div><div style="font-size:11.5px;color:#7A7F92;margin-top:2px">{{ r.meta }}</div><sc-if value="{{ r.hasDetails }}" hint-placeholder-val="{{ true }}"><div style="font-size:11.5px;color:#565B6E;line-height:1.45;margin-top:4px">{{ r.details }}</div></sc-if><sc-if value="{{ r.hasNotes }}" hint-placeholder-val="{{ false }}"><div style="font-size:11.5px;color:#3A6FB0;line-height:1.45;margin-top:4px"><span style="font-weight:800">Notes:</span> {{ r.notes }}</div></sc-if></div>
+        </div>
+      </sc-for>
+    </div>
+    </sc-if>
+
     <div style="text-align:center;font-size:11px;color:#9AA0B4;padding-top:6px">Generated by Health Tracker · self-reported data · not medical advice</div>
   </div>
 </div>
@@ -2119,7 +2131,8 @@
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
   state = { loading: true, route: 'home', ci: null, draft: null, medDate: null, historicMed: null, err: null };
-  raw = { settings: null, meds: [], symptoms: [], checkIns: [], medLogs: [], episodes: [], changes: [], stress: [], backup: null };
+  raw = { settings: null, meds: [], symptoms: [], checkIns: [], medLogs: [], episodes: [], changes: [], stress: [], doctorNotes: [], savedInsights: [], backups: [], backup: null };
+  backupStores = {};
 
   // ---------- expressive theming (Tweaks) ----------
   ACCENTS = {
@@ -2277,7 +2290,7 @@ class Component extends DCLogic {
 
   async refresh() {
     const db = this.db;
-    const [settings, meds, symptoms, checkIns, medLogs, episodes, changes, stress, backup] = await Promise.all([
+    const [settings, meds, symptoms, checkIns, medLogs, episodes, changes, stress, doctorNotes, savedInsights, backups] = await Promise.all([
       db.getSettings(),
       db.getAll('medicationProfiles'),
       db.getAll('symptomDefinitions'),
@@ -2286,8 +2299,19 @@ class Component extends DCLogic {
       db.getAll('symptomEpisodes'),
       db.getAll('medicationChangeEvents'),
       db.getAll('stressEvents'),
-      db.get('backupMetadata', 'lastBackup'),
+      db.getAll('doctorNotes'),
+      db.getAll('insights'),
+      db.getAll('backupMetadata'),
     ]);
+    // Preserve an exact, unsanitized copy of every database store so a backup
+    // can be generated synchronously from a user tap (important on iOS).
+    this.backupStores = {
+      userSettings: settings ? [settings] : [], medicationProfiles: meds,
+      symptomDefinitions: symptoms, dailyCheckIns: checkIns,
+      medicationDailyLogs: medLogs, medicationChangeEvents: changes,
+      symptomEpisodes: episodes, doctorNotes, stressEvents: stress,
+      insights: savedInsights, backupMetadata: backups,
+    };
     // sanitize stored text: no em dashes anywhere, including data persisted before the copy rules
     const clean = (x) => {
       if (typeof x === 'string') return x.replace(/ — /g, ', ').replace(/—/g, '·');
@@ -2295,7 +2319,8 @@ class Component extends DCLogic {
       if (x && typeof x === 'object') { const o = {}; for (const k of Object.keys(x)) o[k] = clean(x[k]); return o; }
       return x;
     };
-    this.raw = clean({ settings, meds, symptoms, checkIns, medLogs, episodes, changes, stress, backup });
+    const backup = backups.find(x => x.id === 'lastBackup') || null;
+    this.raw = clean({ settings, meds, symptoms, checkIns, medLogs, episodes, changes, stress, doctorNotes, savedInsights, backups, backup });
     // first-run wizard: shows until finished/skipped (items added mid-wizard don't dismiss it)
     const s = this.raw.settings || {};
     let ob = this.state.ob || null;
@@ -2527,25 +2552,48 @@ class Component extends DCLogic {
     catGroups.forEach(g => { g.count = g.items.length; });
     return { list, has: list.length > 0, styleChips, groups, catGroups, isA: style === 'cards', isB: style === 'list', isC: style === 'delta', isD: style === 'grouped' };
   }
-  openExport = (type) => () => this.setState({ exp: { type, provider: 'psychiatrist', aiMode: 'prompt' }, aiCopied: false });
-  REP_DEFAULT = { meds: true, symptoms: true, patterns: true, prn: true, trends: true };
+  openExport = (type) => () => this.setState({ exp: { type, provider: 'psychiatrist', aiMode: 'prompt' }, aiCopied: false, aiCopyFailed: false });
+  REP_DEFAULT = { meds: true, symptoms: true, patterns: true, prn: true, trends: true, details: true };
   repSecs() { return this.state.repSections || this.REP_DEFAULT; }
   toggleRepSection = (k) => () => this.setState(st => { const s = { ...(st.repSections || this.REP_DEFAULT) }; s[k] = !s[k]; return { repSections: s }; });
   openReport = () => this.setState({ repOpen: true });
   closeReport = () => this.setState({ repOpen: false });
+  downloadFile(filename, contents, type) {
+    const blob = new Blob([contents], { type: type || 'application/octet-stream' });
+    const href = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = href; a.download = filename; a.style.display = 'none';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(href), 5000);
+  }
+  backupData(lastBackupRecord = null) {
+    const stores = {};
+    for (const name of (this.db.STORES || [])) stores[name] = [...(this.backupStores[name] || [])];
+    if (lastBackupRecord) stores.backupMetadata = [...(stores.backupMetadata || []).filter(x => x.id !== 'lastBackup'), lastBackupRecord];
+    return { schema: 'hcc.backup.v2', exportedAt: new Date().toISOString(), storeCount: (this.db.STORES || []).length, stores };
+  }
   downloadBackup = () => {
-    const r = this.raw;
-    const data = { schema: 'hcc.v1', exportedAt: new Date().toISOString(), settings: r.settings, medicationProfiles: r.meds, symptomDefinitions: r.symptoms, dailyCheckIns: r.checkIns, medicationDailyLogs: r.medLogs, symptomEpisodes: r.episodes, medicationChangeEvents: r.changes };
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `health-backup-${this.db.todayISO()}.json`; a.click();
-    setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+    const at = new Date().toISOString();
+    const marker = this.db.stamp({ id: 'lastBackup', at }, this.db.todayISO());
+    const data = this.backupData(marker);
+    this.downloadFile(`health-backup-${this.db.todayISO()}.json`, JSON.stringify(data, null, 2), 'application/json');
+    this.setState(st => ({ exp: st.exp ? { ...st.exp, backupDone: true } : st.exp }));
+    this.db.put('backupMetadata', marker).then(() => this.refresh()).catch(() => {});
   };
-  copyAi = () => {
+  copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text).then(() => true).catch(() => false);
+    try {
+      const el = document.createElement('textarea'); el.value = text; el.setAttribute('readonly', '');
+      el.style.cssText = 'position:fixed;opacity:0;pointer-events:none'; document.body.appendChild(el);
+      el.select(); const ok = document.execCommand('copy'); el.remove(); return Promise.resolve(!!ok);
+    } catch (e) { return Promise.resolve(false); }
+  }
+  copyAi = async () => {
     const raw = this.raw;
-    const counts = { meds: (raw.meds || []).length, symptoms: (raw.symptoms || []).length, checkIns: (raw.checkIns || []).length, episodes: (raw.episodes || []).length, prn: (raw.medLogs || []).filter(l => l.isPrn).length };
+    const counts = this.exportCounts(raw);
     const text = this.state.exp?.aiMode === 'json' ? this.aiJson(counts) : this.aiPrompt(counts);
-    if (navigator.clipboard) navigator.clipboard.writeText(text).catch(() => {});
-    this.setState({ aiCopied: true });
+    const ok = await this.copyText(text);
+    this.setState({ aiCopied: ok, aiCopyFailed: !ok });
   };
   closeExport = () => this.setState({ exp: null });
   setExpProvider = (p) => () => this.setState(st => ({ exp: { ...st.exp, provider: p } }));
@@ -2582,6 +2630,7 @@ class Component extends DCLogic {
   }
   rangeDays() { const r = this.state.insRange || 7; return r === 'all' ? 3650 : Number(r); }
   insCheckIns() {
+    if ((this.state.insRange || '7') === 'all') return (this.raw.checkIns || []).slice().sort((a, b) => a.eventDate < b.eventDate ? -1 : 1);
     const cutoff = this.db.todayISO(new Date(Date.now() - this.rangeDays() * 864e5));
     return (this.raw.checkIns || []).filter(c => c.eventDate >= cutoff).sort((a, b) => a.eventDate < b.eventDate ? -1 : 1);
   }
@@ -2664,12 +2713,43 @@ class Component extends DCLogic {
   };
 
   // ---------- profile / avatar ----------
-  onAvatar = () => { const el = document.getElementById('hcc-avatar-input') || document.getElementById('hcc-avatar-input-2'); if (el) el.click(); };
-  onAvatarFile = (e) => {
+  onAvatar = () => {
+    const preferred = this.state.route === 'settings' ? 'hcc-avatar-input-2' : 'hcc-avatar-input';
+    const el = document.getElementById(preferred) || document.getElementById(preferred === 'hcc-avatar-input' ? 'hcc-avatar-input-2' : 'hcc-avatar-input');
+    if (el) { el.value = ''; el.click(); }
+  };
+  prepareAvatar(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error('Unable to read that image'));
+      reader.onload = () => {
+        const img = new Image();
+        img.onerror = () => reject(new Error('That image format could not be opened'));
+        img.onload = () => {
+          const max = 640, scale = Math.min(1, max / Math.max(img.naturalWidth || 1, img.naturalHeight || 1));
+          const w = Math.max(1, Math.round(img.naturalWidth * scale)), h = Math.max(1, Math.round(img.naturalHeight * scale));
+          const canvas = document.createElement('canvas'); canvas.width = w; canvas.height = h;
+          const ctx = canvas.getContext('2d'); if (!ctx) return reject(new Error('Unable to prepare that image'));
+          ctx.drawImage(img, 0, 0, w, h);
+          resolve(canvas.toDataURL('image/jpeg', .84));
+        };
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+  onAvatarFile = async (e) => {
     const f = e.target.files && e.target.files[0]; if (!f) return;
-    const r = new FileReader();
-    r.onload = async () => { await this.db.saveSettings({ displayAvatar: r.result }); await this.refresh(); };
-    r.readAsDataURL(f);
+    this.setState({ avatarStatus: 'saving' });
+    try {
+      const displayAvatar = await this.prepareAvatar(f);
+      await this.db.saveSettings({ displayAvatar });
+      await this.refresh();
+      this.setState({ avatarStatus: 'saved' });
+      setTimeout(() => this.setState(st => st.avatarStatus === 'saved' ? { avatarStatus: null } : null), 1800);
+    } catch (err) {
+      this.setState({ avatarStatus: 'error' });
+    }
   };
   onName = (e) => { const v = (e.target.value || '').trim() || 'there'; this.db.saveSettings({ displayName: v }).then(() => this.refresh()); };
   saveName = () => { const v = this.val('hcc-name-input') || 'there'; this.db.saveSettings({ displayName: v }).then(() => { this.refresh(); this.setState({ nameSaved: true }); setTimeout(() => this.setState({ nameSaved: false }), 1600); }); };
@@ -3592,7 +3672,7 @@ class Component extends DCLogic {
       medsCount: `${takenN} of ${scheduledDoses.length}`, hasMeds: scheduledDoses.length > 0, noMeds: scheduledDoses.length === 0, medsToday,
       hasRecent: recent.length > 0, noRecent: recent.length === 0, recent,
       wwHas: !!ww, wwTitle: ww?.title, wwPill: ww?.pill, wwBody: ww?.body,
-      backupText,
+      backupText, onBackup: this.openExport('backup'),
     };
   }
 
@@ -3956,6 +4036,8 @@ class Component extends DCLogic {
     const catChips = (item, field) => this.CAT_OPTS.map(c => ({ label: c.label, onClick: this.toggleItemCat(field, item.id, c.key), bg: (item.cats || []).includes(c.key) ? 'var(--ac)' : '#F6F5FB', color: (item.cats || []).includes(c.key) ? '#fff' : '#9AA0B4' }));
     const whatHelped = (s.whatHelped || []).map(w => ({ label: w.label, onRemove: this.removeListItem('whatHelped', w.id), cats: catChips(w, 'whatHelped') }));
     const contexts = (s.contexts || []).map(w => ({ label: w.label, onRemove: this.removeListItem('contexts', w.id), cats: catChips(w, 'contexts') }));
+    const avatarHint = this.state.avatarStatus === 'saving' ? 'Saving photo…' : this.state.avatarStatus === 'saved' ? 'Photo saved ✓' : this.state.avatarStatus === 'error' ? 'Could not save that photo. Try JPG or PNG.' : 'Tap the avatar to upload a photo';
+    const avatarHintColor = this.state.avatarStatus === 'saved' ? '#2E8B5B' : this.state.avatarStatus === 'error' ? '#B3502E' : '#9AA0B4';
     return {
       dataSummary: summary, loadLabel: loaded ? 'Reload sample data' : 'Load sample data', onLoad: this.loadSample, onWipe: this.wipe,
       onName: this.onName, onNameSave: this.saveName,
@@ -3968,7 +4050,7 @@ class Component extends DCLogic {
       accentOpts, ambianceOpts, headerOpts,
       headerTitle: sub ? subTitles[sub] : 'Settings', onBack: this.settingsBack,
       headerAdd: showAdd ? '＋' : '', headerAddColor: showAdd ? 'var(--ac)' : 'transparent', onHeaderAdd,
-      manage, symGroups,
+      manage, symGroups, avatarHint, avatarHintColor,
       dayBoundary: `${s.dayBoundaryHour ?? 4}:00 AM`, protein: `${s.proteinThresholdG ?? 50} g`, range: `${s.analysisRangeDays ?? 90} days`,
       prefs: [
         { label: 'Day boundary', hint: 'A new day starts at this hour', value: `${((s.dayBoundaryHour ?? 4) % 12) || 12}:00 ${(s.dayBoundaryHour ?? 4) < 12 ? 'AM' : 'PM'}`, onDec: this.prefStep('dayBoundaryHour', -1), onInc: this.prefStep('dayBoundaryHour', 1), border: '1px solid #F1F0F7' },
@@ -4190,7 +4272,7 @@ class Component extends DCLogic {
       eAvg: avg(cis.map(c => c.ratings?.energy).filter(v => v != null)).toFixed(1) };
 
     // ---- PRN ----
-    const cutoff = this.db.todayISO(new Date(Date.now() - this.rangeDays() * 864e5));
+    const cutoff = R === 'all' ? '0000' : this.db.todayISO(new Date(Date.now() - this.rangeDays() * 864e5));
     const prnDefs2 = (this.raw.meds || []).filter(m => m.prn);
     const prnSel = this.state.prnSel && prnDefs2.some(m => m.id === this.state.prnSel) ? this.state.prnSel : 'all';
     const prnMedChips = [{ id: 'all', label: 'All PRN' }, ...prnDefs2.map(m => ({ id: m.id, label: m.name }))].map(x => ({ label: x.label, onClick: () => this.setState({ prnSel: x.id }), bg: prnSel === x.id ? '#C05673' : 'rgba(255,255,255,.85)', color: prnSel === x.id ? '#fff' : '#C05673', weight: prnSel === x.id ? 800 : 600 }));
@@ -4466,10 +4548,21 @@ class Component extends DCLogic {
 
   exportCards() {
     return [
-      { type: 'backup', title: 'Full backup', sub: 'Everything, as a file you can restore later', tint: 'linear-gradient(135deg,var(--ac-100),var(--ac-200))', accent: 'var(--ac-deep)', tag: '.json', onClick: this.openExport('backup') },
+      { type: 'backup', title: 'Full backup', sub: 'Every app data area in one complete archive', tint: 'linear-gradient(135deg,var(--ac-100),var(--ac-200))', accent: 'var(--ac-deep)', tag: '.json', onClick: this.openExport('backup') },
       { type: 'doctor', title: 'Doctor summary', sub: 'Clean one-pager, tailored to a provider', tint: 'linear-gradient(135deg,#D6E6F9,#B4D2F3)', accent: '#3A6FB0', tag: 'PDF', onClick: this.openExport('doctor') },
       { type: 'ai', title: 'AI analysis export', sub: 'Paste-ready summary for ChatGPT / Claude', tint: 'linear-gradient(135deg,#D2EEDD,#AEDFC4)', accent: '#2E8B5B', tag: 'prompt', onClick: this.openExport('ai') },
     ];
+  }
+  exportCounts(raw = this.raw) {
+    const medLogs = raw.medLogs || [];
+    return {
+      medications: (raw.meds || []).length, symptomDefinitions: (raw.symptoms || []).length,
+      checkIns: (raw.checkIns || []).length, symptomEpisodes: (raw.episodes || []).length,
+      medicationLogs: medLogs.length, scheduledMedicationLogs: medLogs.filter(l => !l.isPrn).length,
+      prnDoses: medLogs.filter(l => l.isPrn).length, medicationChanges: (raw.changes || []).length,
+      stressEvents: (raw.stress || []).length, doctorNotes: (raw.doctorNotes || []).length,
+      savedInsights: (raw.savedInsights || []).length,
+    };
   }
 
   // ===== MEDICATION HISTORY (timeline per med) =====
@@ -4504,12 +4597,39 @@ class Component extends DCLogic {
   }
 
   // ===== REPORT BUILDER WIZARD =====
-  REPORT_FIELDS = [['date', 'Date'], ['time', 'Time of day'], ['med', 'Exact medication'], ['symptom', 'Exact symptom'], ['category', 'Symptom category'], ['intensity', 'Intensity']];
-  reportState() { return this.state.report || { fields: ['date', 'time', 'symptom', 'intensity'], range: '30', step: 0 }; }
+  REPORT_FIELDS = [['date', 'Date'], ['time', 'Time'], ['type', 'Entry type'], ['med', 'Medication'], ['symptom', 'Symptom'], ['category', 'Category'], ['intensity', 'Intensity'], ['status', 'Status'], ['dose', 'Dose'], ['details', 'Details'], ['notes', 'Notes']];
+  reportState() { return this.state.report || { fields: ['date', 'time', 'type', 'med', 'symptom', 'intensity', 'status', 'details', 'notes'], range: '30', step: 0 }; }
   reportSet = (patch) => this.setState(st => ({ report: { ...this.reportState(), ...patch } }));
   reportToggleField = (k) => () => { const r = this.reportState(); const has = r.fields.includes(k); this.reportSet({ fields: has ? r.fields.filter(x => x !== k) : [...r.fields, k] }); };
   reportStep = (n) => () => this.reportSet({ step: n });
   reportBuild = () => this.reportSet({ step: 2 });
+  reportRecords(range) {
+    const cutIso = range === 'all' ? '0000' : this.db.todayISO(new Date(Date.now() - Number(range) * 864e5));
+    const rows = [], add = (record) => { if ((record.date || '') >= cutIso) rows.push(record); };
+    const timeOf = x => { const d = new Date(this.tsOf(x)); return Number.isNaN(d.getTime()) ? '' : d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }); };
+    const list = x => Array.isArray(x) ? x.join(', ') : (x || '');
+    for (const e of (this.raw.episodes || [])) {
+      const def = (this.raw.symptoms || []).find(s => s.id === e.symptomId || s.key === e.symptomKey);
+      add({ ts: this.tsOf(e), date: e.eventDate, time: timeOf(e), type: 'Symptom', med: e.suspectedMedId ? this.medName(e.suspectedMedId) : '', symptom: e.symptomName || def?.name || 'Symptom', category: this.catLabel(e.category || def?.category), intensity: e.severity == null ? '' : `${e.severity}/10`, status: e.when || 'Logged', dose: '', details: [`Duration: ${e.durationMin ?? 'not set'}`, `Trigger: ${list(e.trigger) || 'none'}`, `Context: ${list(e.context) || 'none'}`, `Helped: ${list(e.whatHelped) || 'none'}`, e.confidence ? `Medication confidence: ${e.confidence}` : ''].filter(Boolean).join('; '), notes: e.notes || '' });
+    }
+    for (const l of (this.raw.medLogs || [])) {
+      add({ ts: this.tsOf(l), date: l.eventDate, time: l.takenTime ? timeOf(l) : '', type: l.isPrn ? 'PRN medication' : 'Medication', med: this.medName(l.medId), symptom: '', category: 'Medication', intensity: l.severityBefore == null ? '' : `${l.severityBefore}/10 before${l.severityAfter == null ? '' : `, ${l.severityAfter}/10 after`}`, status: l.isPrn ? 'PRN taken' : (l.status || ''), dose: [l.quantity && l.quantity !== 1 ? `${l.quantity} ×` : '', l.dose || ''].filter(Boolean).join(' '), details: [`Slot: ${l.doseSlot || 'not set'}`, `Scheduled: ${l.scheduledTime ? this.fmtTime(l.scheduledTime) : 'not set'}`, l.reason ? `Reason: ${l.reason}` : ''].filter(Boolean).join('; '), notes: l.notes || '' });
+    }
+    for (const c of (this.raw.checkIns || [])) {
+      const ratings = Object.entries(c.ratings || {}).map(([k, v]) => `${k}: ${v}`).join(', ');
+      const occurrences = Object.entries(c.occurrences || {}).filter(([, v]) => v).map(([k]) => `${k}${c.occurrenceSev?.[k] == null ? '' : ` (${c.occurrenceSev[k]}/10)`}`).join(', ');
+      add({ ts: this.tsOf(c), date: c.eventDate, time: timeOf(c), type: 'Daily check-in', med: '', symptom: occurrences, category: 'Check-in', intensity: '', status: c.completed ? 'Completed' : 'Incomplete', dose: '', details: [`Ratings: ${ratings || 'none'}`, `Sleep: ${c.sleepHours ?? 'not set'} h`, `Wake-ups: ${c.wakeups ?? 'not set'}`, `Protein: ${c.proteinG ?? 'not set'} g`, `Occurrences: ${occurrences || 'none'}`, `Context: ${list(c.contextTags) || 'none'}`].join('; '), notes: c.notes || '' });
+    }
+    for (const c of (this.raw.changes || [])) add({ ts: this.tsOf(c), date: c.eventDate, time: timeOf(c), type: 'Medication change', med: this.medName(c.medId), symptom: list(c.symptomsToWatch), category: 'Medication', intensity: '', status: c.changeType || 'Changed', dose: '', details: [`Previous: ${c.prev ?? 'not set'}`, `Next: ${c.next ?? 'not set'}`, c.expectedImpact ? `Expected impact: ${c.expectedImpact}` : ''].filter(Boolean).join('; '), notes: c.reason || c.notes || '' });
+    for (const s of (this.raw.stress || [])) add({ ts: this.tsOf(s), date: s.eventDate, time: timeOf(s), type: 'Stress event', med: '', symptom: s.label || 'Stress', category: 'Mood', intensity: s.intensity == null ? '' : `${s.intensity}/10`, status: 'Logged', dose: '', details: '', notes: s.notes || '' });
+    for (const n of (this.raw.doctorNotes || [])) add({ ts: this.tsOf(n), date: n.eventDate, time: timeOf(n), type: 'Doctor note', med: '', symptom: '', category: 'Note', intensity: '', status: 'Saved', dose: '', details: n.title || n.subject || '', notes: n.notes || n.body || n.text || '' });
+    return rows.sort((a, b) => b.ts - a.ts);
+  }
+  downloadCsv = () => {
+    const report = this.reportView(), safe = value => { let s = String(value ?? ''); if (/^[=+\-@]/.test(s)) s = "'" + s; return `"${s.replace(/"/g, '""')}"`; };
+    const csv = [report.heads, ...report.rows.map(r => r.cells)].map(row => row.map(safe).join(',')).join('\r\n');
+    this.downloadFile(`health-report-${this.db.todayISO()}.csv`, '\ufeff' + csv, 'text/csv;charset=utf-8');
+  };
   reportView() {
     const r = this.reportState();
     const has = (k) => r.fields.includes(k);
@@ -4517,24 +4637,13 @@ class Component extends DCLogic {
       bg: has(k) ? 'var(--ac)' : '#F6F5FB', color: has(k) ? '#fff' : '#565B6E' }));
     const ranges = [['7', 'Last 7 days'], ['30', 'Last 30 days'], ['90', 'Last 3 months'], ['all', 'All time']].map(([k, label]) => ({ label, on: r.range === k, onClick: () => this.reportSet({ range: k }),
       bg: r.range === k ? 'var(--ac)' : '#F6F5FB', color: r.range === k ? '#fff' : '#565B6E' }));
-    // rows from episodes + medLogs within range
-    const cutIso = r.range === 'all' ? '0000' : this.db.todayISO(new Date(Date.now() - (Number(r.range)) * 864e5));
-    const eps = (this.raw.episodes || []).filter(e => (e.eventDate || '') >= cutIso);
-    const rows = eps.slice().sort((a, b) => this.tsOf(b) - this.tsOf(a)).slice(0, 40).map(e => {
-      const sym = (this.raw.symptoms || []).find(s => s.id === e.symptomId || s.key === e.symptomKey);
-      const cells = [];
-      if (has('date')) cells.push(new Date(this.tsOf(e)).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }));
-      if (has('time')) cells.push(new Date(this.tsOf(e)).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }));
-      if (has('symptom')) cells.push(e.symptomName || (sym ? sym.name : 'Symptom'));
-      if (has('category')) cells.push(this.catLabel(e.category || (sym ? sym.category : '')));
-      if (has('med')) cells.push(e.suspectedMedId ? this.medName(e.suspectedMedId) : '—');
-      if (has('intensity')) cells.push(e.severity != null ? `${e.severity}/10` : '—');
-      return { cells };
-    });
+    const records = this.reportRecords(r.range);
+    const fields = this.REPORT_FIELDS.filter(([k]) => has(k));
+    const rows = records.map(rec => ({ cells: fields.map(([k]) => k === 'date' ? new Date(rec.date + 'T12:00:00').toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : (rec[k] ?? '')) }));
     const heads = this.REPORT_FIELDS.filter(([k]) => has(k)).map(([, label]) => label);
     return { fieldChips, ranges, step: r.step,
       isConfig: (r.step || 0) < 2, isPreview: (r.step || 0) >= 2,
-      onBuild: this.reportBuild, onEdit: this.reportStep(0),
+      onBuild: this.reportBuild, onEdit: this.reportStep(0), onExport: this.downloadCsv,
       heads, rows, rowCount: rows.length, colCount: heads.length,
       canBuild: r.fields.length > 0 };
   }
@@ -4542,26 +4651,27 @@ class Component extends DCLogic {
   viewExport() {
     const e = this.state.exp; if (!e) return { open: false };
     const raw = this.raw;
-    const counts = { meds: (raw.meds || []).length, symptoms: (raw.symptoms || []).length, checkIns: (raw.checkIns || []).length, episodes: (raw.episodes || []).length, prn: (raw.medLogs || []).filter(l => l.isPrn).length };
+    const counts = this.exportCounts(raw);
     const out = { open: true, type: e.type, isBackup: e.type === 'backup', isDoctor: e.type === 'doctor', isAi: e.type === 'ai', onClose: this.closeExport };
     out.onPrimary = e.type === 'backup' ? this.downloadBackup : e.type === 'doctor' ? this.openReport : this.copyAi;
     if (e.type === 'backup') {
       out.title = 'Full backup';
-      out.desc = 'A complete, private copy of everything in the app. Keep it safe. You can restore from it on any device.';
-      out.stats = [`${counts.checkIns} check-ins`, `${counts.episodes} symptom logs`, `${counts.prn} PRN doses`, `${counts.meds} meds`, `${counts.symptoms} symptom types`];
-      out.preview = JSON.stringify({ schema: 'hcc.v1', exportedAt: new Date().toISOString().slice(0, 10), counts, sample: { checkIn: (raw.checkIns || [])[0] ? { date: raw.checkIns[0].eventDate, ratings: raw.checkIns[0].ratings } : null } }, null, 2).slice(0, 620);
-      out.cta = 'Download backup (.json)';
+      out.desc = 'A complete, private archive of every database area in the app, including your profile photo. Keep it somewhere safe.';
+      out.stats = [`${counts.checkIns} check-ins`, `${counts.symptomEpisodes} symptom logs`, `${counts.medicationLogs} med logs`, `${counts.medications} meds`, `${counts.symptomDefinitions} symptom types`, `${this.db.STORES.length} data areas`];
+      out.preview = JSON.stringify({ schema: 'hcc.backup.v2', exportedAt: new Date().toISOString().slice(0, 10), complete: true, stores: Object.fromEntries((this.db.STORES || []).map(name => [name, (this.backupStores[name] || []).length])) }, null, 2);
+      out.cta = e.backupDone ? '✓ Backup downloaded' : 'Download backup (.json)';
     } else if (e.type === 'doctor') {
       const PROV = { psychiatrist: { label: 'Psychiatrist', focus: 'Mood, anxiety, sleep, med adherence & PRN use', cats: ['mood', 'sleep'] }, gi: { label: 'GI', focus: 'Reflux, IBS, nausea, appetite & food triggers', cats: ['gi', 'body'] }, pcp: { label: 'Primary care', focus: 'Overview across all systems', cats: ['all'] } };
       const p = PROV[e.provider] || PROV.psychiatrist;
       out.title = 'Doctor summary';
-      out.desc = 'A clinical one-pager. Pick who it\u2019s for and it keeps what\u2019s relevant.';
+      out.desc = 'A provider-friendly report with summary charts plus the complete detailed log and notes for your selected range.';
       out.providers = Object.entries(PROV).map(([k, val]) => ({ key: k, label: val.label, bg: e.provider === k ? '#3A6FB0' : '#EAF1FB', color: e.provider === k ? '#fff' : '#3A6FB0', weight: e.provider === k ? 800 : 700, onClick: this.setExpProvider(k) }));
       out.provFocus = p.focus;
       const secs = this.repSecs();
-      out.sections = Object.entries({ meds: 'Meds & changes', symptoms: 'Symptom chart', patterns: 'Patterns', prn: 'PRN usage', trends: 'Sleep & mood' }).map(([k, label]) => ({ label, onClick: this.toggleRepSection(k), bg: secs[k] ? '#3A6FB0' : '#EAF1FB', color: secs[k] ? '#fff' : '#3A6FB0', weight: secs[k] ? 800 : 700 }));
+      out.sections = Object.entries({ meds: 'Meds & changes', symptoms: 'Symptom chart', patterns: 'Patterns', prn: 'PRN usage', trends: 'Sleep & mood', details: 'Detailed log & notes' }).map(([k, label]) => ({ label, onClick: this.toggleRepSection(k), bg: secs[k] ? '#3A6FB0' : '#EAF1FB', color: secs[k] ? '#fff' : '#3A6FB0', weight: secs[k] ? 800 : 700 }));
       const R = this.state.insRange || '7';
       out.rangeChips = [['7', 'Week'], ['30', 'Month'], ['90', '3 months'], ['all', 'All']].map(([k, label]) => ({ label, onClick: this.setInsRange(k), bg: R === k ? '#3A6FB0' : '#EAF1FB', color: R === k ? '#fff' : '#3A6FB0', weight: R === k ? 800 : 700 }));
+      out.lines = this.doctorSummaryLines(p);
       out.cta = 'Open report preview';
     } else {
       out.title = 'AI analysis export';
@@ -4569,7 +4679,7 @@ class Component extends DCLogic {
       out.aiMode = e.aiMode;
       out.modes = [['prompt', 'Prompt'], ['json', 'JSON']].map(([k, label]) => ({ key: k, label, bg: e.aiMode === k ? '#2E8B5B' : '#E7F4EC', color: e.aiMode === k ? '#fff' : '#237A4E', weight: e.aiMode === k ? 800 : 700, onClick: this.setExpAiMode(k) }));
       out.preview = e.aiMode === 'json' ? this.aiJson(counts) : this.aiPrompt(counts);
-      out.cta = this.state.aiCopied ? '✓ Copied to clipboard' : 'Copy to clipboard';
+      out.cta = this.state.aiCopied ? '✓ Copied to clipboard' : this.state.aiCopyFailed ? 'Copy failed · tap to retry' : 'Copy to clipboard';
     }
     return out;
   }
@@ -4583,8 +4693,9 @@ class Component extends DCLogic {
     const gen = new Date().toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' });
     const prov = (this.state.exp && this.state.exp.provider) || 'psychiatrist';
     const provLabel = ({ psychiatrist: 'Psychiatrist', gi: 'GI', pcp: 'Primary care' })[prov] || '';
-    const meds = (this.raw.meds || []).filter(m => m.active !== false).map(m => ({ name: m.name, dose: m.dose || '', sched: m.prn ? 'as needed' : (m.weekly ? 'weekly' : `daily${this.medScheduleText(m) ? ' · ' + this.medScheduleText(m) : ''}`), purpose: m.purpose || '' }));
-    const changes = (this.raw.changes || []).slice().sort((a, b) => this.tsOf(b) - this.tsOf(a)).slice(0, 5).map(c => ({ date: this.shortDate(c.eventDate), med: this.medName(c.medId), what: (c.prev && c.next) ? `${c.prev} → ${c.next}` : (c.changeType || 'update'), reason: c.reason || '' }));
+    const meds = (this.raw.meds || []).map(m => ({ name: m.name, dose: m.dose || '', sched: `${m.prn ? 'as needed' : (m.weekly ? 'weekly' : `daily${this.medScheduleText(m) ? ' · ' + this.medScheduleText(m) : ''}`)}${m.active === false ? ' · inactive' : ''}`, purpose: m.purpose || '' }));
+    const cutoff = R === 'all' ? '0000' : this.db.todayISO(new Date(Date.now() - this.rangeDays() * 864e5));
+    const changes = (this.raw.changes || []).filter(c => R === 'all' || c.eventDate >= cutoff).slice().sort((a, b) => this.tsOf(b) - this.tsOf(a)).map(c => ({ date: this.shortDate(c.eventDate), med: this.medName(c.medId), what: (c.prev && c.next) ? `${c.prev} → ${c.next}` : (c.changeType || 'update'), reason: c.reason || '' }));
     const occDefs = (this.raw.symptoms || []).filter(s => !s.archived && !(s.control === 'scale' || s.control === 'face'));
     const stat = {}; for (const s of occDefs) stat[s.key] = { name: s.name, count: 0, sevSum: 0, sevN: 0 };
     for (const c of cis) { const occ = c.occurrences || {}, sev = c.occurrenceSev || {}; for (const s of occDefs) { if (occ[s.key]) { stat[s.key].count++; if (sev[s.key] != null) { stat[s.key].sevSum += sev[s.key]; stat[s.key].sevN++; } } } }
@@ -4592,29 +4703,31 @@ class Component extends DCLogic {
     const maxC = Math.max(1, ...top.map(x => x.count));
     const symRows = top.map(x => ({ name: x.name, count: x.count, pct: Math.round(x.count / maxC * 100), sev: x.sevN ? (x.sevSum / x.sevN).toFixed(1) : 'n/a' }));
     const pats = this.scanPatterns().slice(0, 6).map(p => ({ title: p.title, delta: `${p.diff > 0 ? '▲' : '▼'} ${Math.abs(p.diff).toFixed(1)}`, dirColor: p.diff < 0 ? '#E9695E' : '#2E8B5B', n: p.nA, lowConf: !!p.lowConf, hasConf: !!p.confounder, confounder: p.confounder || '' }));
-    const cutoff = this.db.todayISO(new Date(Date.now() - this.rangeDays() * 864e5));
     const prnLogs = (this.raw.medLogs || []).filter(l => l.isPrn && l.eventDate >= cutoff);
     const rc = {}; for (const l of prnLogs) { const r = l.reason || 'unspecified'; rc[r] = (rc[r] || 0) + 1; }
     const maxR = Math.max(1, ...Object.values(rc));
     const prnReasons = Object.entries(rc).sort((a, b) => b[1] - a[1]).map(([label, n]) => ({ label: label[0].toUpperCase() + label.slice(1), n, pct: Math.round(n / maxR * 100) }));
-    const weeks = Math.max(1, this.rangeDays() / 7);
+    const dated = [...cis.map(c => c.eventDate), ...prnLogs.map(l => l.eventDate)].filter(Boolean).sort();
+    const weeks = R === 'all' && dated.length ? Math.max(1, (new Date(dated.at(-1) + 'T12:00:00') - new Date(dated[0] + 'T12:00:00')) / 864e5 / 7) : Math.max(1, this.rangeDays() / 7);
     const sVals = cis.map(c => c.sleepHours).filter(x => x != null);
     const mVals = cis.map(c => c.ratings?.mood).filter(x => x != null);
     const sleepGeo = this.seriesGeo(cis.map(c => c.sleepHours ?? null), 640, 110, 3, 11);
     const moodGeo = this.seriesGeo(cis.map(c => c.ratings?.mood ?? null), 640, 110, 0, 10);
     const avgF = a => a.length ? (a.reduce((s, x) => s + x, 0) / a.length).toFixed(1) : 'n/a';
+    const detailRows = this.reportRecords(R).map(r => ({ date: new Date(r.date + 'T12:00:00').toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }), time: r.time || '', title: r.symptom || r.med || r.type, meta: [r.type, r.status, r.intensity, r.dose].filter(Boolean).join(' · '), details: r.details || '', hasDetails: !!r.details, notes: r.notes || '', hasNotes: !!r.notes }));
     return { open: true, name, rangeLabel, gen, provLabel,
       showMeds: !!secs.meds && meds.length > 0, meds, hasChanges: !!secs.meds && changes.length > 0, changes,
       showSymptoms: !!secs.symptoms && symRows.length > 0, symRows,
       showPatterns: !!secs.patterns && pats.length > 0, pats,
       showPrn: !!secs.prn && prnLogs.length > 0, prnTotal: prnLogs.length, prnPerWeek: (prnLogs.length / weeks).toFixed(1), prnReasons,
       showTrends: !!secs.trends && cis.length > 1, sleepLine: sleepGeo.line, moodLine: moodGeo.line, sleepAvg: avgF(sVals), moodAvg: avgF(mVals),
+      showDetails: !!secs.details && detailRows.length > 0, detailRows,
       onClose: this.closeReport, onPrint: () => window.print() };
   }
 
   doctorSummaryLines(p) {
     const pats = this.scanPatterns().slice(0, 3);
-    const cis = (this.raw.checkIns || []);
+    const cis = this.insCheckIns();
     const avg = (a) => a.length ? (a.reduce((s, x) => s + x, 0) / a.length) : 0;
     const dc = (this.raw.changes || []).find(c => c.changeType === 'dose');
     const lines = [];
@@ -4625,16 +4738,36 @@ class Component extends DCLogic {
     if (p.cats.includes('gi') || p.cats.includes('all')) lines.push({ h: 'GI', t: 'Reflux/IBS days flagged with food triggers (see log)' });
     lines.push({ h: 'PRN use', t: `${(this.raw.medLogs || []).filter(l => l.isPrn).length} as-needed doses in record` });
     if (pats.length) lines.push({ h: 'Notable patterns', t: pats.map(x => x.title).join('; ') });
+    const details = this.reportRecords(this.state.insRange || '7');
+    lines.push({ h: 'Detailed records', t: `${details.length} dated entries included, with saved details and notes.` });
     return lines;
   }
+  aiPayload(counts = this.exportCounts()) {
+    const raw = this.raw;
+    const settings = { ...(raw.settings || {}) };
+    const hasProfileImage = !!settings.displayAvatar;
+    // Pixel data is irrelevant to health analysis and can be very large; the
+    // full backup retains it exactly while the AI export records its presence.
+    if (hasProfileImage) settings.displayAvatar = '[stored in full backup; omitted from AI text]';
+    const dailyCheckIns = (raw.checkIns || []).map(c => { const { _prevShort, ...saved } = c; return saved; });
+    const generatedPatterns = this.scanPatterns().map(p => ({
+      title: p.title, detail: p.body, effect: p.ratingLabel, condition: p.condShort,
+      delta: Number(p.diff.toFixed(2)), matchingDays: p.nA, comparisonDays: p.nB,
+      lowConfidence: !!p.lowConf, confounder: p.confounder || null,
+    }));
+    return {
+      schema: 'hcc.ai.v2', exportedAt: new Date().toISOString(), completeHealthData: true,
+      counts, profile: { displayName: settings.displayName || null, hasProfileImage }, settings,
+      medicationProfiles: raw.meds || [], symptomDefinitions: raw.symptoms || [],
+      dailyCheckIns, medicationDailyLogs: raw.medLogs || [], symptomEpisodes: raw.episodes || [],
+      medicationChangeEvents: raw.changes || [], stressEvents: raw.stress || [],
+      doctorNotes: raw.doctorNotes || [], savedInsights: raw.savedInsights || [], generatedPatterns,
+    };
+  }
   aiPrompt(counts) {
-    const pats = this.scanPatterns().slice(0, 4).map(p => '- ' + p.body).join('\n');
-    return `You are helping me understand my health tracking data. Please analyze for patterns, risks, and questions to ask my care team.\n\nDATA WINDOW: ${counts.checkIns} daily check-ins, ${counts.episodes} symptom logs, ${counts.prn} as-needed doses.\nMEDS: ${(this.raw.meds || []).map(m => m.name + ' ' + m.dose).join(', ')}.\n\nPATTERNS THE APP ALREADY FLAGGED:\n${pats || '- (not enough data yet)'}\n\nPlease: 1) confirm or challenge these, 2) surface links I may have missed, 3) list questions for my doctor.`;
+    return `You are helping me understand my complete Health Tracker record. Analyze the data carefully without diagnosing. Look for time-based patterns, medication adherence and changes, AM/PM differences, PRN use, symptoms and severity, check-in ratings, sleep, food/protein, stress, context tags, relief methods, and all free-text notes. Distinguish correlation from causation and flag missing or inconsistent data. End with concise questions I can take to my care team.\n\nCOMPLETE APP DATA (JSON):\n${JSON.stringify(this.aiPayload(counts), null, 2)}`;
   }
-  aiJson(counts) {
-    const pats = this.scanPatterns().slice(0, 4).map(p => ({ effect: p.ratingLabel, condition: p.condShort, deltaPts: Number(p.diff.toFixed(1)), nDays: p.nA }));
-    return JSON.stringify({ schema: 'hcc.ai.v1', window: counts, meds: (this.raw.meds || []).map(m => ({ name: m.name, dose: m.dose, prn: !!m.prn })), flaggedPatterns: pats }, null, 2);
-  }
+  aiJson(counts) { return JSON.stringify(this.aiPayload(counts), null, 2); }
   shortDate(iso) { if (!iso) return ''; const d = new Date(iso + 'T12:00:00'); return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }); }
 
   // ================= SYMPTOM HISTORY REVIEW / EDIT =================
