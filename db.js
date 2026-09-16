@@ -3,7 +3,7 @@
 // Plain ES module, dynamically imported by the DC logic class. No backend, no network.
 
 export const DB_NAME = 'hcc';
-export const DB_VERSION = 1;
+export const DB_VERSION = 2;
 
 // All object stores keyed by `id`. Every record also carries createdAt/updatedAt/eventDate/notes.
 export const STORES = [
@@ -16,6 +16,7 @@ export const STORES = [
   'symptomEpisodes',
   'doctorNotes',
   'stressEvents',
+  'selfCareLogs',
   'insights',
   'backupMetadata',
 ];
@@ -348,6 +349,27 @@ export async function updateMedicationLog(id, patch) {
 export async function saveStressEvent(ev) {
   return put('stressEvents', stamp({ intensity: ev.intensity ?? null, label: ev.label ?? null, ...ev }, ev.eventDate));
 }
+
+// Log a self-care activity. Relief labels are stored alongside their ids so
+// historic entries remain readable if the user's Relief list later changes.
+export async function saveSelfCareLog(next) {
+  const prev = next.id ? await get('selfCareLogs', next.id) : null;
+  const rec = stamp({
+    ...(prev || {}),
+    ...next,
+    id: next.id || uuid(),
+    reliefIds: [...(next.reliefIds || [])],
+    reliefLabels: [...(next.reliefLabels || [])],
+    durationMin: Math.max(5, Number(next.durationMin) || 5),
+    afterStress: next.afterStress == null ? null : Number(next.afterStress),
+    afterMood: next.afterMood == null ? null : Number(next.afterMood),
+    createdAt: prev?.createdAt || next.createdAt || nowISO(),
+  }, next.eventDate);
+  await put('selfCareLogs', rec);
+  return rec;
+}
+
+export async function deleteSelfCareLog(id) { return remove('selfCareLogs', id); }
 
 // ---------- settings ----------
 export const DEFAULT_SETTINGS = {

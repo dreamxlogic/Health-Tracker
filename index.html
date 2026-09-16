@@ -574,7 +574,12 @@
         <sc-if value="{{ log.hasJustLogged }}" hint-placeholder-val="{{ false }}">
           <div style="display:flex;align-items:center;gap:10px;background:#E4F4EA;border-radius:16px;padding:12px 15px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2E8B5B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg><div style="font-size:13px;font-weight:700;color:#237A4E;flex:1">{{ log.justLogged }}</div></div>
         </sc-if>
-        <div style="font-size:24px;font-weight:800;letter-spacing:-.02em">What are you feeling?</div>
+        <div style="font-size:24px;font-weight:800;letter-spacing:-.02em">What would you like to log?</div>
+        <div onClick="{{ log.onSelfCare }}" style="cursor:pointer;background:linear-gradient(135deg,#E9F7EF,#D6F0E2);border:1px solid #C9E8D6;border-radius:var(--r-md);padding:14px 15px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 20px rgba(46,139,91,.12)">
+          <div style="width:42px;height:42px;border-radius:14px;background:#fff;color:#2E8B5B;display:flex;align-items:center;justify-content:center;font-size:21px">♡</div>
+          <div style="flex:1"><div style="font-size:14.5px;font-weight:800;color:#237A4E">Log self care</div><div style="font-size:11.5px;color:#527A63;margin-top:2px">What helped, how long, and how you felt after</div></div><div style="font-size:20px;color:#2E8B5B">›</div>
+        </div>
+        <div style="font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--head)">OR LOG A SYMPTOM</div>
         <div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.9);border:1px solid rgba(255,255,255,.95);border-radius:16px;padding:12px 15px;box-shadow:0 6px 18px rgba(120,110,180,.14)">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#9AA0B4" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4-4"></path></svg>
           <input value="{{ log.q }}" onInput="{{ log.onQ }}" placeholder="Search symptoms…" style="flex:1;border:none;background:transparent;outline:none;font-size:14px;font-weight:700;color:#23262F;font-family:inherit;min-width:0">
@@ -841,11 +846,11 @@
 
         <!-- SUB: WHAT HELPED -->
         <sc-if value="{{ settings.isWhatHelped }}" hint-placeholder-val="{{ false }}">
-        <div style="font-size:13px;color:#7A7F92;line-height:1.5;padding:0 2px">Relief options shown when logging a symptom. Assign each to the symptom categories where it should appear.</div>
+        <div style="font-size:13px;color:#7A7F92;line-height:1.5;padding:0 2px">Relief options are always available when logging Self Care. Turn “Symptom logs” on only for options you also want shown while logging symptoms, then choose the relevant symptom categories.</div>
         <div style="background:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:16px 18px;box-shadow:0 2px 6px rgba(120,110,180,.06),0 16px 36px rgba(120,110,180,.15);display:flex;flex-direction:column;gap:12px">
           <sc-for list="{{ settings.whatHelped }}" as="w" hint-placeholder-count="4">
             <div data-hcc-sep="1" style="display:flex;flex-direction:column;gap:7px;padding-bottom:10px;border-bottom:1px solid #F1F0F7">
-              <div style="display:flex;align-items:center;gap:8px"><div style="font-size:14px;font-weight:700;flex:1">{{ w.label }}</div><div onClick="{{ w.onRemove }}" style="cursor:pointer;color:#E9695E;font-size:16px;font-weight:700">✕</div></div>
+              <div style="display:flex;align-items:center;gap:8px"><div style="font-size:14px;font-weight:700;flex:1">{{ w.label }}</div><div onClick="{{ w.onToggleSymptoms }}" style="cursor:pointer;min-height:30px;display:flex;align-items:center;font-size:10px;font-weight:800;padding:5px 9px;border-radius:999px;background:{{ w.symptomBg }};color:{{ w.symptomColor }}">Symptom logs</div><div onClick="{{ w.onRemove }}" style="cursor:pointer;color:#E9695E;font-size:16px;font-weight:700">✕</div></div>
               <div style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ w.cats }}" as="c" hint-placeholder-count="3"><div onClick="{{ c.onClick }}" style="cursor:pointer;font-size:11px;font-weight:700;padding:5px 10px;border-radius:999px;background:{{ c.bg }};color:{{ c.color }}">{{ c.label }}</div></sc-for></div>
             </div>
           </sc-for>
@@ -1606,14 +1611,34 @@
               </div>
             </sc-for>
           </div>
-          <div style="display:flex;align-items:center;justify-content:center;gap:12px;font-size:9.5px;font-weight:700;color:#9AA0B4"><span style="color:#2E8B5B">✓ check-in</span><span style="color:var(--ac-deep)">● symptom</span><span style="color:#B35F1E">● medication</span></div>
+          <div style="display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;font-size:9.5px;font-weight:700;color:#9AA0B4"><span style="color:#2E8B5B">✓ check-in</span><span style="color:var(--ac-deep)">● symptom</span><span style="color:#B35F1E">● medication</span><span style="color:#2C8C78">● self care</span></div>
         </div>
 
         <div style="display:flex;align-items:center;gap:10px"><div style="font-size:15px;font-weight:800;flex:1">{{ activity.selectedLabel }}</div><div style="font-size:11px;font-weight:800;color:#9AA0B4">{{ activity.itemCount }}</div></div>
         <div style="background:{{ activity.checkinBg }};border:1px solid {{ activity.checkinBorder }};border-radius:var(--r-md);padding:14px 15px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 20px rgba(120,110,180,.1)"><div style="width:38px;height:38px;border-radius:13px;background:{{ activity.checkinIconBg }};display:flex;align-items:center;justify-content:center;color:{{ activity.checkinColor }};font-size:18px;font-weight:900">{{ activity.checkinIcon }}</div><div style="flex:1"><div style="font-size:13.5px;font-weight:800">Daily check-in</div><div style="font-size:11.5px;color:#7A7F92;margin-top:2px">{{ activity.checkinStatus }}</div></div><div onClick="{{ activity.onCheckin }}" style="cursor:pointer;min-height:40px;display:flex;align-items:center;background:{{ activity.checkinButtonBg }};color:#fff;font-size:12px;font-weight:800;padding:8px 14px;border-radius:999px">{{ activity.checkinCta }}</div></div>
+        <div onClick="{{ activity.onSelfCare }}" style="cursor:pointer;background:linear-gradient(135deg,#F2FAF5,#E3F4EA);border:1px solid #CFE9D9;border-radius:var(--r-md);padding:14px 15px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 20px rgba(46,139,91,.1)"><div style="width:38px;height:38px;border-radius:13px;background:#DDF2E5;color:#2E8B5B;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:900">♡</div><div style="flex:1"><div style="font-size:13.5px;font-weight:800">Self care</div><div style="font-size:11.5px;color:#527A63;margin-top:2px">Log relief for this date</div></div><div style="min-height:40px;display:flex;align-items:center;background:#2E8B5B;color:#fff;font-size:12px;font-weight:800;padding:8px 14px;border-radius:999px">Add</div></div>
 
-        <sc-if value="{{ activity.empty }}" hint-placeholder-val="{{ false }}"><div style="background:rgba(255,255,255,.72);border:1px dashed rgba(var(--ac-rgb),.3);border-radius:var(--r-lg);padding:24px 20px;text-align:center;font-size:13px;color:#7A7F92;line-height:1.5">No medication or symptom activity saved for this date.</div></sc-if>
+        <sc-if value="{{ activity.empty }}" hint-placeholder-val="{{ false }}"><div style="background:rgba(255,255,255,.72);border:1px dashed rgba(var(--ac-rgb),.3);border-radius:var(--r-lg);padding:24px 20px;text-align:center;font-size:13px;color:#7A7F92;line-height:1.5">No medication, symptom, or self-care activity saved for this date.</div></sc-if>
         <sc-if value="{{ activity.hasItems }}" hint-placeholder-val="{{ false }}"><div style="background:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:5px 16px;box-shadow:0 2px 6px rgba(120,110,180,.06),0 16px 36px rgba(120,110,180,.15)"><sc-for list="{{ activity.items }}" as="it" hint-placeholder-count="4"><div onClick="{{ it.onOpen }}" data-hcc-sep="1" style="cursor:pointer;min-height:62px;display:flex;align-items:center;gap:11px;padding:10px 0;border-bottom:1px solid #F1F0F7"><div style="width:10px;height:10px;border-radius:50%;background:{{ it.dot }};flex:none"></div><div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:800">{{ it.title }}</div><div style="font-size:11.5px;color:#7A7F92;margin-top:2px">{{ it.sub }}</div></div><div style="font-size:9.5px;font-weight:800;color:{{ it.kindColor }};background:{{ it.kindBg }};padding:4px 8px;border-radius:999px;flex:none">{{ it.kind }}</div><div style="font-size:19px;color:#B0B4C4">›</div></div></sc-for></div></sc-if>
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- ============================ SELF CARE EDITOR ============================ -->
+    <sc-if value="{{ selfCare.open }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;background:rgba(40,34,70,.38);backdrop-filter:blur(4px);display:flex;flex-direction:column;justify-content:flex-end;z-index:73">
+      <div onClick="{{ selfCare.onCancel }}" style="flex:1"></div>
+      <div style="background:linear-gradient(165deg,#fff,#F8FCFA);border-radius:var(--r-sheet) var(--r-sheet) 0 0;padding:18px 20px calc(26px + var(--hcc-safe-bottom));display:flex;flex-direction:column;gap:15px;box-shadow:0 -20px 50px rgba(40,100,75,.25);max-height:92%;overflow-y:auto">
+        <div style="width:40px;height:5px;border-radius:99px;background:#E4E2EE;align-self:center"></div>
+        <div style="display:flex;align-items:flex-start;gap:10px"><div style="flex:1"><div style="font-size:20px;font-weight:800">{{ selfCare.title }}</div><div style="font-size:12px;color:#7A7F92;margin-top:3px">Track something you did to care for yourself.</div></div><div onClick="{{ selfCare.onCancel }}" style="cursor:pointer;width:34px;height:34px;border-radius:50%;background:#F6F5FB;display:flex;align-items:center;justify-content:center;font-size:17px;color:#565B6E">×</div></div>
+        <div style="display:flex;gap:10px"><div onClick="{{ selfCare.onDateOpen }}" style="cursor:pointer;min-height:52px;flex:1;background:#F3F8F5;border-radius:14px;padding:10px 12px"><div style="font-size:10px;font-weight:800;letter-spacing:.07em;color:#789486">DATE</div><div style="font-size:13px;font-weight:800;color:#237A4E;margin-top:4px">{{ selfCare.dateLabel }}</div></div><div onClick="{{ selfCare.onTimeOpen }}" style="cursor:pointer;min-height:52px;flex:1;background:#F3F8F5;border-radius:14px;padding:10px 12px"><div style="font-size:10px;font-weight:800;letter-spacing:.07em;color:#789486">TIME</div><div style="font-size:13px;font-weight:800;color:#237A4E;margin-top:4px">{{ selfCare.timeLabel }}</div></div></div>
+        <div style="display:flex;flex-direction:column;gap:8px"><div style="font-size:11px;font-weight:800;letter-spacing:.07em;color:#789486">WHAT DID YOU DO?</div><sc-if value="{{ selfCare.noRelief }}" hint-placeholder-val="{{ false }}"><div style="font-size:12.5px;color:#7A7F92;background:#F6F5FB;border-radius:13px;padding:12px">Add Relief options in Settings first, then return here.</div></sc-if><div style="display:flex;gap:8px;flex-wrap:wrap"><sc-for list="{{ selfCare.reliefChips }}" as="c" hint-placeholder-count="5"><div onClick="{{ c.onClick }}" style="cursor:pointer;min-height:42px;display:flex;align-items:center;font-size:12.5px;font-weight:{{ c.weight }};padding:9px 14px;border-radius:999px;background:{{ c.bg }};color:{{ c.color }}">{{ c.label }}</div></sc-for></div></div>
+        <div style="background:#F3F8F5;border-radius:15px;padding:12px 14px;display:flex;align-items:center;gap:12px"><div style="flex:1"><div style="font-size:12px;font-weight:800;color:#456355">Length</div><div style="font-size:11px;color:#789486;margin-top:2px">5-minute increments</div></div><div onClick="{{ selfCare.onDurationDec }}" style="cursor:pointer;width:42px;height:42px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;color:#237A4E;font-size:20px;font-weight:800">−</div><div style="min-width:62px;text-align:center;font-size:17px;font-weight:800;color:#237A4E">{{ selfCare.duration }}</div><div onClick="{{ selfCare.onDurationInc }}" style="cursor:pointer;width:42px;height:42px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;color:#237A4E;font-size:20px;font-weight:800">＋</div></div>
+        <div style="display:flex;flex-direction:column;gap:10px"><div><div style="font-size:11px;font-weight:800;letter-spacing:.07em;color:#789486">HOW DID YOU FEEL AFTER? <span style="font-weight:600">(OPTIONAL)</span></div><div style="font-size:11px;color:#9AA0B4;margin-top:3px">Choose one in either row, or leave both blank.</div></div><div><div style="font-size:12px;font-weight:800;color:#565B6E;margin-bottom:7px">Stress after</div><div style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ selfCare.stressChips }}" as="c" hint-placeholder-count="5"><div onClick="{{ c.onClick }}" style="cursor:pointer;min-height:40px;display:flex;align-items:center;font-size:11.5px;font-weight:{{ c.weight }};padding:8px 11px;border-radius:999px;background:{{ c.bg }};color:{{ c.color }}">{{ c.label }}</div></sc-for></div></div><div><div style="font-size:12px;font-weight:800;color:#565B6E;margin-bottom:7px">Mood after</div><div style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ selfCare.moodChips }}" as="c" hint-placeholder-count="5"><div onClick="{{ c.onClick }}" style="cursor:pointer;min-height:40px;display:flex;align-items:center;font-size:11.5px;font-weight:{{ c.weight }};padding:8px 11px;border-radius:999px;background:{{ c.bg }};color:{{ c.color }}">{{ c.label }}</div></sc-for></div></div></div>
+        <textarea onInput="{{ selfCare.onNotes }}" value="{{ selfCare.notes }}" placeholder="Notes (optional)" style="min-height:72px;resize:vertical;border:none;background:#F6F5FB;border-radius:14px;padding:12px 13px;font-size:13.5px;line-height:1.45;color:#23262F;outline:none;font-family:inherit"></textarea>
+        <sc-if value="{{ selfCare.hasErr }}" hint-placeholder-val="{{ false }}"><div style="font-size:12px;font-weight:700;color:#B3502E;background:#FBEFEC;border-radius:12px;padding:10px 12px">{{ selfCare.err }}</div></sc-if>
+        <div onClick="{{ selfCare.onSave }}" style="cursor:pointer;min-height:52px;display:flex;align-items:center;justify-content:center;background:linear-gradient(90deg,#5CAE87,#2E8B5B);color:#fff;font-size:15px;font-weight:800;padding:14px;border-radius:999px;box-shadow:0 10px 22px rgba(46,139,91,.28)">{{ selfCare.saveLabel }}</div>
+        <sc-if value="{{ selfCare.isEdit }}" hint-placeholder-val="{{ false }}"><sc-if value="{{ selfCare.notDeleteConfirm }}" hint-placeholder-val="{{ true }}"><div onClick="{{ selfCare.onAskDelete }}" style="cursor:pointer;text-align:center;color:#B3502E;font-size:13px;font-weight:800;padding:10px">Delete self-care entry</div></sc-if><sc-if value="{{ selfCare.hasDeleteConfirm }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:8px;background:#FBEFEC;border-radius:14px;padding:11px 13px"><div style="flex:1;font-size:12px;font-weight:700;color:#B3502E">Delete this self-care entry?</div><div onClick="{{ selfCare.onDelete }}" style="cursor:pointer;min-height:38px;display:flex;align-items:center;background:#E9695E;color:#fff;font-size:12px;font-weight:800;padding:7px 12px;border-radius:999px">Delete</div><div onClick="{{ selfCare.onKeep }}" style="cursor:pointer;min-height:38px;display:flex;align-items:center;background:#fff;color:#565B6E;font-size:12px;font-weight:700;padding:7px 12px;border-radius:999px">Keep</div></div></sc-if></sc-if>
       </div>
     </div>
     </sc-if>
@@ -2131,7 +2156,7 @@
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
   state = { loading: true, route: 'home', ci: null, draft: null, medDate: null, historicMed: null, err: null };
-  raw = { settings: null, meds: [], symptoms: [], checkIns: [], medLogs: [], episodes: [], changes: [], stress: [], doctorNotes: [], savedInsights: [], backups: [], backup: null };
+  raw = { settings: null, meds: [], symptoms: [], checkIns: [], medLogs: [], episodes: [], changes: [], stress: [], selfCare: [], doctorNotes: [], savedInsights: [], backups: [], backup: null };
   backupStores = {};
 
   // ---------- expressive theming (Tweaks) ----------
@@ -2290,7 +2315,7 @@ class Component extends DCLogic {
 
   async refresh() {
     const db = this.db;
-    const [settings, meds, symptoms, checkIns, medLogs, episodes, changes, stress, doctorNotes, savedInsights, backups] = await Promise.all([
+    const [settings, meds, symptoms, checkIns, medLogs, episodes, changes, stress, selfCare, doctorNotes, savedInsights, backups] = await Promise.all([
       db.getSettings(),
       db.getAll('medicationProfiles'),
       db.getAll('symptomDefinitions'),
@@ -2299,6 +2324,7 @@ class Component extends DCLogic {
       db.getAll('symptomEpisodes'),
       db.getAll('medicationChangeEvents'),
       db.getAll('stressEvents'),
+      db.getAll('selfCareLogs'),
       db.getAll('doctorNotes'),
       db.getAll('insights'),
       db.getAll('backupMetadata'),
@@ -2309,7 +2335,7 @@ class Component extends DCLogic {
       userSettings: settings ? [settings] : [], medicationProfiles: meds,
       symptomDefinitions: symptoms, dailyCheckIns: checkIns,
       medicationDailyLogs: medLogs, medicationChangeEvents: changes,
-      symptomEpisodes: episodes, doctorNotes, stressEvents: stress,
+      symptomEpisodes: episodes, doctorNotes, stressEvents: stress, selfCareLogs: selfCare,
       insights: savedInsights, backupMetadata: backups,
     };
     // sanitize stored text: no em dashes anywhere, including data persisted before the copy rules
@@ -2320,7 +2346,7 @@ class Component extends DCLogic {
       return x;
     };
     const backup = backups.find(x => x.id === 'lastBackup') || null;
-    this.raw = clean({ settings, meds, symptoms, checkIns, medLogs, episodes, changes, stress, doctorNotes, savedInsights, backups, backup });
+    this.raw = clean({ settings, meds, symptoms, checkIns, medLogs, episodes, changes, stress, selfCare, doctorNotes, savedInsights, backups, backup });
     // first-run wizard: shows until finished/skipped (items added mid-wizard don't dismiss it)
     const s = this.raw.settings || {};
     let ob = this.state.ob || null;
@@ -2888,6 +2914,49 @@ class Component extends DCLogic {
     };
   }
 
+  // ---------- self care ----------
+  openSelfCare = (id = null, selectedDate = null) => () => {
+    const saved = id ? (this.raw.selfCare || []).find(x => x.id === id) : null;
+    if (id && !saved) return;
+    const date = saved?.eventDate || selectedDate || this.db.todayISO();
+    const parsed = new Date(saved?.time || `${date}T${this.hhmm()}:00`);
+    const time = Number.isNaN(parsed.getTime()) ? this.hhmm() : this.hhmm(parsed);
+    const current = this.raw.settings?.whatHelped || [];
+    const byId = new Map(current.map(x => [x.id, x]));
+    const selected = [];
+    (saved?.reliefIds || []).forEach((rid, i) => selected.push({ id: rid, label: byId.get(rid)?.label || saved?.reliefLabels?.[i] || 'Relief' }));
+    (saved?.reliefLabels || []).forEach(label => { if (!selected.some(x => x.label === label)) selected.push({ id: `legacy:${label}`, label }); });
+    this.setState({ selfCareEdit: { id: saved?.id || null, date, time, durationMin: saved?.durationMin || 30, selected, afterStress: saved?.afterStress ?? null, afterMood: saved?.afterMood ?? null, notes: saved?.notes || '', err: null, confirmDelete: false } });
+  };
+  closeSelfCare = () => this.setState({ selfCareEdit: null });
+  selfCareToggleRelief = (option) => () => this.setState(st => {
+    const cur = st.selfCareEdit?.selected || [];
+    const selected = cur.some(x => x.id === option.id) ? cur.filter(x => x.id !== option.id) : [...cur, { id: option.id, label: option.label }];
+    return { selfCareEdit: { ...st.selfCareEdit, selected, err: null } };
+  });
+  selfCareDuration = (delta) => () => this.setState(st => ({ selfCareEdit: { ...st.selfCareEdit, durationMin: Math.max(5, Math.min(480, (st.selfCareEdit?.durationMin || 30) + delta)) } }));
+  selfCareRating = (field, value) => () => this.setState(st => ({ selfCareEdit: { ...st.selfCareEdit, [field]: st.selfCareEdit?.[field] === value ? null : value } }));
+  selfCareNotes = (e) => { const value = e.target.value; this.setState(st => ({ selfCareEdit: { ...st.selfCareEdit, notes: value } })); };
+  saveSelfCare = async () => {
+    const s = this.state.selfCareEdit; if (!s) return;
+    if (!(s.selected || []).length) { this.setState({ selfCareEdit: { ...s, err: 'Choose at least one relief option.' } }); return; }
+    await this.db.saveSelfCareLog({ id: s.id || undefined, eventDate: s.date, time: `${s.date}T${s.time}:00`, durationMin: s.durationMin, reliefIds: s.selected.map(x => x.id), reliefLabels: s.selected.map(x => x.label), afterStress: s.afterStress, afterMood: s.afterMood, notes: s.notes?.trim() || null });
+    await this.refresh();
+    this.setState({ selfCareEdit: null, justLogged: this.state.route === 'log' ? 'self care' : this.state.justLogged });
+  };
+  deleteSelfCare = async () => { const s = this.state.selfCareEdit; if (!s?.id) return; await this.db.deleteSelfCareLog(s.id); await this.refresh(); this.setState({ selfCareEdit: null }); };
+  viewSelfCare() {
+    const s = this.state.selfCareEdit; if (!s) return { open: false };
+    const current = (this.raw.settings?.whatHelped || []).map(x => ({ id: x.id, label: x.label }));
+    const options = [...current, ...(s.selected || []).filter(x => !current.some(w => w.id === x.id || w.label === x.label))];
+    const chip = (label, active, onClick, activeBg = '#2E8B5B') => ({ label, onClick, bg: active ? activeBg : '#F6F5FB', color: active ? '#fff' : '#565B6E', weight: active ? 800 : 600 });
+    const reliefChips = options.map(o => chip(o.label, (s.selected || []).some(x => x.id === o.id || x.label === o.label), this.selfCareToggleRelief(o)));
+    const stressDefs = [[0, 'None'], [2, 'Low'], [5, 'Moderate'], [8, 'High'], [10, 'Extreme']];
+    const moodDefs = [[1, 'Very low'], [3, 'Low'], [5, 'Okay'], [8, 'Good'], [10, 'Great']];
+    return { open: true, title: s.id ? 'Edit self care' : 'Log self care', isEdit: !!s.id, saveLabel: s.id ? 'Save changes' : 'Save self care', reliefChips, noRelief: options.length === 0, duration: `${s.durationMin} min`, dateLabel: new Date(s.date + 'T12:00:00').toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }), timeLabel: this.fmtTime(s.time), stressChips: stressDefs.map(([v, l]) => chip(l, s.afterStress === v, this.selfCareRating('afterStress', v))), moodChips: moodDefs.map(([v, l]) => chip(l, s.afterMood === v, this.selfCareRating('afterMood', v), 'var(--ac)')), notes: s.notes || '', hasErr: !!s.err, err: s.err || '', hasDeleteConfirm: !!s.confirmDelete, notDeleteConfirm: !s.confirmDelete,
+      onDateOpen: this.openDatePick('selfCareDate', s.date), onTimeOpen: this.openTimePick('selfCareTime', null, s.time), onDurationDec: this.selfCareDuration(-5), onDurationInc: this.selfCareDuration(5), onNotes: this.selfCareNotes, onSave: this.saveSelfCare, onCancel: this.closeSelfCare, onAskDelete: () => this.setState({ selfCareEdit: { ...s, confirmDelete: true } }), onKeep: () => this.setState({ selfCareEdit: { ...s, confirmDelete: false } }), onDelete: this.deleteSelfCare };
+  }
+
   // ---------- glass time picker ----------
   openTimePick = (kind, refId, value) => () => {
     const [h, mi] = (value || this.hhmm()).split(':').map(Number);
@@ -2951,6 +3020,8 @@ class Component extends DCLogic {
       this.setState(st => ({ episodeEdit: st.episodeEdit ? { ...st.episodeEdit, time: val } : st.episodeEdit }));
     } else if (tp.kind === 'medLogTime') {
       this.setState(st => ({ medLogEdit: st.medLogEdit ? { ...st.medLogEdit, time: val } : st.medLogEdit }));
+    } else if (tp.kind === 'selfCareTime') {
+      this.setState(st => ({ selfCareEdit: st.selfCareEdit ? { ...st.selfCareEdit, time: val } : st.selfCareEdit }));
     } else if (tp.kind === 'medSchedule') {
       // set a med's scheduled time straight from the Home row (logged as a timing change)
       const ref = typeof tp.refId === 'object' ? tp.refId : { medId: tp.refId, doseSlot: null };
@@ -2989,6 +3060,7 @@ class Component extends DCLogic {
       return { dp: null, historicMed: { ...next, qty: base.qty || 1, reason: base.reason || null, prnDose: base.prnDose ?? next.prnDose } };
     }
     if (f === 'episodeDate') return { dp: null, episodeEdit: st.episodeEdit ? { ...st.episodeEdit, date: value || st.episodeEdit.date } : st.episodeEdit };
+    if (f === 'selfCareDate') return { dp: null, selfCareEdit: st.selfCareEdit ? { ...st.selfCareEdit, date: value || st.selfCareEdit.date } : st.selfCareEdit };
     return { dp: null, medEdit: st.medEdit ? { ...st.medEdit, [f]: value } : st.medEdit };
   });
   viewDp() {
@@ -3000,18 +3072,18 @@ class Component extends DCLogic {
     for (let d = 1; d <= nDays; d++) {
       const iso = `${dp.y}-${String(dp.m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
       const sel = dp.sel === iso;
-      const disabled = (dp.field === 'historicDate' || dp.field === 'episodeDate') && iso > this.db.todayISO();
+      const disabled = (dp.field === 'historicDate' || dp.field === 'episodeDate' || dp.field === 'selfCareDate') && iso > this.db.todayISO();
       cells.push({ day: d, onClick: disabled ? () => {} : this.dpSelect(iso), cursor: disabled ? 'default' : 'pointer', op: disabled ? .28 : 1,
         bg: sel ? 'linear-gradient(135deg,var(--ac-soft),var(--ac))' : 'rgba(255,255,255,.75)',
         fg: sel ? '#fff' : '#3a3f52', weight: sel ? 800 : 600,
         shadow: sel ? '0 6px 14px rgba(var(--ac-rgb),.4)' : '0 2px 6px rgba(120,110,180,.08)' });
     }
-    const titles = { startDate: 'Start date', endDate: 'End date', historicDate: 'When did you take it?', episodeDate: 'Symptom date' };
+    const titles = { startDate: 'Start date', endDate: 'End date', historicDate: 'When did you take it?', episodeDate: 'Symptom date', selfCareDate: 'Self-care date' };
     return { open: true, title: titles[dp.field] || 'Pick a date',
       monthLabel: first.toLocaleDateString(undefined, { month: 'long', year: 'numeric' }),
       dow: ['S', 'M', 'T', 'W', 'T', 'F', 'S'], cells,
       onPrev: this.dpNav(-1), onNext: this.dpNav(1),
-      showClear: dp.field !== 'historicDate' && dp.field !== 'episodeDate', onCancel: () => this.setState({ dp: null }), onClear: () => this.dpApply(''), onSave: () => this.dpApply(this.state.dp.sel || '') };
+      showClear: dp.field !== 'historicDate' && dp.field !== 'episodeDate' && dp.field !== 'selfCareDate', onCancel: () => this.setState({ dp: null }), onClear: () => this.dpApply(''), onSave: () => this.dpApply(this.state.dp.sel || '') };
   }
 
   // ---------- PRN overlay ----------
@@ -3257,7 +3329,7 @@ class Component extends DCLogic {
   addListItem = async (field, inputId, extra) => {
     const label = this.val(inputId); if (!label) return;
     const list = [...(this.raw.settings[field] || [])];
-    list.push({ id: 'u' + Date.now().toString(36), label, cats: ['all'], ...extra });
+    list.push({ id: 'u' + Date.now().toString(36), label, cats: ['all'], ...(field === 'whatHelped' ? { showInSymptoms: true } : {}), ...extra });
     await this.db.saveSettings({ [field]: list });
     const el = document.getElementById(inputId); if (el) el.value = '';
     await this.refresh();
@@ -3275,6 +3347,10 @@ class Component extends DCLogic {
       return { ...x, cats };
     });
     await this.db.saveSettings({ [field]: list }); await this.refresh();
+  };
+  toggleReliefSymptoms = (id) => async () => {
+    const list = (this.raw.settings.whatHelped || []).map(x => x.id === id ? { ...x, showInSymptoms: x.showInSymptoms === false } : x);
+    await this.db.saveSettings({ whatHelped: list }); await this.refresh();
   };
 
   // ---------- preferences ----------
@@ -3355,7 +3431,7 @@ class Component extends DCLogic {
     const clean = (label || '').trim(); if (!clean) return;
     const list = [...((this.raw.settings || {})[field] || [])];
     if (list.some(x => x.label.toLowerCase() === clean.toLowerCase())) return;
-    list.push({ id: field.slice(0, 2) + Date.now().toString(36), label: clean, cats: ['all'], ...(extra || {}) });
+    list.push({ id: field.slice(0, 2) + Date.now().toString(36), label: clean, cats: ['all'], ...(field === 'whatHelped' ? { showInSymptoms: true } : {}), ...(extra || {}) });
     await this.db.saveSettings({ [field]: list });
     await this.refresh();
   };
@@ -3567,7 +3643,7 @@ class Component extends DCLogic {
         cMore: route === 'settings' ? 'var(--ac)' : '#9AA0B4',
       },
     };
-    const emptyOverlays = { prn: { open: false }, historicMed: { open: false }, medEdit: { open: false }, medLogEdit: { open: false }, symEdit: { open: false }, episodeEdit: { open: false }, sp: { open: false, showBrowse: false, showDone: false }, exp: { open: false }, tp: { open: false }, dp: { open: false }, rep: { open: false } };
+    const emptyOverlays = { prn: { open: false }, historicMed: { open: false }, medEdit: { open: false }, medLogEdit: { open: false }, symEdit: { open: false }, episodeEdit: { open: false }, selfCare: { open: false }, sp: { open: false, showBrowse: false, showDone: false }, exp: { open: false }, tp: { open: false }, dp: { open: false }, rep: { open: false } };
     if (st.loading || !db) return { ...base, ...emptyOverlays, home: {}, meds: {}, ci: {}, log: {}, settings: {}, ins: {}, activity: {} };
 
     const today = db.todayISO();
@@ -3585,6 +3661,7 @@ class Component extends DCLogic {
       medLogEdit: this.viewMedLogEdit(),
       symEdit: this.viewSymEdit(),
       episodeEdit: this.viewEpisodeEdit(),
+      selfCare: this.viewSelfCare(),
       sp: this.viewSymPicker(),
       ins: this.viewInsights(),
       tp: this.viewTp(),
@@ -3653,6 +3730,7 @@ class Component extends DCLogic {
       else if (l.status === 'taken') items.push({ ts: this.tsOf(l), title: `${this.medName(l.medId)}${l.doseSlot === 'morning' ? ' AM' : l.doseSlot === 'night' ? ' PM' : ''} taken`, sub: this.fmtWhen(l), iconBg: 'linear-gradient(135deg,#D2EEDD,#AEDFC4)', dot: '#2E8B5B' });
     }
     for (const c of (raw.checkIns || [])) { if (c.completed) items.push({ ts: this.tsOf(c), title: 'Check-in completed', sub: this.fmtWhen(c), iconBg: 'linear-gradient(135deg,#D6E6F9,#B4D2F3)', dot: '#3A6FB0' }); }
+    for (const s of (raw.selfCare || [])) items.push({ ts: this.tsOf(s), title: (s.reliefLabels || []).join(', ') || 'Self care', sub: `${this.fmtWhen(s)} · ${s.durationMin || 0} min`, iconBg: 'linear-gradient(135deg,#D2EEDD,#AEDFC4)', dot: '#2C8C78' });
     items.sort((a, b) => b.ts - a.ts);
     const recent = items.slice(0, 4);
 
@@ -3944,7 +4022,7 @@ class Component extends DCLogic {
           sub: (avgSev != null ? this.sevWord(avgSev) + ' · ' : '') + 'last ' + t,
           onClick: this.pickSymptom({ id: key, name: g.name, category: g.category }) };
       }).sort((a, b) => Number(b.count) - Number(a.count));
-      return { headerTitle: "Log what you're feeling", isPick: true, isDetail: false, onBack: this.logBack,
+      return { headerTitle: 'Add a log', isPick: true, isDetail: false, onBack: this.logBack, onSelfCare: this.openSelfCare(null, this.db.todayISO()),
         hasJustLogged: !!this.state.justLogged, justLogged: `Saved ${this.state.justLogged || ''}. Log another or head back.`,
         q: d.q || '', onQ: this.logQ,
         hasLoggedToday: loggedToday.length > 0, loggedToday,
@@ -3970,7 +4048,7 @@ class Component extends DCLogic {
     });
     const settings = raw.settings || {};
     const inCat = (arr) => (arr || []).filter(x => (x.cats || ['all']).includes('all') || (x.cats || []).includes(cat));
-    const helpLabels = [...meds.filter(m => m.prn).map(m => m.name), ...inCat(settings.whatHelped).map(w => w.label)];
+    const helpLabels = [...meds.filter(m => m.prn).map(m => m.name), ...inCat(settings.whatHelped).filter(w => w.showInSymptoms !== false).map(w => w.label)];
     const helpChips = helpLabels.map(o => chip(o, (d.whatHelped || []).includes(o), this.toggleDraftArr('whatHelped', o)));
     const ctxChips = inCat(settings.contexts).map(c => chip(c.label, (d.context || []).includes(c.key), this.toggleDraftArr('context', c.key)));
     const triggerOpts = [['stress', 'Stress'], ['skippedMeal', 'Skipped meal'], ['food', 'Food'], ['heat', 'Heat'], ['unknown', 'Not sure']];
@@ -3998,7 +4076,7 @@ class Component extends DCLogic {
     const raw = this.raw, s = raw.settings || {};
     const loaded = (raw.meds || []).length > 0 || (raw.checkIns || []).length > 0;
     const summary = loaded
-      ? `Loaded: ${(raw.meds || []).length} meds · ${(raw.symptoms || []).length} symptoms · ${(raw.checkIns || []).length} check-ins · ${(raw.episodes || []).length} episodes.`
+      ? `Loaded: ${(raw.meds || []).length} meds · ${(raw.symptoms || []).length} symptoms · ${(raw.checkIns || []).length} check-ins · ${(raw.episodes || []).length} symptom logs · ${(raw.selfCare || []).length} self-care logs.`
       : 'No data yet. Set up your tracker and start logging — your data stays private on this device.';
     const steps = (s.checkInSteps || []).slice().sort((a, b) => (a.name || '').localeCompare(b.name || '')).map(x => ({ name: x.name, onRename: this.renameStep(x.key), onToggle: this.toggleStep(x.key), trackBg: x.enabled ? 'var(--ac)' : '#E4E2EE', knobLeft: x.enabled ? '22px' : '3px' }));
     const meds = (raw.meds || []).map(m => { const sched = this.medScheduleText(m); return { name: m.name, sub: `${m.dose || ''}${m.prn ? ' · PRN' : (m.weekly ? ' · weekly' : (sched ? ' · ' + sched : ''))}${m.active === false ? ' · inactive' : ''}`, iconBg: `linear-gradient(135deg,${this.lighten(m.color || '#8E7CF3', 0.55)},${m.color || '#8E7CF3'})`, iconTint: this.darken(m.color || '#8E7CF3', 0.42), iconSrc: this.medIconSrc(m.icon), onEdit: () => this.openMedEditor(m) }; });
@@ -4034,7 +4112,7 @@ class Component extends DCLogic {
     const showAdd = sub === 'meds' || sub === 'symptoms';
     const onHeaderAdd = sub === 'meds' ? (() => this.openMedEditor(null)) : sub === 'symptoms' ? (() => this.openSymEditor(null)) : (() => {});
     const catChips = (item, field) => this.CAT_OPTS.map(c => ({ label: c.label, onClick: this.toggleItemCat(field, item.id, c.key), bg: (item.cats || []).includes(c.key) ? 'var(--ac)' : '#F6F5FB', color: (item.cats || []).includes(c.key) ? '#fff' : '#9AA0B4' }));
-    const whatHelped = (s.whatHelped || []).map(w => ({ label: w.label, onRemove: this.removeListItem('whatHelped', w.id), cats: catChips(w, 'whatHelped') }));
+    const whatHelped = (s.whatHelped || []).map(w => ({ label: w.label, onRemove: this.removeListItem('whatHelped', w.id), onToggleSymptoms: this.toggleReliefSymptoms(w.id), symptomBg: w.showInSymptoms !== false ? '#E4F4EA' : '#F6F5FB', symptomColor: w.showInSymptoms !== false ? '#2E8B5B' : '#9AA0B4', cats: catChips(w, 'whatHelped') }));
     const contexts = (s.contexts || []).map(w => ({ label: w.label, onRemove: this.removeListItem('contexts', w.id), cats: catChips(w, 'contexts') }));
     const avatarHint = this.state.avatarStatus === 'saving' ? 'Saving photo…' : this.state.avatarStatus === 'saved' ? 'Photo saved ✓' : this.state.avatarStatus === 'error' ? 'Could not save that photo. Try JPG or PNG.' : 'Tap the avatar to upload a photo';
     const avatarHintColor = this.state.avatarStatus === 'saved' ? '#2E8B5B' : this.state.avatarStatus === 'error' ? '#B3502E' : '#9AA0B4';
@@ -4561,6 +4639,7 @@ class Component extends DCLogic {
       medicationLogs: medLogs.length, scheduledMedicationLogs: medLogs.filter(l => !l.isPrn).length,
       prnDoses: medLogs.filter(l => l.isPrn).length, medicationChanges: (raw.changes || []).length,
       stressEvents: (raw.stress || []).length, doctorNotes: (raw.doctorNotes || []).length,
+      selfCareLogs: (raw.selfCare || []).length,
       savedInsights: (raw.savedInsights || []).length,
     };
   }
@@ -4622,6 +4701,7 @@ class Component extends DCLogic {
     }
     for (const c of (this.raw.changes || [])) add({ ts: this.tsOf(c), date: c.eventDate, time: timeOf(c), type: 'Medication change', med: this.medName(c.medId), symptom: list(c.symptomsToWatch), category: 'Medication', intensity: '', status: c.changeType || 'Changed', dose: '', details: [`Previous: ${c.prev ?? 'not set'}`, `Next: ${c.next ?? 'not set'}`, c.expectedImpact ? `Expected impact: ${c.expectedImpact}` : ''].filter(Boolean).join('; '), notes: c.reason || c.notes || '' });
     for (const s of (this.raw.stress || [])) add({ ts: this.tsOf(s), date: s.eventDate, time: timeOf(s), type: 'Stress event', med: '', symptom: s.label || 'Stress', category: 'Mood', intensity: s.intensity == null ? '' : `${s.intensity}/10`, status: 'Logged', dose: '', details: '', notes: s.notes || '' });
+    for (const s of (this.raw.selfCare || [])) add({ ts: this.tsOf(s), date: s.eventDate, time: timeOf(s), type: 'Self care', med: '', symptom: list(s.reliefLabels) || 'Self care', category: 'Self care', intensity: '', status: 'Completed', dose: '', details: [`Length: ${s.durationMin || 0} min`, `Stress after: ${s.afterStress == null ? 'not logged' : s.afterStress + '/10'}`, `Mood after: ${s.afterMood == null ? 'not logged' : s.afterMood + '/10'}`].join('; '), notes: s.notes || '' });
     for (const n of (this.raw.doctorNotes || [])) add({ ts: this.tsOf(n), date: n.eventDate, time: timeOf(n), type: 'Doctor note', med: '', symptom: '', category: 'Note', intensity: '', status: 'Saved', dose: '', details: n.title || n.subject || '', notes: n.notes || n.body || n.text || '' });
     return rows.sort((a, b) => b.ts - a.ts);
   }
@@ -4657,7 +4737,7 @@ class Component extends DCLogic {
     if (e.type === 'backup') {
       out.title = 'Full backup';
       out.desc = 'A complete, private archive of every database area in the app, including your profile photo. Keep it somewhere safe.';
-      out.stats = [`${counts.checkIns} check-ins`, `${counts.symptomEpisodes} symptom logs`, `${counts.medicationLogs} med logs`, `${counts.medications} meds`, `${counts.symptomDefinitions} symptom types`, `${this.db.STORES.length} data areas`];
+      out.stats = [`${counts.checkIns} check-ins`, `${counts.symptomEpisodes} symptom logs`, `${counts.medicationLogs} med logs`, `${counts.selfCareLogs} self-care logs`, `${counts.medications} meds`, `${this.db.STORES.length} data areas`];
       out.preview = JSON.stringify({ schema: 'hcc.backup.v2', exportedAt: new Date().toISOString().slice(0, 10), complete: true, stores: Object.fromEntries((this.db.STORES || []).map(name => [name, (this.backupStores[name] || []).length])) }, null, 2);
       out.cta = e.backupDone ? '✓ Backup downloaded' : 'Download backup (.json)';
     } else if (e.type === 'doctor') {
@@ -4737,6 +4817,7 @@ class Component extends DCLogic {
     if (p.cats.includes('sleep') || p.cats.includes('all')) lines.push({ h: 'Sleep', t: `Avg ${avg(cis.map(c => c.sleepHours).filter(x => x != null)).toFixed(1)} h/night` });
     if (p.cats.includes('gi') || p.cats.includes('all')) lines.push({ h: 'GI', t: 'Reflux/IBS days flagged with food triggers (see log)' });
     lines.push({ h: 'PRN use', t: `${(this.raw.medLogs || []).filter(l => l.isPrn).length} as-needed doses in record` });
+    lines.push({ h: 'Self care', t: `${(this.raw.selfCare || []).length} activities logged${(this.raw.selfCare || []).length ? ' (see detailed records for duration and after-ratings)' : ''}` });
     if (pats.length) lines.push({ h: 'Notable patterns', t: pats.map(x => x.title).join('; ') });
     const details = this.reportRecords(this.state.insRange || '7');
     lines.push({ h: 'Detailed records', t: `${details.length} dated entries included, with saved details and notes.` });
@@ -4761,11 +4842,11 @@ class Component extends DCLogic {
       medicationProfiles: raw.meds || [], symptomDefinitions: raw.symptoms || [],
       dailyCheckIns, medicationDailyLogs: raw.medLogs || [], symptomEpisodes: raw.episodes || [],
       medicationChangeEvents: raw.changes || [], stressEvents: raw.stress || [],
-      doctorNotes: raw.doctorNotes || [], savedInsights: raw.savedInsights || [], generatedPatterns,
+      selfCareLogs: raw.selfCare || [], doctorNotes: raw.doctorNotes || [], savedInsights: raw.savedInsights || [], generatedPatterns,
     };
   }
   aiPrompt(counts) {
-    return `You are helping me understand my complete Health Tracker record. Analyze the data carefully without diagnosing. Look for time-based patterns, medication adherence and changes, AM/PM differences, PRN use, symptoms and severity, check-in ratings, sleep, food/protein, stress, context tags, relief methods, and all free-text notes. Distinguish correlation from causation and flag missing or inconsistent data. End with concise questions I can take to my care team.\n\nCOMPLETE APP DATA (JSON):\n${JSON.stringify(this.aiPayload(counts), null, 2)}`;
+    return `You are helping me understand my complete Health Tracker record. Analyze the data carefully without diagnosing. Look for time-based patterns, medication adherence and changes, AM/PM differences, PRN use, symptoms and severity, self-care activities and how I felt afterward, check-in ratings, sleep, food/protein, stress, context tags, relief methods, and all free-text notes. Distinguish correlation from causation and flag missing or inconsistent data. End with concise questions I can take to my care team.\n\nCOMPLETE APP DATA (JSON):\n${JSON.stringify(this.aiPayload(counts), null, 2)}`;
   }
   aiJson(counts) { return JSON.stringify(this.aiPayload(counts), null, 2); }
   shortDate(iso) { if (!iso) return ''; const d = new Date(iso + 'T12:00:00'); return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }); }
@@ -4819,7 +4900,7 @@ class Component extends DCLogic {
     const inCat = (x) => (x.cats || ['all']).includes('all') || (x.cats || []).includes(e.category);
     const configuredHelp = [
       ...(this.raw.meds || []).filter(m => m.prn).map(m => m.name),
-      ...(settings.whatHelped || []).filter(inCat).map(w => w.label),
+      ...(settings.whatHelped || []).filter(inCat).filter(w => w.showInSymptoms !== false).map(w => w.label),
     ];
     const helpLabels = [...new Set([...configuredHelp, ...(e.whatHelped || [])])];
     const helpChips = helpLabels.map(label => chip(label, (e.whatHelped || []).includes(label), this.episodeToggleArray('whatHelped', label)));
@@ -4924,7 +5005,8 @@ class Component extends DCLogic {
       const hasCheck = (raw.checkIns || []).some(c => c.eventDate === iso && c.completed);
       const hasSymptom = (raw.episodes || []).some(e => e.eventDate === iso);
       const hasMed = (raw.medLogs || []).some(l => l.eventDate === iso);
-      const dots = [...(hasSymptom ? [{ color: active ? '#fff' : 'var(--ac-deep)' }] : []), ...(hasMed ? [{ color: active ? '#fff' : '#B35F1E' }] : [])];
+      const hasSelfCare = (raw.selfCare || []).some(s => s.eventDate === iso);
+      const dots = [...(hasSymptom ? [{ color: active ? '#fff' : 'var(--ac-deep)' }] : []), ...(hasMed ? [{ color: active ? '#fff' : '#B35F1E' }] : []), ...(hasSelfCare ? [{ color: active ? '#fff' : '#2C8C78' }] : [])];
       cells.push({ day: String(day), dots, hasCheck, checkColor: active ? '#fff' : '#2E8B5B', cursor: future ? 'default' : 'pointer', opacity: future ? .3 : 1,
         bg: active ? 'linear-gradient(135deg,var(--ac-soft),var(--ac))' : (isToday ? 'var(--ac-050)' : '#fff'),
         border: active ? '1px solid transparent' : (isToday ? '1.5px solid var(--ac)' : '1px solid #F0EDF7'), shadow: active ? '0 7px 15px rgba(var(--ac-rgb),.35)' : 'none',
@@ -4941,6 +5023,11 @@ class Component extends DCLogic {
       const slot = l.doseSlot === 'morning' ? ' · AM' : l.doseSlot === 'night' ? ' · PM' : '';
       items.push({ ts: this.tsOf(l), title: `${this.medName(l.medId)}${slot}`, sub: `${l.isPrn ? 'As needed' : (l.status || 'Logged')} · ${actual}${l.reason ? ' · ' + l.reason : ''}`, dot: l.isPrn ? '#C05673' : l.status === 'taken' ? '#2E8B5B' : l.status === 'late' ? '#B35F1E' : '#B3502E', kind: 'Medication', kindBg: '#FCEEE1', kindColor: '#B35F1E', onOpen: this.openMedLogEditor(l.id) });
     }
+    for (const s of (raw.selfCare || []).filter(x => x.eventDate === selected)) {
+      const actual = new Date(this.tsOf(s)).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+      const after = [s.afterMood == null ? '' : `mood ${s.afterMood}/10`, s.afterStress == null ? '' : `stress ${s.afterStress}/10`].filter(Boolean).join(' · ');
+      items.push({ ts: this.tsOf(s), title: (s.reliefLabels || []).join(', ') || 'Self care', sub: `${s.durationMin || 0} min · ${actual}${after ? ' · ' + after : ''}${s.notes ? ' · has notes' : ''}`, dot: '#2C8C78', kind: 'Self care', kindBg: '#E4F4EA', kindColor: '#237A4E', onOpen: this.openSelfCare(s.id) });
+    }
     items.sort((a, b) => b.ts - a.ts);
     const ci = (raw.checkIns || []).find(c => c.eventDate === selected);
     const complete = !!ci?.completed;
@@ -4954,6 +5041,7 @@ class Component extends DCLogic {
       checkinStatus: complete ? 'Completed for this date' : ci ? 'Started but not completed' : 'No check-in saved', checkinCta: ci ? 'Edit' : 'Add',
       checkinIcon: complete ? '✓' : '+', checkinBg: complete ? '#F2FAF5' : 'rgba(255,255,255,.9)', checkinBorder: complete ? '#CFE9D9' : 'rgba(var(--ac-rgb),.2)', checkinIconBg: complete ? '#DDF2E5' : 'var(--ac-050)', checkinColor: complete ? '#2E8B5B' : 'var(--ac-deep)', checkinButtonBg: complete ? '#2E8B5B' : 'var(--ac)',
       onCheckin: () => this.openCheckin(selected),
+      onSelfCare: this.openSelfCare(null, selected),
     };
   }
 
