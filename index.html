@@ -2218,7 +2218,10 @@ class Component extends DCLogic {
     }
     try {
       const base = new URL('.', document.baseURI).href;
-      this.db = await import(base + 'db.js');
+      // Version the storage module independently from index.html. GitHub Pages
+      // can briefly serve a newly deployed page with a cached older module;
+      // that mismatch would otherwise request a store the old schema lacks.
+      this.db = await import(base + 'db.js?v=2');
       this.seed = await import(base + 'seed.js');
       await this.db.openDB();
       this.setState({ medDate: this.db.todayISO() });
