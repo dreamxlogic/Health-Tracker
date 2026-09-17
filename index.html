@@ -253,12 +253,20 @@
           <div style="flex:1"><div style="font-size:21px;font-weight:800;letter-spacing:-.02em">{{ home.greeting }}</div><div style="font-size:13px;color:#7A7F92">{{ home.date }}</div></div>
         </div>
 
-        <div onClick="{{ nav.goCheckin }}" style="position:relative;cursor:pointer">
-          <div style="position:absolute;inset:10px -7px -9px 9px;background:rgba(255,255,255,.55);border-radius:var(--r-lg);transform:rotate(2.2deg)"></div>
-          <div style="position:relative;background:rgba(255,255,255,.94);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:18px;box-shadow:0 2px 6px rgba(120,110,180,.06),0 20px 44px rgba(120,110,180,.18);display:flex;align-items:center;gap:15px">
-            <svg width="62" height="62" viewBox="0 0 62 62"><defs><linearGradient id="ghome" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--ac-soft)"></stop><stop offset="1" stop-color="var(--ac)"></stop></linearGradient></defs><circle cx="31" cy="31" r="26" fill="none" stroke="#F0EDF9" stroke-width="7"></circle><circle cx="31" cy="31" r="26" fill="none" stroke="url(#ghome)" stroke-width="7" stroke-linecap="round" stroke-dasharray="{{ home.ringDash }}" transform="rotate(-90 31 31)"></circle><text x="31" y="36" text-anchor="middle" font-size="14" font-weight="800" fill="#23262F">{{ home.ringText }}</text></svg>
-            <div style="flex:1"><div style="font-size:15.5px;font-weight:800">Today's check-in</div><div style="font-size:12.5px;color:#7A7F92;margin-top:2px">{{ home.checkinSub }}</div></div>
-            <div style="background:linear-gradient(90deg,var(--ac-soft),var(--ac));color:#fff;font-size:13px;font-weight:700;padding:11px 17px;border-radius:999px;box-shadow:0 8px 18px rgba(var(--ac-rgb),.4)">{{ home.checkinCta }}</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:baseline"><div style="font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--head);flex:1">TODAY'S CHECK-INS</div><div style="font-size:11px;font-weight:700;color:#9AA0B4">morning + evening</div></div>
+          <div style="background:rgba(255,255,255,.94);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:4px 17px;box-shadow:0 2px 6px rgba(120,110,180,.06),0 18px 40px rgba(120,110,180,.16)">
+            <sc-for list="{{ home.checkinRows }}" as="r" hint-placeholder-count="2">
+              <div onClick="{{ r.onClick }}" data-hcc-sep="1" style="cursor:pointer;min-height:68px;display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #F1F0F7">
+                <div style="width:42px;height:42px;border-radius:14px;background:{{ r.iconBg }};color:{{ r.iconColor }};display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:900">{{ r.icon }}</div>
+                <div style="flex:1;min-width:0"><div style="font-size:14.5px;font-weight:800">{{ r.title }}</div><div style="font-size:11.5px;color:#7A7F92;margin-top:2px">{{ r.sub }}</div></div>
+                <div style="min-height:40px;display:flex;align-items:center;padding:8px 13px;border-radius:999px;background:{{ r.buttonBg }};color:{{ r.buttonColor }};font-size:11.5px;font-weight:800">{{ r.cta }}</div>
+              </div>
+            </sc-for>
+          </div>
+          <div onClick="{{ home.onQuickCheck }}" style="cursor:pointer;min-height:58px;background:linear-gradient(135deg,var(--ac-050),rgba(255,255,255,.9));border:1px solid rgba(var(--ac-rgb),.2);border-radius:var(--r-md);padding:10px 14px;display:flex;align-items:center;gap:11px">
+            <div style="width:38px;height:38px;border-radius:13px;background:var(--ac-100);color:var(--ac-deep);display:flex;align-items:center;justify-content:center;font-size:18px">＋</div>
+            <div style="flex:1"><div style="font-size:13.5px;font-weight:800">Mood &amp; stress</div><div style="font-size:11.5px;color:#7A7F92">Log a quick reading anytime</div></div><div style="color:var(--ac-deep);font-size:19px">›</div>
           </div>
         </div>
 
@@ -392,6 +400,7 @@
           <div style="flex:1;height:5px;border-radius:99px;background:{{ g.bg }}"></div>
         </sc-for>
       </div>
+      <div onClick="{{ ci.onTimeOpen }}" style="cursor:pointer;align-self:center;margin-top:10px;min-height:36px;display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.8);color:var(--ac-deep);font-size:11.5px;font-weight:800;padding:6px 12px;border-radius:999px;box-shadow:0 4px 12px rgba(120,110,180,.1)"><span>◷</span><span>{{ ci.timeLabel }}</span></div>
       <div style="flex:1;overflow-y:auto;padding:18px 20px;display:flex;flex-direction:column;gap:14px">
         <sc-if value="{{ ci.hasStepIcon }}" hint-placeholder-val="{{ false }}">
         <div style="display:flex;flex-direction:column;align-items:center;gap:2px;padding-bottom:2px">
@@ -579,6 +588,7 @@
           <div style="width:42px;height:42px;border-radius:14px;background:#fff;color:#2E8B5B;display:flex;align-items:center;justify-content:center;font-size:21px">♡</div>
           <div style="flex:1"><div style="font-size:14.5px;font-weight:800;color:#237A4E">Log self care</div><div style="font-size:11.5px;color:#527A63;margin-top:2px">What helped, how long, and how you felt after</div></div><div style="font-size:20px;color:#2E8B5B">›</div>
         </div>
+        <div onClick="{{ log.onQuickCheck }}" style="cursor:pointer;background:linear-gradient(135deg,var(--ac-050),rgba(255,255,255,.9));border:1px solid rgba(var(--ac-rgb),.2);border-radius:var(--r-md);padding:14px 15px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 20px rgba(120,110,180,.1)"><div style="width:42px;height:42px;border-radius:14px;background:#fff;color:var(--ac-deep);display:flex;align-items:center;justify-content:center;font-size:19px">↕</div><div style="flex:1"><div style="font-size:14.5px;font-weight:800;color:var(--ac-deep)">Log mood &amp; stress</div><div style="font-size:11.5px;color:#7A7F92;margin-top:2px">Add a quick timestamped reading</div></div><div style="font-size:20px;color:var(--ac-deep)">›</div></div>
         <div style="font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--head)">OR LOG A SYMPTOM</div>
         <div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.9);border:1px solid rgba(255,255,255,.95);border-radius:16px;padding:12px 15px;box-shadow:0 6px 18px rgba(120,110,180,.14)">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#9AA0B4" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4-4"></path></svg>
@@ -645,7 +655,7 @@
       </sc-if>
 
       <sc-if value="{{ log.isDetail }}" hint-placeholder-val="{{ false }}">
-      <div style="flex:1;overflow-y:auto;padding:16px 20px;display:flex;flex-direction:column;gap:14px">
+      <div style="flex:1;overflow-y:auto;padding:16px 20px calc(118px + var(--hcc-safe-bottom));display:flex;flex-direction:column;gap:14px">
         <div style="background:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:16px 18px;box-shadow:0 2px 6px rgba(120,110,180,.06),0 16px 36px rgba(120,110,180,.15);display:flex;align-items:center;gap:13px">
           <div style="width:44px;height:44px;border-radius:15px;background:linear-gradient(135deg,var(--ac-100),var(--ac-200));display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--ac-deep)" stroke-width="2" stroke-linecap="round"><path d="M12 3c-3 4-6 6.5-6 10a6 6 0 0 0 12 0c0-3.5-3-6-6-10z" stroke-linejoin="round"></path></svg></div>
           <div style="flex:1"><div style="font-size:16px;font-weight:800">{{ log.d.name }}</div><div style="font-size:12.5px;color:#7A7F92">{{ log.d.cat }}</div></div>
@@ -715,7 +725,7 @@
 
         <textarea onInput="{{ log.onNotes }}" placeholder="Notes (optional)" style="background:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:15px 18px;box-shadow:0 2px 6px rgba(120,110,180,.06),0 16px 36px rgba(120,110,180,.15);font-size:13.5px;color:#23262F;min-height:60px;resize:none;outline:none"></textarea>
       </div>
-      <div style="padding:12px 20px calc(26px + var(--hcc-safe-bottom))">
+      <div style="flex:none;padding:12px 20px calc(18px + var(--hcc-safe-bottom));background:rgba(255,255,255,.86);backdrop-filter:blur(16px);border-top:1px solid rgba(255,255,255,.9)">
         <div onClick="{{ log.onSave }}" style="cursor:pointer;background:linear-gradient(90deg,var(--ac-soft),var(--ac));color:#fff;font-size:15px;font-weight:700;padding:15px;border-radius:999px;text-align:center;box-shadow:0 10px 22px rgba(var(--ac-rgb),.35)">Save entry</div>
       </div>
       </sc-if>
@@ -849,9 +859,11 @@
         <div style="font-size:13px;color:#7A7F92;line-height:1.5;padding:0 2px">Relief options are always available when logging Self Care. Turn “Symptom logs” on only for options you also want shown while logging symptoms, then choose the relevant symptom categories.</div>
         <div style="background:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:16px 18px;box-shadow:0 2px 6px rgba(120,110,180,.06),0 16px 36px rgba(120,110,180,.15);display:flex;flex-direction:column;gap:12px">
           <sc-for list="{{ settings.whatHelped }}" as="w" hint-placeholder-count="4">
-            <div data-hcc-sep="1" style="display:flex;flex-direction:column;gap:7px;padding-bottom:10px;border-bottom:1px solid #F1F0F7">
-              <div style="display:flex;align-items:center;gap:8px"><div style="font-size:14px;font-weight:700;flex:1">{{ w.label }}</div><div onClick="{{ w.onToggleSymptoms }}" style="cursor:pointer;min-height:30px;display:flex;align-items:center;font-size:10px;font-weight:800;padding:5px 9px;border-radius:999px;background:{{ w.symptomBg }};color:{{ w.symptomColor }}">Symptom logs</div><div onClick="{{ w.onRemove }}" style="cursor:pointer;color:#E9695E;font-size:16px;font-weight:700">✕</div></div>
-              <div style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ w.cats }}" as="c" hint-placeholder-count="3"><div onClick="{{ c.onClick }}" style="cursor:pointer;font-size:11px;font-weight:700;padding:5px 10px;border-radius:999px;background:{{ c.bg }};color:{{ c.color }}">{{ c.label }}</div></sc-for></div>
+            <div data-hcc-sep="1" style="display:flex;flex-direction:column;gap:11px;padding:2px 0 14px;border-bottom:1px solid #F1F0F7">
+              <div style="font-size:14.5px;font-weight:800">{{ w.label }}</div>
+              <div onClick="{{ w.onToggleSymptoms }}" style="cursor:pointer;min-height:44px;display:flex;align-items:center;gap:12px;background:#F8F7FC;border-radius:13px;padding:8px 11px"><div style="flex:1"><div style="font-size:12.5px;font-weight:800;color:#565B6E">Show in symptom logs</div><div style="font-size:10.5px;color:#9AA0B4;margin-top:2px">Self-care logging is always available</div></div><div style="width:46px;height:27px;border-radius:99px;position:relative;background:{{ w.trackBg }};flex:none"><div style="position:absolute;top:3px;width:21px;height:21px;border-radius:50%;background:#fff;transition:left .15s;left:{{ w.knobLeft }}"></div></div></div>
+              <sc-if value="{{ w.showCats }}" hint-placeholder-val="{{ true }}"><div><div style="font-size:10px;font-weight:800;letter-spacing:.06em;color:#9AA0B4;margin-bottom:7px">SHOW FOR</div><div style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ w.cats }}" as="c" hint-placeholder-count="3"><div onClick="{{ c.onClick }}" style="cursor:pointer;min-height:34px;display:flex;align-items:center;font-size:11px;font-weight:700;padding:6px 11px;border-radius:999px;background:{{ c.bg }};color:{{ c.color }}">{{ c.label }}</div></sc-for></div></div></sc-if>
+              <div onClick="{{ w.onRemove }}" style="cursor:pointer;align-self:flex-start;min-height:36px;display:flex;align-items:center;color:#B3502E;font-size:11.5px;font-weight:800;padding:4px 2px">Remove option</div>
             </div>
           </sc-for>
           <div style="display:flex;gap:8px"><input id="hcc-wh-input" placeholder="Add an option…" style="flex:1;border:none;background:#F6F5FB;border-radius:12px;padding:11px 13px;font-size:13.5px;color:#23262F;outline:none;font-family:inherit"><div onClick="{{ settings.onAddWhatHelped }}" style="cursor:pointer;background:var(--ac);color:#fff;font-size:13px;font-weight:700;padding:11px 16px;border-radius:12px">Add</div></div>
@@ -1611,35 +1623,50 @@
               </div>
             </sc-for>
           </div>
-          <div style="display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;font-size:9.5px;font-weight:700;color:#9AA0B4"><span style="color:#2E8B5B">✓ check-in</span><span style="color:var(--ac-deep)">● symptom</span><span style="color:#B35F1E">● medication</span><span style="color:#2C8C78">● self care</span></div>
+          <div style="display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;font-size:9.5px;font-weight:700;color:#9AA0B4"><span style="color:#2E8B5B">✓ check-in</span><span style="color:var(--ac-deep)">● symptom</span><span style="color:#B35F1E">● medication</span><span style="color:#2C8C78">● self care</span><span style="color:#C05673">● mood/stress</span></div>
         </div>
 
         <div style="display:flex;align-items:center;gap:10px"><div style="font-size:15px;font-weight:800;flex:1">{{ activity.selectedLabel }}</div><div style="font-size:11px;font-weight:800;color:#9AA0B4">{{ activity.itemCount }}</div></div>
-        <div style="background:{{ activity.checkinBg }};border:1px solid {{ activity.checkinBorder }};border-radius:var(--r-md);padding:14px 15px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 20px rgba(120,110,180,.1)"><div style="width:38px;height:38px;border-radius:13px;background:{{ activity.checkinIconBg }};display:flex;align-items:center;justify-content:center;color:{{ activity.checkinColor }};font-size:18px;font-weight:900">{{ activity.checkinIcon }}</div><div style="flex:1"><div style="font-size:13.5px;font-weight:800">Daily check-in</div><div style="font-size:11.5px;color:#7A7F92;margin-top:2px">{{ activity.checkinStatus }}</div></div><div onClick="{{ activity.onCheckin }}" style="cursor:pointer;min-height:40px;display:flex;align-items:center;background:{{ activity.checkinButtonBg }};color:#fff;font-size:12px;font-weight:800;padding:8px 14px;border-radius:999px">{{ activity.checkinCta }}</div></div>
-        <div onClick="{{ activity.onSelfCare }}" style="cursor:pointer;background:linear-gradient(135deg,#F2FAF5,#E3F4EA);border:1px solid #CFE9D9;border-radius:var(--r-md);padding:14px 15px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 20px rgba(46,139,91,.1)"><div style="width:38px;height:38px;border-radius:13px;background:#DDF2E5;color:#2E8B5B;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:900">♡</div><div style="flex:1"><div style="font-size:13.5px;font-weight:800">Self care</div><div style="font-size:11.5px;color:#527A63;margin-top:2px">Log relief for this date</div></div><div style="min-height:40px;display:flex;align-items:center;background:#2E8B5B;color:#fff;font-size:12px;font-weight:800;padding:8px 14px;border-radius:999px">Add</div></div>
+        <div style="background:rgba(255,255,255,.92);border:1px solid rgba(var(--ac-rgb),.18);border-radius:var(--r-md);padding:4px 15px;box-shadow:0 8px 20px rgba(120,110,180,.1)"><sc-for list="{{ activity.checkinRows }}" as="r" hint-placeholder-count="2"><div onClick="{{ r.onClick }}" data-hcc-sep="1" style="cursor:pointer;min-height:62px;display:flex;align-items:center;gap:11px;padding:9px 0;border-bottom:1px solid #F1F0F7"><div style="width:38px;height:38px;border-radius:13px;background:{{ r.iconBg }};color:{{ r.iconColor }};display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:900">{{ r.icon }}</div><div style="flex:1"><div style="font-size:13.5px;font-weight:800">{{ r.title }}</div><div style="font-size:11.5px;color:#7A7F92;margin-top:2px">{{ r.sub }}</div></div><div style="min-height:38px;display:flex;align-items:center;background:{{ r.buttonBg }};color:{{ r.buttonColor }};font-size:11.5px;font-weight:800;padding:7px 12px;border-radius:999px">{{ r.cta }}</div></div></sc-for></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div onClick="{{ activity.onQuickCheck }}" style="cursor:pointer;background:linear-gradient(135deg,var(--ac-050),rgba(255,255,255,.92));border:1px solid rgba(var(--ac-rgb),.2);border-radius:var(--r-md);padding:13px;display:flex;flex-direction:column;gap:8px"><div style="width:38px;height:38px;border-radius:13px;background:var(--ac-100);color:var(--ac-deep);display:flex;align-items:center;justify-content:center;font-size:19px">↕</div><div><div style="font-size:13.5px;font-weight:800">Mood &amp; stress</div><div style="font-size:11px;color:#7A7F92;margin-top:2px">Add a timed reading</div></div></div>
+          <div onClick="{{ activity.onSelfCare }}" style="cursor:pointer;background:linear-gradient(135deg,var(--ac-050),rgba(255,255,255,.92));border:1px solid rgba(var(--ac-rgb),.2);border-radius:var(--r-md);padding:13px;display:flex;flex-direction:column;gap:8px"><div style="width:38px;height:38px;border-radius:13px;background:var(--ac-100);color:var(--ac-deep);display:flex;align-items:center;justify-content:center;font-size:19px">♡</div><div><div style="font-size:13.5px;font-weight:800">Self care</div><div style="font-size:11px;color:#7A7F92;margin-top:2px">Add relief &amp; after ratings</div></div></div>
+        </div>
 
-        <sc-if value="{{ activity.empty }}" hint-placeholder-val="{{ false }}"><div style="background:rgba(255,255,255,.72);border:1px dashed rgba(var(--ac-rgb),.3);border-radius:var(--r-lg);padding:24px 20px;text-align:center;font-size:13px;color:#7A7F92;line-height:1.5">No medication, symptom, or self-care activity saved for this date.</div></sc-if>
+        <sc-if value="{{ activity.empty }}" hint-placeholder-val="{{ false }}"><div style="background:rgba(255,255,255,.72);border:1px dashed rgba(var(--ac-rgb),.3);border-radius:var(--r-lg);padding:24px 20px;text-align:center;font-size:13px;color:#7A7F92;line-height:1.5">No medication, symptom, mood, stress, or self-care activity saved for this date.</div></sc-if>
         <sc-if value="{{ activity.hasItems }}" hint-placeholder-val="{{ false }}"><div style="background:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:5px 16px;box-shadow:0 2px 6px rgba(120,110,180,.06),0 16px 36px rgba(120,110,180,.15)"><sc-for list="{{ activity.items }}" as="it" hint-placeholder-count="4"><div onClick="{{ it.onOpen }}" data-hcc-sep="1" style="cursor:pointer;min-height:62px;display:flex;align-items:center;gap:11px;padding:10px 0;border-bottom:1px solid #F1F0F7"><div style="width:10px;height:10px;border-radius:50%;background:{{ it.dot }};flex:none"></div><div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:800">{{ it.title }}</div><div style="font-size:11.5px;color:#7A7F92;margin-top:2px">{{ it.sub }}</div></div><div style="font-size:9.5px;font-weight:800;color:{{ it.kindColor }};background:{{ it.kindBg }};padding:4px 8px;border-radius:999px;flex:none">{{ it.kind }}</div><div style="font-size:19px;color:#B0B4C4">›</div></div></sc-for></div></sc-if>
       </div>
     </div>
     </sc-if>
 
+    <!-- ============================ QUICK MOOD + STRESS ============================ -->
+    <sc-if value="{{ quickCheck.open }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;z-index:74;background:var(--wash);display:flex;flex-direction:column">
+      <div style="flex:none;display:flex;align-items:center;gap:12px;padding:10px 20px 8px;background:rgba(255,255,255,.55);backdrop-filter:blur(12px)"><div onClick="{{ quickCheck.onCancel }}" style="cursor:pointer;width:42px;height:42px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(120,110,180,.12);font-size:18px;color:#565B6E">‹</div><div style="flex:1;text-align:center"><div style="font-size:15px;font-weight:800">Quick mood &amp; stress</div><div style="font-size:10.5px;color:#7A7F92;margin-top:2px">A timestamped reading for your calendar</div></div><div style="width:42px"></div></div>
+      <div style="flex:1;overflow-y:auto;padding:16px 20px calc(128px + var(--hcc-safe-bottom));display:flex;flex-direction:column;gap:14px">
+        <div style="background:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:16px;box-shadow:0 16px 36px rgba(120,110,180,.15);display:flex;gap:10px"><div onClick="{{ quickCheck.onDateOpen }}" style="cursor:pointer;flex:1;min-height:52px;background:var(--ac-050);border-radius:14px;padding:10px 12px"><div style="font-size:10px;font-weight:800;letter-spacing:.07em;color:#9AA0B4">DATE</div><div style="font-size:13px;font-weight:800;color:var(--ac-deep);margin-top:4px">{{ quickCheck.dateLabel }}</div></div><div onClick="{{ quickCheck.onTimeOpen }}" style="cursor:pointer;flex:1;min-height:52px;background:var(--ac-050);border-radius:14px;padding:10px 12px"><div style="font-size:10px;font-weight:800;letter-spacing:.07em;color:#9AA0B4">TIME</div><div style="font-size:13px;font-weight:800;color:var(--ac-deep);margin-top:4px">{{ quickCheck.timeLabel }}</div></div></div>
+        <sc-for list="{{ quickCheck.sliders }}" as="it" hint-placeholder-count="2"><div style="background:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:18px;box-shadow:0 16px 36px rgba(120,110,180,.15);display:flex;flex-direction:column;gap:14px"><div style="display:flex;align-items:center"><div style="font-size:15px;font-weight:800;flex:1">{{ it.label }}</div><div style="background:var(--ac-050);color:var(--ac-deep);font-size:14px;font-weight:800;padding:5px 13px;border-radius:999px">{{ it.value }}</div></div><div onPointerDown="{{ it.onDown }}" style="position:relative;height:38px;touch-action:none;cursor:pointer"><div style="position:absolute;top:15px;left:0;right:0;height:8px;border-radius:99px;background:#EFEDF6"></div><div style="position:absolute;top:15px;left:0;height:8px;border-radius:99px;background:linear-gradient(90deg,var(--ac-200),var(--ac));width:{{ it.pct }}%"></div><div style="position:absolute;top:1px;width:36px;height:36px;border-radius:50%;background:#fff;border:4px solid var(--ac);box-sizing:border-box;box-shadow:0 4px 12px rgba(var(--ac-rgb),.38);left:calc({{ it.pct }}% - 18px)"></div></div><div style="display:flex;font-size:12px;font-weight:700;color:#9AA0B4"><div style="flex:1;text-align:left">{{ it.low }}</div><div style="flex:1;text-align:center">Moderate</div><div style="flex:1;text-align:right">{{ it.high }}</div></div></div></sc-for>
+        <textarea onInput="{{ quickCheck.onNotes }}" value="{{ quickCheck.notes }}" placeholder="Notes (optional)" style="min-height:92px;resize:vertical;border:none;background:rgba(255,255,255,.95);border-radius:var(--r-lg);padding:15px 17px;font-size:13.5px;line-height:1.45;color:#23262F;outline:none;font-family:inherit;box-shadow:0 12px 28px rgba(120,110,180,.12)"></textarea>
+      </div>
+      <div style="flex:none;padding:12px 20px calc(18px + var(--hcc-safe-bottom));background:rgba(255,255,255,.86);backdrop-filter:blur(16px);border-top:1px solid rgba(255,255,255,.9)"><div onClick="{{ quickCheck.onSave }}" style="cursor:pointer;min-height:54px;display:flex;align-items:center;justify-content:center;background:linear-gradient(90deg,var(--ac-soft),var(--ac));color:#fff;font-size:15px;font-weight:800;border-radius:999px;box-shadow:0 10px 22px rgba(var(--ac-rgb),.35)">Save reading</div></div>
+    </div>
+    </sc-if>
+
     <!-- ============================ SELF CARE EDITOR ============================ -->
     <sc-if value="{{ selfCare.open }}" hint-placeholder-val="{{ false }}">
-    <div style="position:absolute;inset:0;background:rgba(40,34,70,.38);backdrop-filter:blur(4px);display:flex;flex-direction:column;justify-content:flex-end;z-index:73">
-      <div onClick="{{ selfCare.onCancel }}" style="flex:1"></div>
-      <div style="background:linear-gradient(165deg,#fff,#F8FCFA);border-radius:var(--r-sheet) var(--r-sheet) 0 0;padding:18px 20px calc(26px + var(--hcc-safe-bottom));display:flex;flex-direction:column;gap:15px;box-shadow:0 -20px 50px rgba(40,100,75,.25);max-height:92%;overflow-y:auto">
-        <div style="width:40px;height:5px;border-radius:99px;background:#E4E2EE;align-self:center"></div>
-        <div style="display:flex;align-items:flex-start;gap:10px"><div style="flex:1"><div style="font-size:20px;font-weight:800">{{ selfCare.title }}</div><div style="font-size:12px;color:#7A7F92;margin-top:3px">Track something you did to care for yourself.</div></div><div onClick="{{ selfCare.onCancel }}" style="cursor:pointer;width:34px;height:34px;border-radius:50%;background:#F6F5FB;display:flex;align-items:center;justify-content:center;font-size:17px;color:#565B6E">×</div></div>
-        <div style="display:flex;gap:10px"><div onClick="{{ selfCare.onDateOpen }}" style="cursor:pointer;min-height:52px;flex:1;background:#F3F8F5;border-radius:14px;padding:10px 12px"><div style="font-size:10px;font-weight:800;letter-spacing:.07em;color:#789486">DATE</div><div style="font-size:13px;font-weight:800;color:#237A4E;margin-top:4px">{{ selfCare.dateLabel }}</div></div><div onClick="{{ selfCare.onTimeOpen }}" style="cursor:pointer;min-height:52px;flex:1;background:#F3F8F5;border-radius:14px;padding:10px 12px"><div style="font-size:10px;font-weight:800;letter-spacing:.07em;color:#789486">TIME</div><div style="font-size:13px;font-weight:800;color:#237A4E;margin-top:4px">{{ selfCare.timeLabel }}</div></div></div>
-        <div style="display:flex;flex-direction:column;gap:8px"><div style="font-size:11px;font-weight:800;letter-spacing:.07em;color:#789486">WHAT DID YOU DO?</div><sc-if value="{{ selfCare.noRelief }}" hint-placeholder-val="{{ false }}"><div style="font-size:12.5px;color:#7A7F92;background:#F6F5FB;border-radius:13px;padding:12px">Add Relief options in Settings first, then return here.</div></sc-if><div style="display:flex;gap:8px;flex-wrap:wrap"><sc-for list="{{ selfCare.reliefChips }}" as="c" hint-placeholder-count="5"><div onClick="{{ c.onClick }}" style="cursor:pointer;min-height:42px;display:flex;align-items:center;font-size:12.5px;font-weight:{{ c.weight }};padding:9px 14px;border-radius:999px;background:{{ c.bg }};color:{{ c.color }}">{{ c.label }}</div></sc-for></div></div>
-        <div style="background:#F3F8F5;border-radius:15px;padding:12px 14px;display:flex;align-items:center;gap:12px"><div style="flex:1"><div style="font-size:12px;font-weight:800;color:#456355">Length</div><div style="font-size:11px;color:#789486;margin-top:2px">5-minute increments</div></div><div onClick="{{ selfCare.onDurationDec }}" style="cursor:pointer;width:42px;height:42px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;color:#237A4E;font-size:20px;font-weight:800">−</div><div style="min-width:62px;text-align:center;font-size:17px;font-weight:800;color:#237A4E">{{ selfCare.duration }}</div><div onClick="{{ selfCare.onDurationInc }}" style="cursor:pointer;width:42px;height:42px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;color:#237A4E;font-size:20px;font-weight:800">＋</div></div>
-        <div style="display:flex;flex-direction:column;gap:10px"><div><div style="font-size:11px;font-weight:800;letter-spacing:.07em;color:#789486">HOW DID YOU FEEL AFTER? <span style="font-weight:600">(OPTIONAL)</span></div><div style="font-size:11px;color:#9AA0B4;margin-top:3px">Choose one in either row, or leave both blank.</div></div><div><div style="font-size:12px;font-weight:800;color:#565B6E;margin-bottom:7px">Stress after</div><div style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ selfCare.stressChips }}" as="c" hint-placeholder-count="5"><div onClick="{{ c.onClick }}" style="cursor:pointer;min-height:40px;display:flex;align-items:center;font-size:11.5px;font-weight:{{ c.weight }};padding:8px 11px;border-radius:999px;background:{{ c.bg }};color:{{ c.color }}">{{ c.label }}</div></sc-for></div></div><div><div style="font-size:12px;font-weight:800;color:#565B6E;margin-bottom:7px">Mood after</div><div style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ selfCare.moodChips }}" as="c" hint-placeholder-count="5"><div onClick="{{ c.onClick }}" style="cursor:pointer;min-height:40px;display:flex;align-items:center;font-size:11.5px;font-weight:{{ c.weight }};padding:8px 11px;border-radius:999px;background:{{ c.bg }};color:{{ c.color }}">{{ c.label }}</div></sc-for></div></div></div>
-        <textarea onInput="{{ selfCare.onNotes }}" value="{{ selfCare.notes }}" placeholder="Notes (optional)" style="min-height:72px;resize:vertical;border:none;background:#F6F5FB;border-radius:14px;padding:12px 13px;font-size:13.5px;line-height:1.45;color:#23262F;outline:none;font-family:inherit"></textarea>
+    <div style="position:absolute;inset:0;z-index:73;background:var(--wash);display:flex;flex-direction:column">
+      <div style="flex:none;display:flex;align-items:center;gap:12px;padding:10px 20px 8px;background:rgba(255,255,255,.55);backdrop-filter:blur(12px)"><div onClick="{{ selfCare.onCancel }}" style="cursor:pointer;width:42px;height:42px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(120,110,180,.12);font-size:18px;color:#565B6E">‹</div><div style="flex:1;text-align:center"><div style="font-size:15px;font-weight:800">{{ selfCare.title }}</div><div style="font-size:10.5px;color:#7A7F92;margin-top:2px">Relief, length, and optional after ratings</div></div><div style="width:42px"></div></div>
+      <div style="flex:1;overflow-y:auto;padding:16px 20px calc(132px + var(--hcc-safe-bottom));display:flex;flex-direction:column;gap:14px">
+        <div style="background:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:16px;box-shadow:0 16px 36px rgba(120,110,180,.15);display:flex;gap:10px"><div onClick="{{ selfCare.onDateOpen }}" style="cursor:pointer;min-height:52px;flex:1;background:var(--ac-050);border-radius:14px;padding:10px 12px"><div style="font-size:10px;font-weight:800;letter-spacing:.07em;color:#9AA0B4">DATE</div><div style="font-size:13px;font-weight:800;color:var(--ac-deep);margin-top:4px">{{ selfCare.dateLabel }}</div></div><div onClick="{{ selfCare.onTimeOpen }}" style="cursor:pointer;min-height:52px;flex:1;background:var(--ac-050);border-radius:14px;padding:10px 12px"><div style="font-size:10px;font-weight:800;letter-spacing:.07em;color:#9AA0B4">START TIME</div><div style="font-size:13px;font-weight:800;color:var(--ac-deep);margin-top:4px">{{ selfCare.timeLabel }}</div></div></div>
+        <div style="background:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:18px;box-shadow:0 16px 36px rgba(120,110,180,.15);display:flex;flex-direction:column;gap:11px"><div style="font-size:14.5px;font-weight:800">What did you do?</div><sc-if value="{{ selfCare.noRelief }}" hint-placeholder-val="{{ false }}"><div style="font-size:12.5px;color:#7A7F92;background:#F6F5FB;border-radius:13px;padding:12px">Add Relief options in Settings first, then return here.</div></sc-if><div style="display:flex;gap:8px;flex-wrap:wrap"><sc-for list="{{ selfCare.reliefChips }}" as="c" hint-placeholder-count="5"><div onClick="{{ c.onClick }}" style="cursor:pointer;min-height:42px;display:flex;align-items:center;font-size:12.5px;font-weight:{{ c.weight }};padding:9px 14px;border-radius:999px;background:{{ c.bg }};color:{{ c.color }}">{{ c.label }}</div></sc-for></div></div>
+        <div style="background:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:15px 17px;box-shadow:0 16px 36px rgba(120,110,180,.15);display:flex;align-items:center;gap:12px"><div style="flex:1"><div style="font-size:14px;font-weight:800">How long?</div><div style="font-size:11px;color:#9AA0B4;margin-top:2px">5-minute increments</div></div><div onClick="{{ selfCare.onDurationDec }}" style="cursor:pointer;width:44px;height:44px;border-radius:50%;background:var(--ac-050);display:flex;align-items:center;justify-content:center;color:var(--ac-deep);font-size:20px;font-weight:800">−</div><div style="min-width:62px;text-align:center;font-size:17px;font-weight:800;color:var(--ac-deep)">{{ selfCare.duration }}</div><div onClick="{{ selfCare.onDurationInc }}" style="cursor:pointer;width:44px;height:44px;border-radius:50%;background:var(--ac-050);display:flex;align-items:center;justify-content:center;color:var(--ac-deep);font-size:20px;font-weight:800">＋</div></div>
+        <div style="font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--head);padding-top:2px">HOW DID YOU FEEL AFTER? <span style="font-weight:600;color:#9AA0B4">OPTIONAL</span></div>
+        <sc-for list="{{ selfCare.sliders }}" as="it" hint-placeholder-count="2"><div style="background:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:18px;box-shadow:0 16px 36px rgba(120,110,180,.15);display:flex;flex-direction:column;gap:13px"><div style="display:flex;align-items:center"><div style="font-size:14.5px;font-weight:800;flex:1">{{ it.label }}</div><div onClick="{{ it.onClear }}" style="cursor:pointer;font-size:11px;font-weight:800;color:#9AA0B4;padding:7px">{{ it.clearLabel }}</div><div style="background:var(--ac-050);color:var(--ac-deep);font-size:14px;font-weight:800;padding:5px 11px;border-radius:999px">{{ it.value }}</div></div><div onPointerDown="{{ it.onDown }}" style="position:relative;height:38px;touch-action:none;cursor:pointer"><div style="position:absolute;top:15px;left:0;right:0;height:8px;border-radius:99px;background:#EFEDF6"></div><div style="position:absolute;top:15px;left:0;height:8px;border-radius:99px;background:linear-gradient(90deg,var(--ac-200),var(--ac));width:{{ it.pct }}%"></div><div style="position:absolute;top:1px;width:36px;height:36px;border-radius:50%;background:#fff;border:4px solid var(--ac);box-sizing:border-box;box-shadow:0 4px 12px rgba(var(--ac-rgb),.38);left:calc({{ it.pct }}% - 18px)"></div></div><div style="display:flex;font-size:12px;font-weight:700;color:#9AA0B4"><div style="flex:1;text-align:left">{{ it.low }}</div><div style="flex:1;text-align:center">Moderate</div><div style="flex:1;text-align:right">{{ it.high }}</div></div></div></sc-for>
+        <textarea onInput="{{ selfCare.onNotes }}" value="{{ selfCare.notes }}" placeholder="Notes (optional)" style="min-height:92px;resize:vertical;border:none;background:rgba(255,255,255,.95);border-radius:var(--r-lg);padding:15px 17px;font-size:13.5px;line-height:1.45;color:#23262F;outline:none;font-family:inherit;box-shadow:0 12px 28px rgba(120,110,180,.12)"></textarea>
         <sc-if value="{{ selfCare.hasErr }}" hint-placeholder-val="{{ false }}"><div style="font-size:12px;font-weight:700;color:#B3502E;background:#FBEFEC;border-radius:12px;padding:10px 12px">{{ selfCare.err }}</div></sc-if>
-        <div onClick="{{ selfCare.onSave }}" style="cursor:pointer;min-height:52px;display:flex;align-items:center;justify-content:center;background:linear-gradient(90deg,#5CAE87,#2E8B5B);color:#fff;font-size:15px;font-weight:800;padding:14px;border-radius:999px;box-shadow:0 10px 22px rgba(46,139,91,.28)">{{ selfCare.saveLabel }}</div>
-        <sc-if value="{{ selfCare.isEdit }}" hint-placeholder-val="{{ false }}"><sc-if value="{{ selfCare.notDeleteConfirm }}" hint-placeholder-val="{{ true }}"><div onClick="{{ selfCare.onAskDelete }}" style="cursor:pointer;text-align:center;color:#B3502E;font-size:13px;font-weight:800;padding:10px">Delete self-care entry</div></sc-if><sc-if value="{{ selfCare.hasDeleteConfirm }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:8px;background:#FBEFEC;border-radius:14px;padding:11px 13px"><div style="flex:1;font-size:12px;font-weight:700;color:#B3502E">Delete this self-care entry?</div><div onClick="{{ selfCare.onDelete }}" style="cursor:pointer;min-height:38px;display:flex;align-items:center;background:#E9695E;color:#fff;font-size:12px;font-weight:800;padding:7px 12px;border-radius:999px">Delete</div><div onClick="{{ selfCare.onKeep }}" style="cursor:pointer;min-height:38px;display:flex;align-items:center;background:#fff;color:#565B6E;font-size:12px;font-weight:700;padding:7px 12px;border-radius:999px">Keep</div></div></sc-if></sc-if>
+        <sc-if value="{{ selfCare.isEdit }}" hint-placeholder-val="{{ false }}"><sc-if value="{{ selfCare.notDeleteConfirm }}" hint-placeholder-val="{{ true }}"><div onClick="{{ selfCare.onAskDelete }}" style="cursor:pointer;text-align:center;color:#B3502E;font-size:13px;font-weight:800;padding:12px">Delete self-care entry</div></sc-if><sc-if value="{{ selfCare.hasDeleteConfirm }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:8px;background:#FBEFEC;border-radius:14px;padding:11px 13px"><div style="flex:1;font-size:12px;font-weight:700;color:#B3502E">Delete this self-care entry?</div><div onClick="{{ selfCare.onDelete }}" style="cursor:pointer;min-height:42px;display:flex;align-items:center;background:#E9695E;color:#fff;font-size:12px;font-weight:800;padding:8px 13px;border-radius:999px">Delete</div><div onClick="{{ selfCare.onKeep }}" style="cursor:pointer;min-height:42px;display:flex;align-items:center;background:#fff;color:#565B6E;font-size:12px;font-weight:700;padding:8px 13px;border-radius:999px">Keep</div></div></sc-if></sc-if>
       </div>
+      <div style="flex:none;padding:12px 20px calc(18px + var(--hcc-safe-bottom));background:rgba(255,255,255,.86);backdrop-filter:blur(16px);border-top:1px solid rgba(255,255,255,.9)"><div onClick="{{ selfCare.onSave }}" style="cursor:pointer;min-height:54px;display:flex;align-items:center;justify-content:center;background:linear-gradient(90deg,var(--ac-soft),var(--ac));color:#fff;font-size:15px;font-weight:800;border-radius:999px;box-shadow:0 10px 22px rgba(var(--ac-rgb),.35)">{{ selfCare.saveLabel }}</div></div>
     </div>
     </sc-if>
 
@@ -1997,7 +2024,7 @@
       <div onClick="{{ tp.onCancel }}" style="flex:1"></div>
       <div style="background:linear-gradient(155deg,rgba(255,255,255,.94),rgba(255,255,255,.8));backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.95);border-radius:var(--r-sheet) var(--r-sheet) 0 0;padding:20px 22px calc(30px + var(--hcc-safe-bottom));display:flex;flex-direction:column;gap:14px;box-shadow:0 -20px 50px rgba(70,60,130,.3)">
         <div style="width:40px;height:5px;border-radius:99px;background:#E4E2EE;align-self:center"></div>
-        <div style="display:flex;align-items:baseline"><div style="font-size:17px;font-weight:800;flex:1">Time taken</div><div style="font-size:15px;font-weight:800;color:var(--ac)">{{ tp.preview }}</div></div>
+        <div style="display:flex;align-items:baseline"><div style="font-size:17px;font-weight:800;flex:1">{{ tp.title }}</div><div style="font-size:15px;font-weight:800;color:var(--ac)">{{ tp.preview }}</div></div>
         <div style="display:flex;gap:10px;margin-bottom:-10px"><div style="flex:1;text-align:center;font-size:10px;font-weight:800;letter-spacing:.08em;color:#9AA0B4">HOUR</div><div style="flex:1;text-align:center;font-size:10px;font-weight:800;letter-spacing:.08em;color:#9AA0B4">MINUTE</div><div style="flex:1;text-align:center;font-size:10px;font-weight:800;letter-spacing:.08em;color:#9AA0B4">AM / PM</div></div>
         <div style="position:relative;display:flex;gap:10px;height:176px">
           <div style="position:absolute;left:0;right:0;top:66px;height:44px;border-radius:14px;background:rgba(var(--ac-rgb),.1);border:1px solid rgba(var(--ac-rgb),.28);pointer-events:none"></div>
@@ -2221,7 +2248,7 @@ class Component extends DCLogic {
       // Version the storage module independently from index.html. GitHub Pages
       // can briefly serve a newly deployed page with a cached older module;
       // that mismatch would otherwise request a store the old schema lacks.
-      this.db = await import(base + 'db.js?v=2');
+      this.db = await import(base + 'db.js?v=3');
       this.seed = await import(base + 'seed.js');
       await this.db.openDB();
       this.setState({ medDate: this.db.todayISO() });
@@ -2668,29 +2695,40 @@ class Component extends DCLogic {
     if (!st) return ['sleep', 'feeling', 'body', 'cognition', 'food', 'meds'];
     return st.filter(s => s.enabled).map(s => s.key);
   }
+  checkinStepsFor(kind) {
+    const enabled = this.activeSteps();
+    const preferred = kind === 'morning' ? ['sleep', 'feeling', 'body', 'cognition', 'meds'] : ['feeling', 'body', 'cognition', 'food', 'meds'];
+    const steps = preferred.filter(k => enabled.includes(k));
+    return steps.length ? steps : enabled;
+  }
   isoShift(iso, delta) {
     const d = new Date(iso + 'T00:00');
     d.setDate(d.getDate() + delta);
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   }
-  openCheckin = (date) => {
+  openCheckin = (date, kind = null) => {
     const today = this.db.todayISO();
     const target = (typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date)) ? date : today;
+    const period = kind === 'morning' || kind === 'evening' ? kind : (new Date().getHours() < 15 ? 'morning' : 'evening');
     const ciReturnRoute = this.state.route === 'activity' ? 'activity' : 'home';
     const isBackfill = target !== today;
     const dLabel = new Date(target + 'T00:00').toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
     const ex = (this.raw.checkIns || []).find(c => c.eventDate === target);
+    const saved = ex?.moments?.[period] || null;
+    const legacy = ex && !ex.moments ? ex : null;
+    const source = saved || legacy || {};
     const ci = {
-      date: target, isBackfill, dateLabel: isBackfill ? dLabel : 'Today',
+      date: target, kind: period, isBackfill, dateLabel: isBackfill ? dLabel : 'Today',
       stepIndex: 0,
-      ratings: { ...(ex?.ratings || {}) },
-      occ: { ...(ex?.occurrences || {}) },
-      occSev: { ...(ex?.occurrenceSev || {}) },
-      sleepHours: Math.round(ex?.sleepHours ?? 9),
-      wakeups: Math.round(ex?.wakeups ?? 0),
-      proteinG: ex?.proteinG ?? null,
-      proteinRange: ex?.proteinRange ?? null,
-      notes: ex?.notes || '',
+      time: source.time ? this.hhmm(new Date(source.time)) : (target === today ? this.hhmm() : (period === 'morning' ? '08:00' : '20:00')),
+      ratings: { ...(source.ratings || {}) },
+      occ: { ...(source.occurrences || {}) },
+      occSev: { ...(source.occurrenceSev || {}) },
+      sleepHours: Math.round(source.sleepHours ?? ex?.sleepHours ?? 9),
+      wakeups: Math.round(source.wakeups ?? ex?.wakeups ?? 0),
+      proteinG: source.proteinG ?? ex?.proteinG ?? null,
+      proteinRange: source.proteinRange ?? ex?.proteinRange ?? null,
+      notes: source.notes || '',
     };
     this.setState({ ci, ciReturnRoute, route: 'checkin' });
   };
@@ -2725,16 +2763,26 @@ class Component extends DCLogic {
   ciBack = () => { if (this.state.ci.stepIndex === 0) { this.setState({ route: this.state.ciReturnRoute || 'home', ci: null, ciReturnRoute: null }); } else { this.setState(st => ({ ci: { ...st.ci, stepIndex: st.ci.stepIndex - 1 } })); } };
   ciContinue = async () => {
     const ci = this.state.ci;
-    const steps = this.activeSteps();
+    const steps = this.checkinStepsFor(ci.kind);
     if (ci.stepIndex < steps.length - 1) {
       this.setState({ ci: { ...ci, stepIndex: ci.stepIndex + 1 } });
     } else {
-      await this.db.saveCheckIn({
-        eventDate: this.state.ci.date || this.db.todayISO(),
-        ratings: ci.ratings, occurrences: ci.occ, occurrenceSev: ci.occSev,
-        sleepHours: ci.sleepHours, wakeups: ci.wakeups,
-        proteinG: ci.proteinG, proteinRange: ci.proteinRange,
-        notes: ci.notes || null, completed: true, completedSteps: steps.slice(),
+      const eventDate = ci.date || this.db.todayISO();
+      const existing = (this.raw.checkIns || []).find(c => c.eventDate === eventDate) || {};
+      const moment = { kind: ci.kind, time: `${eventDate}T${ci.time || this.hhmm()}:00`, ratings: ci.ratings, occurrences: ci.occ, occurrenceSev: ci.occSev,
+        sleepHours: ci.kind === 'morning' ? ci.sleepHours : null, wakeups: ci.kind === 'morning' ? ci.wakeups : null,
+        proteinG: ci.kind === 'evening' ? ci.proteinG : null, proteinRange: ci.kind === 'evening' ? ci.proteinRange : null,
+        notes: ci.notes || null, completed: true, completedAt: new Date().toISOString(), completedSteps: steps.slice() };
+      const moments = { ...(existing.moments || {}), [ci.kind]: moment };
+      const morning = moments.morning || {}, evening = moments.evening || {};
+      const ratings = { ...(existing.ratings || {}), ...(morning.ratings || {}), ...(evening.ratings || {}) };
+      const occurrences = { ...(existing.occurrences || {}), ...(morning.occurrences || {}), ...(evening.occurrences || {}) };
+      const occurrenceSev = { ...(existing.occurrenceSev || {}), ...(morning.occurrenceSev || {}), ...(evening.occurrenceSev || {}) };
+      await this.db.saveCheckIn({ eventDate, moments, time: moment.time, ratings, occurrences, occurrenceSev,
+        sleepHours: morning.sleepHours ?? existing.sleepHours ?? null, wakeups: morning.wakeups ?? existing.wakeups ?? null,
+        proteinG: evening.proteinG ?? existing.proteinG ?? null, proteinRange: evening.proteinRange ?? existing.proteinRange ?? null,
+        notes: [morning.notes, evening.notes].filter(Boolean).join(' | ') || null,
+        completed: !!morning.completed && !!evening.completed, completedSteps: [...new Set([...(morning.completedSteps || []), ...(evening.completedSteps || [])])],
       });
       await this.refresh();
       this.setState({ route: this.state.ciReturnRoute || 'home', ci: null, ciReturnRoute: null });
@@ -2917,6 +2965,31 @@ class Component extends DCLogic {
     };
   }
 
+  // ---------- quick mood + stress ----------
+  openQuickCheck = (selectedDate = null, id = null) => () => {
+    const saved = id ? (this.raw.stress || []).find(x => x.id === id) : null;
+    const date = saved?.eventDate || selectedDate || this.db.todayISO();
+    const parsed = new Date(saved?.time || `${date}T${this.hhmm()}:00`);
+    const time = Number.isNaN(parsed.getTime()) ? this.hhmm() : this.hhmm(parsed);
+    this.setState({ quickCheck: { id: saved?.id || null, date, time, mood: saved?.mood ?? 5, stress: saved?.intensity ?? saved?.stress ?? 5, notes: saved?.notes || '' } });
+  };
+  closeQuickCheck = () => this.setState({ quickCheck: null });
+  quickCheckField = (field, value) => this.setState(st => ({ quickCheck: st.quickCheck ? { ...st.quickCheck, [field]: value } : st.quickCheck }));
+  quickCheckNotes = (e) => this.quickCheckField('notes', e.target.value);
+  saveQuickCheck = async () => {
+    const q = this.state.quickCheck; if (!q) return;
+    await this.db.saveStressEvent({ id: q.id || undefined, eventDate: q.date, time: `${q.date}T${q.time}:00`, label: 'Quick mood & stress', intensity: q.stress, stress: q.stress, mood: q.mood, notes: q.notes?.trim() || null });
+    await this.refresh();
+    this.setState({ quickCheck: null });
+  };
+  viewQuickCheck() {
+    const q = this.state.quickCheck; if (!q) return { open: false };
+    const slider = (field, label, value, low, high) => ({ label, value: Math.round(value), pct: Number(value) * 10, low, high, onDown: (e) => this.beginDrag(e, v => this.quickCheckField(field, v)) });
+    return { open: true, dateLabel: new Date(q.date + 'T12:00:00').toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }), timeLabel: this.fmtTime(q.time), notes: q.notes || '',
+      sliders: [slider('mood', 'Mood', q.mood ?? 5, 'Very low', 'Great'), slider('stress', 'Stress', q.stress ?? 5, 'None', 'Extreme')],
+      onDateOpen: this.openDatePick('quickCheckDate', q.date), onTimeOpen: this.openTimePick('quickCheckTime', null, q.time), onNotes: this.quickCheckNotes, onSave: this.saveQuickCheck, onCancel: this.closeQuickCheck };
+  }
+
   // ---------- self care ----------
   openSelfCare = (id = null, selectedDate = null) => () => {
     const saved = id ? (this.raw.selfCare || []).find(x => x.id === id) : null;
@@ -2938,7 +3011,8 @@ class Component extends DCLogic {
     return { selfCareEdit: { ...st.selfCareEdit, selected, err: null } };
   });
   selfCareDuration = (delta) => () => this.setState(st => ({ selfCareEdit: { ...st.selfCareEdit, durationMin: Math.max(5, Math.min(480, (st.selfCareEdit?.durationMin || 30) + delta)) } }));
-  selfCareRating = (field, value) => () => this.setState(st => ({ selfCareEdit: { ...st.selfCareEdit, [field]: st.selfCareEdit?.[field] === value ? null : value } }));
+  selfCareRating = (field, value) => this.setState(st => ({ selfCareEdit: { ...st.selfCareEdit, [field]: value } }));
+  clearSelfCareRating = (field) => () => this.setState(st => ({ selfCareEdit: { ...st.selfCareEdit, [field]: null } }));
   selfCareNotes = (e) => { const value = e.target.value; this.setState(st => ({ selfCareEdit: { ...st.selfCareEdit, notes: value } })); };
   saveSelfCare = async () => {
     const s = this.state.selfCareEdit; if (!s) return;
@@ -2951,12 +3025,11 @@ class Component extends DCLogic {
   viewSelfCare() {
     const s = this.state.selfCareEdit; if (!s) return { open: false };
     const current = (this.raw.settings?.whatHelped || []).map(x => ({ id: x.id, label: x.label }));
-    const options = [...current, ...(s.selected || []).filter(x => !current.some(w => w.id === x.id || w.label === x.label))];
-    const chip = (label, active, onClick, activeBg = '#2E8B5B') => ({ label, onClick, bg: active ? activeBg : '#F6F5FB', color: active ? '#fff' : '#565B6E', weight: active ? 800 : 600 });
+    const options = [...current, ...(s.selected || []).filter(x => !current.some(w => w.id === x.id || w.label === x.label))].sort((a, b) => String(a.label || '').localeCompare(String(b.label || ''), undefined, { sensitivity: 'base' }));
+    const chip = (label, active, onClick, activeBg = 'var(--ac)') => ({ label, onClick, bg: active ? activeBg : '#F6F5FB', color: active ? '#fff' : '#565B6E', weight: active ? 800 : 600 });
     const reliefChips = options.map(o => chip(o.label, (s.selected || []).some(x => x.id === o.id || x.label === o.label), this.selfCareToggleRelief(o)));
-    const stressDefs = [[0, 'None'], [2, 'Low'], [5, 'Moderate'], [8, 'High'], [10, 'Extreme']];
-    const moodDefs = [[1, 'Very low'], [3, 'Low'], [5, 'Okay'], [8, 'Good'], [10, 'Great']];
-    return { open: true, title: s.id ? 'Edit self care' : 'Log self care', isEdit: !!s.id, saveLabel: s.id ? 'Save changes' : 'Save self care', reliefChips, noRelief: options.length === 0, duration: `${s.durationMin} min`, dateLabel: new Date(s.date + 'T12:00:00').toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }), timeLabel: this.fmtTime(s.time), stressChips: stressDefs.map(([v, l]) => chip(l, s.afterStress === v, this.selfCareRating('afterStress', v))), moodChips: moodDefs.map(([v, l]) => chip(l, s.afterMood === v, this.selfCareRating('afterMood', v), 'var(--ac)')), notes: s.notes || '', hasErr: !!s.err, err: s.err || '', hasDeleteConfirm: !!s.confirmDelete, notDeleteConfirm: !s.confirmDelete,
+    const slider = (field, label, value, low, high) => { const set = value != null, v = set ? Number(value) : 5; return { label, value: set ? Math.round(v) : 'Add', pct: v * 10, low, high, clearLabel: set ? 'Clear' : 'Optional', onClear: this.clearSelfCareRating(field), onDown: (e) => this.beginDrag(e, n => this.selfCareRating(field, n)) }; };
+    return { open: true, title: s.id ? 'Edit self care' : 'Log self care', isEdit: !!s.id, saveLabel: s.id ? 'Save changes' : 'Save self care', reliefChips, noRelief: options.length === 0, duration: `${s.durationMin} min`, dateLabel: new Date(s.date + 'T12:00:00').toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }), timeLabel: this.fmtTime(s.time), sliders: [slider('afterStress', 'Stress after', s.afterStress, 'None', 'Extreme'), slider('afterMood', 'Mood after', s.afterMood, 'Very low', 'Great')], notes: s.notes || '', hasErr: !!s.err, err: s.err || '', hasDeleteConfirm: !!s.confirmDelete, notDeleteConfirm: !s.confirmDelete,
       onDateOpen: this.openDatePick('selfCareDate', s.date), onTimeOpen: this.openTimePick('selfCareTime', null, s.time), onDurationDec: this.selfCareDuration(-5), onDurationInc: this.selfCareDuration(5), onNotes: this.selfCareNotes, onSave: this.saveSelfCare, onCancel: this.closeSelfCare, onAskDelete: () => this.setState({ selfCareEdit: { ...s, confirmDelete: true } }), onKeep: () => this.setState({ selfCareEdit: { ...s, confirmDelete: false } }), onDelete: this.deleteSelfCare };
   }
 
@@ -3025,6 +3098,10 @@ class Component extends DCLogic {
       this.setState(st => ({ medLogEdit: st.medLogEdit ? { ...st.medLogEdit, time: val } : st.medLogEdit }));
     } else if (tp.kind === 'selfCareTime') {
       this.setState(st => ({ selfCareEdit: st.selfCareEdit ? { ...st.selfCareEdit, time: val } : st.selfCareEdit }));
+    } else if (tp.kind === 'checkinTime') {
+      this.setState(st => ({ ci: st.ci ? { ...st.ci, time: val } : st.ci }));
+    } else if (tp.kind === 'quickCheckTime') {
+      this.setState(st => ({ quickCheck: st.quickCheck ? { ...st.quickCheck, time: val } : st.quickCheck }));
     } else if (tp.kind === 'medSchedule') {
       // set a med's scheduled time straight from the Home row (logged as a timing change)
       const ref = typeof tp.refId === 'object' ? tp.refId : { medId: tp.refId, doseSlot: null };
@@ -3045,7 +3122,8 @@ class Component extends DCLogic {
     for (let i = 0; i < 2; i++) mins.push(item(i === tp.minIdx, i ? '30' : '00', this.tpPick('minIdx', i, 'hcc-tp-m')));
     for (let i = 0; i < 2; i++) periods.push(item(i === tp.periodIdx, i ? 'PM' : 'AM', this.tpPick('periodIdx', i, 'hcc-tp-p')));
     const preview = this.fmtTime(this.tpValue(tp));
-    return { open: true, hours, mins, periods, preview, onHourScroll: this.tpScroll('hourIdx'), onMinScroll: this.tpScroll('minIdx'), onPeriodScroll: this.tpScroll('periodIdx'), onCancel: this.closeTp, onSave: this.saveTp };
+    const titles = { checkinTime: 'Check-in time', quickCheckTime: 'Reading time', selfCareTime: 'Self-care start time', episodeTime: 'Symptom time', medLogTime: 'Time taken', historicMedTime: 'Time taken' };
+    return { open: true, title: titles[tp.kind] || 'Choose time', hours, mins, periods, preview, onHourScroll: this.tpScroll('hourIdx'), onMinScroll: this.tpScroll('minIdx'), onPeriodScroll: this.tpScroll('periodIdx'), onCancel: this.closeTp, onSave: this.saveTp };
   }
 
   // ---------- glass date picker ----------
@@ -3064,6 +3142,7 @@ class Component extends DCLogic {
     }
     if (f === 'episodeDate') return { dp: null, episodeEdit: st.episodeEdit ? { ...st.episodeEdit, date: value || st.episodeEdit.date } : st.episodeEdit };
     if (f === 'selfCareDate') return { dp: null, selfCareEdit: st.selfCareEdit ? { ...st.selfCareEdit, date: value || st.selfCareEdit.date } : st.selfCareEdit };
+    if (f === 'quickCheckDate') return { dp: null, quickCheck: st.quickCheck ? { ...st.quickCheck, date: value || st.quickCheck.date } : st.quickCheck };
     return { dp: null, medEdit: st.medEdit ? { ...st.medEdit, [f]: value } : st.medEdit };
   });
   viewDp() {
@@ -3075,18 +3154,18 @@ class Component extends DCLogic {
     for (let d = 1; d <= nDays; d++) {
       const iso = `${dp.y}-${String(dp.m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
       const sel = dp.sel === iso;
-      const disabled = (dp.field === 'historicDate' || dp.field === 'episodeDate' || dp.field === 'selfCareDate') && iso > this.db.todayISO();
+      const disabled = (dp.field === 'historicDate' || dp.field === 'episodeDate' || dp.field === 'selfCareDate' || dp.field === 'quickCheckDate') && iso > this.db.todayISO();
       cells.push({ day: d, onClick: disabled ? () => {} : this.dpSelect(iso), cursor: disabled ? 'default' : 'pointer', op: disabled ? .28 : 1,
         bg: sel ? 'linear-gradient(135deg,var(--ac-soft),var(--ac))' : 'rgba(255,255,255,.75)',
         fg: sel ? '#fff' : '#3a3f52', weight: sel ? 800 : 600,
         shadow: sel ? '0 6px 14px rgba(var(--ac-rgb),.4)' : '0 2px 6px rgba(120,110,180,.08)' });
     }
-    const titles = { startDate: 'Start date', endDate: 'End date', historicDate: 'When did you take it?', episodeDate: 'Symptom date', selfCareDate: 'Self-care date' };
+    const titles = { startDate: 'Start date', endDate: 'End date', historicDate: 'When did you take it?', episodeDate: 'Symptom date', selfCareDate: 'Self-care date', quickCheckDate: 'Reading date' };
     return { open: true, title: titles[dp.field] || 'Pick a date',
       monthLabel: first.toLocaleDateString(undefined, { month: 'long', year: 'numeric' }),
       dow: ['S', 'M', 'T', 'W', 'T', 'F', 'S'], cells,
       onPrev: this.dpNav(-1), onNext: this.dpNav(1),
-      showClear: dp.field !== 'historicDate' && dp.field !== 'episodeDate' && dp.field !== 'selfCareDate', onCancel: () => this.setState({ dp: null }), onClear: () => this.dpApply(''), onSave: () => this.dpApply(this.state.dp.sel || '') };
+      showClear: dp.field !== 'historicDate' && dp.field !== 'episodeDate' && dp.field !== 'selfCareDate' && dp.field !== 'quickCheckDate', onCancel: () => this.setState({ dp: null }), onClear: () => this.dpApply(''), onSave: () => this.dpApply(this.state.dp.sel || '') };
   }
 
   // ---------- PRN overlay ----------
@@ -3637,7 +3716,7 @@ class Component extends DCLogic {
       isSettings: !st.loading && route === 'settings',
       isInsights: !st.loading && route === 'insights',
       isActivity: !st.loading && route === 'activity',
-      showTabBar: !st.loading && (route === 'home' || route === 'meds' || route === 'activity' || route === 'settings' || (route === 'log' && (!st.draft || st.draft.stage === 'pick'))),
+      showTabBar: !st.loading && !st.prn && !st.historicMed && !st.medEdit && !st.medLogEdit && !st.symEdit && !st.episodeEdit && !st.selfCareEdit && !st.quickCheck && !st.sp && !st.exp && !st.tp && !st.dp && (route === 'home' || route === 'meds' || route === 'activity' || route === 'settings' || (route === 'log' && (!st.draft || st.draft.stage === 'pick'))),
       nav: {
         goHome: this.go('home'), goMeds: this.go('meds'), goSettings: this.openSettings,
         goCheckin: this.openCheckin, goLog: this.openLog, goCalendar: this.openActivity, goActivity: this.openActivity,
@@ -3646,7 +3725,7 @@ class Component extends DCLogic {
         cMore: route === 'settings' ? 'var(--ac)' : '#9AA0B4',
       },
     };
-    const emptyOverlays = { prn: { open: false }, historicMed: { open: false }, medEdit: { open: false }, medLogEdit: { open: false }, symEdit: { open: false }, episodeEdit: { open: false }, selfCare: { open: false }, sp: { open: false, showBrowse: false, showDone: false }, exp: { open: false }, tp: { open: false }, dp: { open: false }, rep: { open: false } };
+    const emptyOverlays = { prn: { open: false }, historicMed: { open: false }, medEdit: { open: false }, medLogEdit: { open: false }, symEdit: { open: false }, episodeEdit: { open: false }, selfCare: { open: false }, quickCheck: { open: false }, sp: { open: false, showBrowse: false, showDone: false }, exp: { open: false }, tp: { open: false }, dp: { open: false }, rep: { open: false } };
     if (st.loading || !db) return { ...base, ...emptyOverlays, home: {}, meds: {}, ci: {}, log: {}, settings: {}, ins: {}, activity: {} };
 
     const today = db.todayISO();
@@ -3665,6 +3744,7 @@ class Component extends DCLogic {
       symEdit: this.viewSymEdit(),
       episodeEdit: this.viewEpisodeEdit(),
       selfCare: this.viewSelfCare(),
+      quickCheck: this.viewQuickCheck(),
       sp: this.viewSymPicker(),
       ins: this.viewInsights(),
       tp: this.viewTp(),
@@ -3686,21 +3766,16 @@ class Component extends DCLogic {
     const greet = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
     const dateStr = now.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
 
-    // check-in ring
+    // Morning and evening check-ins share one daily record but keep independent timestamps.
     const ex = (raw.checkIns || []).find(c => c.eventDate === today);
-    let done = 0;
-    if (ex) {
-      if (ex.sleepHours != null || ex.ratings?.sleepQuality != null) done++;
-      if (ex.ratings?.mood != null) done++;
-      if (ex.occurrences && Object.keys(ex.occurrences).length) done++;
-      if (ex.ratings?.memory != null) done++;
-      if (ex.proteinRange != null || ex.proteinG != null || ex.ratings?.appetite != null) done++;
-      if (scheduledDoses.length === 0 || scheduledDoses.every(({ med, doseSlot }) => !!this.medLogFor(med.id, today, doseSlot))) done++;
-    }
-    const total = 6, circ = 163.36;
-    const ringDash = `${(done / total * circ).toFixed(1)} ${circ}`;
-    const checkinSub = done === 0 ? 'Not started yet' : done >= total ? 'All done today' : `${done} of ${total} steps done`;
-    const checkinCta = done >= total ? 'Review' : done === 0 ? 'Start' : 'Continue';
+    const legacyComplete = !!ex?.completed && !ex?.moments;
+    const checkinRows = [['morning', 'Morning check-in', '☀', '#FCF4DF', '#9A6C12'], ['evening', 'Evening check-in', '☾', '#EFEBFC', 'var(--ac-deep)']].map(([kind, title, icon, iconBg, iconColor]) => {
+      const moment = ex?.moments?.[kind];
+      const complete = legacyComplete || !!moment?.completed;
+      const time = moment?.time ? this.fmtTime(this.hhmm(new Date(moment.time))) : '';
+      return { title, icon, iconBg, iconColor, sub: complete ? `Completed${time ? ' · ' + time : ''}` : (kind === 'morning' ? 'Sleep, waking mood, energy & symptoms' : 'Overall mood, stress, food, meds & symptoms'), cta: complete ? 'Review' : 'Start',
+        buttonBg: complete ? '#E4F4EA' : 'var(--ac)', buttonColor: complete ? '#237A4E' : '#fff', onClick: () => this.openCheckin(today, kind) };
+    });
 
     // meds today — twice-daily profiles expand into independently logged AM/PM doses
     const medsToday = scheduledDoses.map(({ med: m, doseSlot, slotLabel, timing }) => {
@@ -3732,7 +3807,11 @@ class Component extends DCLogic {
       if (l.isPrn) items.push({ ts: this.tsOf(l), title: `${this.medName(l.medId)} PRN`, sub: this.fmtWhen(l), iconBg: 'linear-gradient(135deg,#FDE3CF,#F9C9A8)', dot: '#B35F1E' });
       else if (l.status === 'taken') items.push({ ts: this.tsOf(l), title: `${this.medName(l.medId)}${l.doseSlot === 'morning' ? ' AM' : l.doseSlot === 'night' ? ' PM' : ''} taken`, sub: this.fmtWhen(l), iconBg: 'linear-gradient(135deg,#D2EEDD,#AEDFC4)', dot: '#2E8B5B' });
     }
-    for (const c of (raw.checkIns || [])) { if (c.completed) items.push({ ts: this.tsOf(c), title: 'Check-in completed', sub: this.fmtWhen(c), iconBg: 'linear-gradient(135deg,#D6E6F9,#B4D2F3)', dot: '#3A6FB0' }); }
+    for (const c of (raw.checkIns || [])) {
+      if (c.moments) for (const [kind, m] of Object.entries(c.moments)) { if (m?.completed) items.push({ ts: this.tsOf(m), title: `${kind === 'morning' ? 'Morning' : 'Evening'} check-in completed`, sub: this.fmtWhen({ ...m, eventDate: c.eventDate }), iconBg: 'linear-gradient(135deg,#D6E6F9,#B4D2F3)', dot: '#3A6FB0' }); }
+      else if (c.completed) items.push({ ts: this.tsOf(c), title: 'Check-in completed', sub: this.fmtWhen(c), iconBg: 'linear-gradient(135deg,#D6E6F9,#B4D2F3)', dot: '#3A6FB0' });
+    }
+    for (const q of (raw.stress || [])) items.push({ ts: this.tsOf(q), title: q.mood == null ? `Stress · ${q.intensity}/10` : `Mood ${Math.round(q.mood)}/10 · Stress ${Math.round(q.intensity ?? q.stress ?? 0)}/10`, sub: this.fmtWhen(q), iconBg: 'linear-gradient(135deg,var(--ac-100),var(--ac-200))', dot: 'var(--ac-deep)' });
     for (const s of (raw.selfCare || [])) items.push({ ts: this.tsOf(s), title: (s.reliefLabels || []).join(', ') || 'Self care', sub: `${this.fmtWhen(s)} · ${s.durationMin || 0} min`, iconBg: 'linear-gradient(135deg,#D2EEDD,#AEDFC4)', dot: '#2C8C78' });
     items.sort((a, b) => b.ts - a.ts);
     const recent = items.slice(0, 4);
@@ -3748,7 +3827,7 @@ class Component extends DCLogic {
     return {
       initial: (name[0] || 'A').toUpperCase(), greeting: `${greet}, ${name}`, date: dateStr,
       avatar, avatarBg: avatar ? `url(${avatar})` : 'none', hasAvatar: !!avatar, noAvatar: !avatar, onAvatar: this.onAvatar, onAvatarFile: this.onAvatarFile,
-      ringDash, ringText: `${done}/${total}`, checkinSub, checkinCta,
+      checkinRows, onQuickCheck: this.openQuickCheck(today),
       medsQuickSub: scheduledDoses.length ? `${scheduledLeft} scheduled left` : 'Add your meds',
       medsCount: `${takenN} of ${scheduledDoses.length}`, hasMeds: scheduledDoses.length > 0, noMeds: scheduledDoses.length === 0, medsToday,
       hasRecent: recent.length > 0, noRecent: recent.length === 0, recent,
@@ -3825,9 +3904,14 @@ class Component extends DCLogic {
 
   viewCheckin() {
     const ci = this.state.ci; if (!ci) return {};
-    const steps = this.activeSteps();
+    const steps = this.checkinStepsFor(ci.kind);
     const step = steps[ci.stepIndex] || steps[0];
     const stepSyms = (this.raw.symptoms || []).filter(s => s.appearsInCheckIn && !s.archived && s.checkInStep === step);
+    if (step === 'feeling') {
+      if (!stepSyms.some(s => s.key === 'mood')) stepSyms.unshift({ key: 'mood', name: ci.kind === 'morning' ? 'Morning mood' : 'Overall mood today', category: 'mood', control: 'face' });
+      if (!stepSyms.some(s => s.key === 'stress')) stepSyms.push({ key: 'stress', name: ci.kind === 'morning' ? 'Stress right now' : 'Overall stress today', category: 'mood', control: 'scale' });
+      if (!stepSyms.some(s => s.key === 'energy')) stepSyms.push({ key: 'energy', name: ci.kind === 'morning' ? 'Morning energy' : 'Energy today', category: 'mood', control: 'scale' });
+    }
 
     const ctrlOf = (s) => (s.key === 'anxiety' ? 'scale' : (s.control || (s.askAs === 'toggle' ? 'toggle' : 'scale')));
     const CAT_ORDER = { sleep: 0, mood: 1, gi: 2, cognition: 3, body: 4 };
@@ -3955,7 +4039,12 @@ class Component extends DCLogic {
     let medsList = [];
     if (step === 'meds') {
       const date = ci.date || this.db.todayISO();
-      medsList = (this.raw.meds || []).filter(m => !m.prn && m.active && !m.weekly).flatMap(m => this.medDoses(m).map(({ doseSlot, slotLabel, timing }) => {
+      medsList = (this.raw.meds || []).filter(m => !m.prn && m.active && !m.weekly).flatMap(m => this.medDoses(m).filter(({ doseSlot, timing }) => {
+        if (doseSlot === 'morning') return ci.kind === 'morning';
+        if (doseSlot === 'night') return ci.kind === 'evening';
+        const hour = Number(String(timing || '08:00').split(':')[0]);
+        return ci.kind === (hour < 15 ? 'morning' : 'evening');
+      }).map(({ doseSlot, slotLabel, timing }) => {
         const cur = this.medLogFor(m.id, date, doseSlot)?.status || null;
         const seg = (label, key, bg, color) => ({ label, onClick: this.setMedStatus(m.id, cur === key ? null : key, doseSlot), bg: cur === key ? bg : '#F6F5FB', color: cur === key ? color : '#9AA0B4' });
         return { name: `${m.name}${slotLabel ? ' · ' + slotLabel : ''}`, dose: `${m.dose}${timing ? ' · ' + this.fmtTime(timing) : ''}`, segments: [seg('Taken', 'taken', '#E4F4EA', '#2E8B5B'), seg('Late', 'late', '#FCEEDC', '#B35F1E'), seg('Skipped', 'skipped', '#FADFD4', '#B3502E')] };
@@ -3972,14 +4061,15 @@ class Component extends DCLogic {
       stepBg,
       stepIcon: STEP_ICON[step] ? 'uploads/' + STEP_ICON[step] + '.png' : '', hasStepIcon: !!STEP_ICON[step],
       segs: steps.map((_, i) => ({ bg: i <= ci.stepIndex ? 'var(--ac)' : '#DDD8F0' })),
-      title: this.STEP_TITLE[step] || (stepDef ? stepDef.name : step), subtitle: this.STEP_SUB[step] || '',
+      title: this.STEP_TITLE[step] || (stepDef ? stepDef.name : step), subtitle: step === 'feeling' ? (ci.kind === 'morning' ? 'After waking' : 'Looking back on today') : (this.STEP_SUB[step] || ''),
       hasFace: !!faceItem, face: faceItem || {},
       scaleItems, hasSteppers: steppers.length > 0, steppers,
       hasProtein: !!protein, protein: protein || {},
       hasToggles: toggleGroups.length > 0, toggleGroups,
       hasMeds: step === 'meds', medsList, onNotes: this.ciNotes,
       onBack: this.ciBack, onContinue: this.ciContinue,
-      isBackfill: !!ci.isBackfill, headerTitle: ci.isBackfill ? ci.dateLabel : 'Daily check-in',
+      isBackfill: !!ci.isBackfill, headerTitle: `${ci.kind === 'morning' ? 'Morning' : 'Evening'} check-in${ci.isBackfill ? ' · ' + ci.dateLabel : ''}`,
+      timeLabel: this.fmtTime(ci.time || (ci.kind === 'morning' ? '08:00' : '20:00')), onTimeOpen: this.openTimePick('checkinTime', null, ci.time || (ci.kind === 'morning' ? '08:00' : '20:00')),
       continueLabel: ci.stepIndex === steps.length - 1 ? 'Finish check-in' : 'Continue',
     };
   }
@@ -4025,7 +4115,7 @@ class Component extends DCLogic {
           sub: (avgSev != null ? this.sevWord(avgSev) + ' · ' : '') + 'last ' + t,
           onClick: this.pickSymptom({ id: key, name: g.name, category: g.category }) };
       }).sort((a, b) => Number(b.count) - Number(a.count));
-      return { headerTitle: 'Add a log', isPick: true, isDetail: false, onBack: this.logBack, onSelfCare: this.openSelfCare(null, this.db.todayISO()),
+      return { headerTitle: 'Add a log', isPick: true, isDetail: false, onBack: this.logBack, onSelfCare: this.openSelfCare(null, this.db.todayISO()), onQuickCheck: this.openQuickCheck(this.db.todayISO()),
         hasJustLogged: !!this.state.justLogged, justLogged: `Saved ${this.state.justLogged || ''}. Log another or head back.`,
         q: d.q || '', onQ: this.logQ,
         hasLoggedToday: loggedToday.length > 0, loggedToday,
@@ -4115,7 +4205,7 @@ class Component extends DCLogic {
     const showAdd = sub === 'meds' || sub === 'symptoms';
     const onHeaderAdd = sub === 'meds' ? (() => this.openMedEditor(null)) : sub === 'symptoms' ? (() => this.openSymEditor(null)) : (() => {});
     const catChips = (item, field) => this.CAT_OPTS.map(c => ({ label: c.label, onClick: this.toggleItemCat(field, item.id, c.key), bg: (item.cats || []).includes(c.key) ? 'var(--ac)' : '#F6F5FB', color: (item.cats || []).includes(c.key) ? '#fff' : '#9AA0B4' }));
-    const whatHelped = (s.whatHelped || []).map(w => ({ label: w.label, onRemove: this.removeListItem('whatHelped', w.id), onToggleSymptoms: this.toggleReliefSymptoms(w.id), symptomBg: w.showInSymptoms !== false ? '#E4F4EA' : '#F6F5FB', symptomColor: w.showInSymptoms !== false ? '#2E8B5B' : '#9AA0B4', cats: catChips(w, 'whatHelped') }));
+    const whatHelped = (s.whatHelped || []).slice().sort((a, b) => String(a.label || '').localeCompare(String(b.label || ''), undefined, { sensitivity: 'base' })).map(w => { const on = w.showInSymptoms !== false; return { label: w.label, onRemove: this.removeListItem('whatHelped', w.id), onToggleSymptoms: this.toggleReliefSymptoms(w.id), trackBg: on ? 'var(--ac)' : '#E4E2EE', knobLeft: on ? '22px' : '3px', showCats: on, cats: catChips(w, 'whatHelped') }; });
     const contexts = (s.contexts || []).map(w => ({ label: w.label, onRemove: this.removeListItem('contexts', w.id), cats: catChips(w, 'contexts') }));
     const avatarHint = this.state.avatarStatus === 'saving' ? 'Saving photo…' : this.state.avatarStatus === 'saved' ? 'Photo saved ✓' : this.state.avatarStatus === 'error' ? 'Could not save that photo. Try JPG or PNG.' : 'Tap the avatar to upload a photo';
     const avatarHintColor = this.state.avatarStatus === 'saved' ? '#2E8B5B' : this.state.avatarStatus === 'error' ? '#B3502E' : '#9AA0B4';
@@ -4698,12 +4788,16 @@ class Component extends DCLogic {
       add({ ts: this.tsOf(l), date: l.eventDate, time: l.takenTime ? timeOf(l) : '', type: l.isPrn ? 'PRN medication' : 'Medication', med: this.medName(l.medId), symptom: '', category: 'Medication', intensity: l.severityBefore == null ? '' : `${l.severityBefore}/10 before${l.severityAfter == null ? '' : `, ${l.severityAfter}/10 after`}`, status: l.isPrn ? 'PRN taken' : (l.status || ''), dose: [l.quantity && l.quantity !== 1 ? `${l.quantity} ×` : '', l.dose || ''].filter(Boolean).join(' '), details: [`Slot: ${l.doseSlot || 'not set'}`, `Scheduled: ${l.scheduledTime ? this.fmtTime(l.scheduledTime) : 'not set'}`, l.reason ? `Reason: ${l.reason}` : ''].filter(Boolean).join('; '), notes: l.notes || '' });
     }
     for (const c of (this.raw.checkIns || [])) {
-      const ratings = Object.entries(c.ratings || {}).map(([k, v]) => `${k}: ${v}`).join(', ');
-      const occurrences = Object.entries(c.occurrences || {}).filter(([, v]) => v).map(([k]) => `${k}${c.occurrenceSev?.[k] == null ? '' : ` (${c.occurrenceSev[k]}/10)`}`).join(', ');
-      add({ ts: this.tsOf(c), date: c.eventDate, time: timeOf(c), type: 'Daily check-in', med: '', symptom: occurrences, category: 'Check-in', intensity: '', status: c.completed ? 'Completed' : 'Incomplete', dose: '', details: [`Ratings: ${ratings || 'none'}`, `Sleep: ${c.sleepHours ?? 'not set'} h`, `Wake-ups: ${c.wakeups ?? 'not set'}`, `Protein: ${c.proteinG ?? 'not set'} g`, `Occurrences: ${occurrences || 'none'}`, `Context: ${list(c.contextTags) || 'none'}`].join('; '), notes: c.notes || '' });
+      const moments = c.moments ? Object.values(c.moments).filter(Boolean) : [c];
+      for (const m of moments) {
+        const ratings = Object.entries(m.ratings || {}).map(([k, v]) => `${k}: ${v}`).join(', ');
+        const occurrences = Object.entries(m.occurrences || {}).filter(([, v]) => v).map(([k]) => `${k}${m.occurrenceSev?.[k] == null ? '' : ` (${m.occurrenceSev[k]}/10)`}`).join(', ');
+        const label = m.kind ? `${m.kind === 'morning' ? 'Morning' : 'Evening'} check-in` : 'Daily check-in';
+        add({ ts: this.tsOf(m), date: c.eventDate, time: timeOf(m), type: label, med: '', symptom: occurrences, category: 'Check-in', intensity: '', status: m.completed ? 'Completed' : 'Incomplete', dose: '', details: [`Ratings: ${ratings || 'none'}`, `Sleep: ${m.sleepHours ?? 'not set'} h`, `Wake-ups: ${m.wakeups ?? 'not set'}`, `Protein: ${m.proteinG ?? 'not set'} g`, `Occurrences: ${occurrences || 'none'}`, `Context: ${list(m.contextTags) || 'none'}`].join('; '), notes: m.notes || '' });
+      }
     }
     for (const c of (this.raw.changes || [])) add({ ts: this.tsOf(c), date: c.eventDate, time: timeOf(c), type: 'Medication change', med: this.medName(c.medId), symptom: list(c.symptomsToWatch), category: 'Medication', intensity: '', status: c.changeType || 'Changed', dose: '', details: [`Previous: ${c.prev ?? 'not set'}`, `Next: ${c.next ?? 'not set'}`, c.expectedImpact ? `Expected impact: ${c.expectedImpact}` : ''].filter(Boolean).join('; '), notes: c.reason || c.notes || '' });
-    for (const s of (this.raw.stress || [])) add({ ts: this.tsOf(s), date: s.eventDate, time: timeOf(s), type: 'Stress event', med: '', symptom: s.label || 'Stress', category: 'Mood', intensity: s.intensity == null ? '' : `${s.intensity}/10`, status: 'Logged', dose: '', details: '', notes: s.notes || '' });
+    for (const s of (this.raw.stress || [])) add({ ts: this.tsOf(s), date: s.eventDate, time: timeOf(s), type: s.mood == null ? 'Stress event' : 'Mood & stress reading', med: '', symptom: s.label || 'Stress', category: 'Mood', intensity: [s.mood == null ? '' : `Mood ${s.mood}/10`, s.intensity == null ? '' : `Stress ${s.intensity}/10`].filter(Boolean).join(' · '), status: 'Logged', dose: '', details: '', notes: s.notes || '' });
     for (const s of (this.raw.selfCare || [])) add({ ts: this.tsOf(s), date: s.eventDate, time: timeOf(s), type: 'Self care', med: '', symptom: list(s.reliefLabels) || 'Self care', category: 'Self care', intensity: '', status: 'Completed', dose: '', details: [`Length: ${s.durationMin || 0} min`, `Stress after: ${s.afterStress == null ? 'not logged' : s.afterStress + '/10'}`, `Mood after: ${s.afterMood == null ? 'not logged' : s.afterMood + '/10'}`].join('; '), notes: s.notes || '' });
     for (const n of (this.raw.doctorNotes || [])) add({ ts: this.tsOf(n), date: n.eventDate, time: timeOf(n), type: 'Doctor note', med: '', symptom: '', category: 'Note', intensity: '', status: 'Saved', dose: '', details: n.title || n.subject || '', notes: n.notes || n.body || n.text || '' });
     return rows.sort((a, b) => b.ts - a.ts);
@@ -5005,11 +5099,12 @@ class Component extends DCLogic {
     for (let day = 1; day <= days; day++) {
       const iso = `${y}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
       const future = iso > today, active = iso === selected, isToday = iso === today;
-      const hasCheck = (raw.checkIns || []).some(c => c.eventDate === iso && c.completed);
+      const hasCheck = (raw.checkIns || []).some(c => c.eventDate === iso && (c.completed || c.moments?.morning?.completed || c.moments?.evening?.completed));
       const hasSymptom = (raw.episodes || []).some(e => e.eventDate === iso);
       const hasMed = (raw.medLogs || []).some(l => l.eventDate === iso);
       const hasSelfCare = (raw.selfCare || []).some(s => s.eventDate === iso);
-      const dots = [...(hasSymptom ? [{ color: active ? '#fff' : 'var(--ac-deep)' }] : []), ...(hasMed ? [{ color: active ? '#fff' : '#B35F1E' }] : []), ...(hasSelfCare ? [{ color: active ? '#fff' : '#2C8C78' }] : [])];
+      const hasReading = (raw.stress || []).some(s => s.eventDate === iso);
+      const dots = [...(hasSymptom ? [{ color: active ? '#fff' : 'var(--ac-deep)' }] : []), ...(hasMed ? [{ color: active ? '#fff' : '#B35F1E' }] : []), ...(hasSelfCare ? [{ color: active ? '#fff' : '#2C8C78' }] : []), ...(hasReading ? [{ color: active ? '#fff' : '#C05673' }] : [])];
       cells.push({ day: String(day), dots, hasCheck, checkColor: active ? '#fff' : '#2E8B5B', cursor: future ? 'default' : 'pointer', opacity: future ? .3 : 1,
         bg: active ? 'linear-gradient(135deg,var(--ac-soft),var(--ac))' : (isToday ? 'var(--ac-050)' : '#fff'),
         border: active ? '1px solid transparent' : (isToday ? '1.5px solid var(--ac)' : '1px solid #F0EDF7'), shadow: active ? '0 7px 15px rgba(var(--ac-rgb),.35)' : 'none',
@@ -5030,10 +5125,29 @@ class Component extends DCLogic {
       const actual = new Date(this.tsOf(s)).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
       const after = [s.afterMood == null ? '' : `mood ${s.afterMood}/10`, s.afterStress == null ? '' : `stress ${s.afterStress}/10`].filter(Boolean).join(' · ');
       items.push({ ts: this.tsOf(s), title: (s.reliefLabels || []).join(', ') || 'Self care', sub: `${s.durationMin || 0} min · ${actual}${after ? ' · ' + after : ''}${s.notes ? ' · has notes' : ''}`, dot: '#2C8C78', kind: 'Self care', kindBg: '#E4F4EA', kindColor: '#237A4E', onOpen: this.openSelfCare(s.id) });
+      const afterTs = this.tsOf(s) + (Number(s.durationMin) || 0) * 60000;
+      const afterTime = new Date(afterTs).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+      if (s.afterMood != null) items.push({ ts: afterTs + 2, title: `Mood after · ${Math.round(s.afterMood)}/10`, sub: `${afterTime} · after ${(s.reliefLabels || []).join(', ') || 'self care'}`, dot: 'var(--ac)', kind: 'Mood', kindBg: 'var(--ac-050)', kindColor: 'var(--ac-deep)', onOpen: this.openSelfCare(s.id) });
+      if (s.afterStress != null) items.push({ ts: afterTs + 1, title: `Stress after · ${Math.round(s.afterStress)}/10`, sub: `${afterTime} · after ${(s.reliefLabels || []).join(', ') || 'self care'}`, dot: '#E9695E', kind: 'Stress', kindBg: '#FBEFEC', kindColor: '#B3502E', onOpen: this.openSelfCare(s.id) });
     }
-    items.sort((a, b) => b.ts - a.ts);
+    for (const q of (raw.stress || []).filter(x => x.eventDate === selected)) {
+      const actual = new Date(this.tsOf(q)).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+      if (q.mood != null) items.push({ ts: this.tsOf(q) + 2, title: `Mood · ${Math.round(q.mood)}/10`, sub: `${actual}${q.notes ? ' · has notes' : ''}`, dot: 'var(--ac)', kind: 'Mood', kindBg: 'var(--ac-050)', kindColor: 'var(--ac-deep)', onOpen: this.openQuickCheck(null, q.id) });
+      if (q.intensity != null || q.stress != null) items.push({ ts: this.tsOf(q) + 1, title: `Stress · ${Math.round(q.intensity ?? q.stress)}/10`, sub: `${actual}${q.notes ? ' · has notes' : ''}`, dot: '#E9695E', kind: 'Stress', kindBg: '#FBEFEC', kindColor: '#B3502E', onOpen: this.openQuickCheck(null, q.id) });
+    }
     const ci = (raw.checkIns || []).find(c => c.eventDate === selected);
-    const complete = !!ci?.completed;
+    if (ci?.moments) for (const [kind, m] of Object.entries(ci.moments)) { if (m?.completed) {
+      const actual = new Date(this.tsOf(m)).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+      const mood = m.ratings?.mood, stress = m.ratings?.stress ?? m.occurrenceSev?.stress;
+      items.push({ ts: this.tsOf(m), title: `${kind === 'morning' ? 'Morning' : 'Evening'} check-in`, sub: `${actual}${mood == null ? '' : ' · mood ' + Math.round(mood) + '/10'}${stress == null ? '' : ' · stress ' + Math.round(stress) + '/10'}`, dot: '#3A6FB0', kind: 'Check-in', kindBg: '#EAF1FB', kindColor: '#2C5586', onOpen: () => this.openCheckin(selected, kind) });
+    }}
+    items.sort((a, b) => b.ts - a.ts);
+    const legacyComplete = !!ci?.completed && !ci?.moments;
+    const checkinRows = [['morning', 'Morning check-in', '☀', '#FCF4DF', '#9A6C12'], ['evening', 'Evening check-in', '☾', '#EFEBFC', 'var(--ac-deep)']].map(([kind, title, icon, iconBg, iconColor]) => {
+      const moment = ci?.moments?.[kind], complete = legacyComplete || !!moment?.completed;
+      const when = moment?.time ? this.fmtTime(this.hhmm(new Date(moment.time))) : '';
+      return { title, icon, iconBg, iconColor, sub: complete ? `Completed${when ? ' · ' + when : ''}` : 'No entry saved', cta: complete ? 'Edit' : 'Add', buttonBg: complete ? '#E4F4EA' : 'var(--ac)', buttonColor: complete ? '#237A4E' : '#fff', onClick: () => this.openCheckin(selected, kind) };
+    });
     const selectedLabel = selected === today ? `Today · ${selectedObj.toLocaleDateString(undefined, { month: 'long', day: 'numeric' })}` : selectedObj.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
     const currentMonth = new Date(today + 'T12:00:00');
     const canNext = new Date(y, month + 1, 1, 12) <= new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1, 12);
@@ -5041,10 +5155,8 @@ class Component extends DCLogic {
       monthLabel: first.toLocaleDateString(undefined, { month: 'long', year: 'numeric' }), dow: ['S', 'M', 'T', 'W', 'T', 'F', 'S'], cells,
       onPrevMonth: this.calendarMonth(-1), onNextMonth: canNext ? this.calendarMonth(1) : (() => {}), nextOpacity: canNext ? 1 : .3, onToday: this.calendarToday,
       selectedLabel, itemCount: `${items.length} ${items.length === 1 ? 'entry' : 'entries'}`, items, hasItems: items.length > 0, empty: items.length === 0,
-      checkinStatus: complete ? 'Completed for this date' : ci ? 'Started but not completed' : 'No check-in saved', checkinCta: ci ? 'Edit' : 'Add',
-      checkinIcon: complete ? '✓' : '+', checkinBg: complete ? '#F2FAF5' : 'rgba(255,255,255,.9)', checkinBorder: complete ? '#CFE9D9' : 'rgba(var(--ac-rgb),.2)', checkinIconBg: complete ? '#DDF2E5' : 'var(--ac-050)', checkinColor: complete ? '#2E8B5B' : 'var(--ac-deep)', checkinButtonBg: complete ? '#2E8B5B' : 'var(--ac)',
-      onCheckin: () => this.openCheckin(selected),
-      onSelfCare: this.openSelfCare(null, selected),
+      checkinRows,
+      onQuickCheck: this.openQuickCheck(selected), onSelfCare: this.openSelfCare(null, selected),
     };
   }
 

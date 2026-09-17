@@ -347,7 +347,10 @@ export async function updateMedicationLog(id, patch) {
 }
 
 export async function saveStressEvent(ev) {
-  return put('stressEvents', stamp({ intensity: ev.intensity ?? null, label: ev.label ?? null, ...ev }, ev.eventDate));
+  const prev = ev.id ? await get('stressEvents', ev.id) : null;
+  const next = { ...(prev || {}), intensity: ev.intensity ?? null, label: ev.label ?? null, ...ev };
+  if (!next.id) delete next.id;
+  return put('stressEvents', stamp(next, ev.eventDate));
 }
 
 // Log a self-care activity. Relief labels are stored alongside their ids so
