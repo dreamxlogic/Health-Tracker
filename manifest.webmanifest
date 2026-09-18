@@ -1,0 +1,17 @@
+{
+  "name": "Health Tracker",
+  "short_name": "Health Tracker",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#F5F1FA",
+  "theme_color": "#8E7CF3",
+  "description": "A private, local-first medication, symptom, mood and self-care tracker.",
+  "icons": [
+    {
+      "src": "./uploads/Mood- Square.png",
+      "sizes": "1254x1254",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

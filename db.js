@@ -27,6 +27,8 @@ export const STORES = [
 // store so the prototype always runs (data persists for the session).
 let _dbPromise = null;
 let USE_MEM = false;
+let STORAGE_ERROR = null;
+let DAY_BOUNDARY_HOUR = 4;
 const MEM = {};
 function ensureMem() {
   if (MEM._init) return;
@@ -42,7 +44,7 @@ export function openDB() {
       if (typeof indexedDB === 'undefined' || !indexedDB) throw new Error('no indexedDB');
       req = indexedDB.open(DB_NAME, DB_VERSION);
     } catch (e) {
-      USE_MEM = true; ensureMem(); resolve(null); return;
+      USE_MEM = true; STORAGE_ERROR = e || new Error('IndexedDB unavailable'); ensureMem(); resolve(null); return;
     }
     req.onupgradeneeded = () => {
       const db = req.result;
@@ -56,10 +58,19 @@ export function openDB() {
       }
     };
     req.onsuccess = () => resolve(req.result);
-    req.onerror = () => { USE_MEM = true; ensureMem(); resolve(null); };
-    req.onblocked = () => { USE_MEM = true; ensureMem(); resolve(null); };
+    req.onerror = () => { USE_MEM = true; STORAGE_ERROR = req.error || new Error('IndexedDB failed to open'); ensureMem(); resolve(null); };
+    req.onblocked = () => { USE_MEM = true; STORAGE_ERROR = new Error('IndexedDB open was blocked'); ensureMem(); resolve(null); };
   });
   return _dbPromise;
+}
+
+export function getStorageStatus() {
+  return { persistent: !USE_MEM, mode: USE_MEM ? 'memory' : 'indexeddb', error: STORAGE_ERROR ? String(STORAGE_ERROR.message || STORAGE_ERROR) : null };
+}
+
+export function setDayBoundaryHour(hour) {
+  const n = Number(hour);
+  DAY_BOUNDARY_HOUR = Number.isFinite(n) ? Math.max(0, Math.min(23, Math.round(n))) : 4;
 }
 
 function tx(db, store, mode) {
@@ -138,9 +149,11 @@ export function uuid() {
 }
 
 export function todayISO(d = new Date()) {
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
+  const local = new Date(d);
+  if (local.getHours() < DAY_BOUNDARY_HOUR) local.setDate(local.getDate() - 1);
+  const y = local.getFullYear();
+  const m = String(local.getMonth() + 1).padStart(2, '0');
+  const day = String(local.getDate()).padStart(2, '0');
   return `${y}-${m}-${day}`;
 }
 
@@ -252,9 +265,12 @@ export async function setMedDailyStatus({ medId, eventDate, status, scheduledTim
       await remove('medicationDailyLogs', baseId);
     }
   }
+  const profile = await get('medicationProfiles', medId);
   const rec = stamp({
     ...(existing || {}),
     id, medId, status, isPrn: false, doseSlot,
+    medName: existing?.medName || profile?.name || null,
+    dose: existing?.dose || profile?.dose || null,
     scheduledTime: scheduledTime ?? existing?.scheduledTime ?? null,
     takenTime: takenTime ?? (status === 'skipped' ? null : nowISO()),
   }, eventDate);
@@ -263,9 +279,10 @@ export async function setMedDailyStatus({ medId, eventDate, status, scheduledTim
 
 // Log a PRN (as-needed) dose with context. `quantity` = number of doses taken at once.
 export async function logPrnDose({ medId, eventDate, dose, quantity, time, reason, symptomBeforeId, severityBefore, severityAfter, notes }) {
+  const profile = await get('medicationProfiles', medId);
   const rec = stamp({
     id: `prn-${medId}-${eventDate}-${uuid().slice(0, 5)}`,
-    medId, status: 'prn', isPrn: true, dose: dose ?? null,
+    medId, medName: profile?.name || null, status: 'prn', isPrn: true, dose: dose ?? profile?.dose ?? null,
     quantity: quantity ?? 1,
     takenTime: time ?? nowISO(),
     reason: reason ?? null,
@@ -316,6 +333,7 @@ export async function saveEpisode(ep) {
       reason: rec.symptomName || 'symptom',
       symptomBeforeId: rec.symptomId,
       severityBefore: rec.severity,
+      time: rec.time,
     });
     if (!rec.relatedMedicationIds.includes(ep.prnMedId)) {
       rec.relatedMedicationIds.push(ep.prnMedId);
@@ -422,13 +440,16 @@ export const SAMPLE_CONTEXTS = [
 
 export async function getSettings() {
   const s = await get('userSettings', 'settings');
-  return { ...DEFAULT_SETTINGS, ...(s || {}) };
+  const merged = { ...DEFAULT_SETTINGS, ...(s || {}) };
+  setDayBoundaryHour(merged.dayBoundaryHour);
+  return merged;
 }
 
 export async function saveSettings(patch) {
   const cur = await getSettings();
   const next = stamp({ ...cur, ...patch, id: 'settings' });
   await put('userSettings', next);
+  if (Object.prototype.hasOwnProperty.call(patch, 'dayBoundaryHour')) setDayBoundaryHour(next.dayBoundaryHour);
   return next;
 }
 
@@ -445,4 +466,48 @@ export async function saveSymptomDefinition(next) {
   return rec;
 }
 export async function deleteSymptomDefinition(id) { return remove('symptomDefinitions', id); }
-export async function deleteMedicationProfile(id) { return remove('medicationProfiles', id); }
+export async function deleteMedicationProfile(id) {
+  const prev = await get('medicationProfiles', id);
+  if (!prev) return false;
+  await saveMedicationProfile({ ...prev, active: false, archived: true, archivedAt: nowISO() });
+  return true;
+}
+
+export function validateBackup(payload) {
+  if (!payload || typeof payload !== 'object') throw new Error('This is not a Health Tracker backup.');
+  if (!['hcc.backup.v2', 'hcc.backup.v3'].includes(payload.schema)) throw new Error('Unsupported backup version.');
+  if (!payload.stores || typeof payload.stores !== 'object') throw new Error('Backup stores are missing.');
+  const counts = {};
+  for (const name of STORES) {
+    const records = payload.stores[name] || [];
+    if (!Array.isArray(records)) throw new Error(`Invalid ${name} data.`);
+    for (const record of records) if (!record || typeof record !== 'object' || !record.id) throw new Error(`A ${name} record is missing its id.`);
+    counts[name] = records.length;
+  }
+  return { schema: payload.schema, exportedAt: payload.exportedAt || null, counts, total: Object.values(counts).reduce((a, b) => a + b, 0) };
+}
+
+export async function restoreBackup(payload, mode = 'replace') {
+  const preview = validateBackup(payload);
+  const db = await openDB();
+  if (USE_MEM || !db) throw new Error('Restore requires persistent browser storage.');
+  const transaction = db.transaction(STORES, 'readwrite');
+  try {
+    for (const name of STORES) {
+      const store = transaction.objectStore(name);
+      if (mode === 'replace') store.clear();
+      for (const record of (payload.stores[name] || [])) store.put(record);
+    }
+  } catch (error) {
+    transaction.abort();
+    throw error;
+  }
+  await new Promise((resolve, reject) => {
+    transaction.oncomplete = resolve;
+    transaction.onerror = () => reject(transaction.error || new Error('Restore failed.'));
+    transaction.onabort = () => reject(transaction.error || new Error('Restore was cancelled.'));
+  });
+  const counts = {};
+  for (const name of STORES) counts[name] = (await getAll(name)).length;
+  return { ...preview, mode, restoredCounts: counts };
+}
