@@ -2273,6 +2273,7 @@ class Component extends DCLogic {
   setTheme = (field, value) => async () => { await this.db.saveSettings({ [field]: value }); await this.refresh(); this.applyTheme(); };
 
   async componentDidMount() {
+    window.__hccApp = this;
     this.applyTheme();
     this._fitPhone();
     // Hidden sample-data loader (not exposed in the UI). Run window.__hccLoadSample() in the console.
@@ -2301,7 +2302,7 @@ class Component extends DCLogic {
   }
 
   componentDidUpdate(prev) { const p = this.props || {}, q = prev || {}; if (p.accent !== q.accent || p.ambiance !== q.ambiance || p.corners !== q.corners) this.applyTheme(); }
-  componentWillUnmount() { if (this._onResize) { window.removeEventListener('resize', this._onResize); window.removeEventListener('orientationchange', this._onResize); if (window.visualViewport) { window.visualViewport.removeEventListener('resize', this._onResize); window.visualViewport.removeEventListener('scroll', this._onResize); } } }
+  componentWillUnmount() { if (window.__hccApp === this) window.__hccApp = null; if (this._onResize) { window.removeEventListener('resize', this._onResize); window.removeEventListener('orientationchange', this._onResize); if (window.visualViewport) { window.visualViewport.removeEventListener('resize', this._onResize); window.visualViewport.removeEventListener('scroll', this._onResize); } } }
   _fitPhone() {
     // Let the dynamic viewport and CSS safe-area environment values place the
     // shell and bottom controls. Adding browser chrome gaps here double-counts

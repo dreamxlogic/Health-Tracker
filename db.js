@@ -2,7 +2,9 @@
 // Step 1 of PROTOTYPE_BUILD.md: schema, models, CRUD, auto-change-event hook.
 // Plain ES module, dynamically imported by the DC logic class. No backend, no network.
 
-export const DB_NAME = 'hcc';
+// The screen-review catalog runs against a separate sample database so opening
+// design-review pages can never read, replace, or add to the user's real data.
+export const DB_NAME = (typeof location !== 'undefined' && new URLSearchParams(location.search).has('reviewScreens')) ? 'hcc-screen-review' : 'hcc';
 export const DB_VERSION = 2;
 
 // All object stores keyed by `id`. Every record also carries createdAt/updatedAt/eventDate/notes.

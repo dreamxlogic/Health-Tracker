@@ -35,6 +35,15 @@ What it does:
 
 Normal app users will not see the review tools unless they open the annotation URL.
 
+## Complete screen review
+
+Open `screen-review.html` to review the complete app without manually clicking
+through its flows. Each app screen and major modal is a numbered page backed by
+an isolated sample database. Turn on **Add feedback**, click an exact interface
+element, save the note, and then use **Submit feedback**, **Copy for Codex**, or
+**Download review file**. Review mode never reads or changes the real tracker
+database.
+
 ## Deploy to GitHub Pages
 
 1. Create a **new repository** and upload the entire contents of this `github-build/`

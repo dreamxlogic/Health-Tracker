@@ -28,4 +28,13 @@ for (const marker of [
 
 assert.ok(!html.includes('maximum-scale=1'), 'pinch zoom must not be disabled');
 assert.ok(html.includes('data-hcc-scroll-rail'), 'horizontal rails must expose keyboard affordances');
+
+const reviewHtml = await readFile(new URL('../screen-review.html', import.meta.url), 'utf8');
+const reviewJs = await readFile(new URL('../screen-review.js', import.meta.url), 'utf8');
+for (const marker of ['Every screen is a separate review page', 'Submit feedback', 'Copy for Codex']) {
+  assert.ok(reviewHtml.includes(marker), `missing screen-review marker: ${marker}`);
+}
+const screenDefinitions = [...reviewJs.matchAll(/^\s*\['[^']+','[^']+','[^']+'/gm)];
+assert.equal(screenDefinitions.length, 55, `screen catalog must keep all 55 documented app states; found ${screenDefinitions.length}`);
+assert.ok(dbSource.includes("'hcc-screen-review'"), 'review mode must use an isolated database');
 console.log('Health Tracker regression checks passed');
