@@ -27,7 +27,13 @@ for (const marker of [
   'showInSelfCare',
   'Complete dose history',
   'Set date & time',
+  'Skip · leave blank',
+  'skippedSteps',
 ]) assert.ok(html.includes(marker), `missing UI regression marker: ${marker}`);
+
+assert.ok(html.includes("step !== 'cognition' && step !== 'food'"), 'only cognition and food should expose blank-data skipping');
+assert.ok(html.includes('delete ratings[k]'), 'skipping must remove existing ratings instead of recording defaults');
+assert.ok(html.includes('next.proteinG = null; next.proteinRange = null'), 'skipping food must leave protein blank');
 
 for (const marker of ['this.raw.episodes || []', 'this.raw.medLogs || []', 'this.raw.checkIns || []', 'this.raw.stress || []', 'this.raw.selfCare || []']) {
   assert.ok(html.includes(marker), `${marker} must remain part of detailed export assembly`);
@@ -37,6 +43,11 @@ assert.ok(html.includes("notes: s.notes || ''"), 'mood, stress, and self-care no
 
 assert.ok(!html.includes('maximum-scale=1'), 'pinch zoom must not be disabled');
 assert.ok(html.includes('data-hcc-scroll-rail'), 'horizontal rails must expose keyboard affordances');
+assert.ok(!html.includes('width:46px;height:27px'), 'legacy oversized switches must not return');
+assert.ok(html.includes('.hcc-toggle{width:34px!important;height:20px!important'), 'all switch screens must share the compact control');
+assert.ok(html.includes('.hcc-segmented>div{cursor:pointer;flex:1'), 'segmented controls must keep equal centered spacing');
+assert.equal((html.match(/class="hcc-tool-card"/g) || []).length, 4, 'all four Insights tool cards must use one equal-size component');
+assert.ok(html.includes('grid-template-columns:repeat(3,minmax(0,1fr))'), 'medication status choices must keep equal columns');
 
 const reviewHtml = await readFile(new URL('../screen-review.html', import.meta.url), 'utf8');
 const reviewJs = await readFile(new URL('../screen-review.js', import.meta.url), 'utf8');
