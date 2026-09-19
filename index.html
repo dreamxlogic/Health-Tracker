@@ -41,6 +41,13 @@
   [style*="overflow-x:auto"],[style*="overflow-x: auto"],.chp{touch-action:pan-x;overscroll-behavior-x:contain;overscroll-behavior-y:none;-webkit-overflow-scrolling:auto}
   .hcc-time-wheel{touch-action:pan-y;overscroll-behavior:contain;overflow-x:hidden!important;scroll-snap-type:y mandatory;scroll-padding-block:66px;-webkit-overflow-scrolling:auto}
   .hcc-time-option{scroll-snap-align:center;scroll-snap-stop:always}
+  .hcc-compact-pill{min-height:34px!important;padding:6px 12px!important;display:flex!important;align-items:center!important;justify-content:center!important;line-height:1.1!important}
+  .hcc-compact-chip{min-height:34px!important;padding:6px 12px!important;display:flex!important;align-items:center!important;justify-content:center!important;line-height:1.1!important}
+  .hcc-toggle{width:40px!important;height:24px!important;flex:none!important;border-radius:99px!important;position:relative!important}
+  .hcc-toggle>div{top:3px!important;width:18px!important;height:18px!important}
+  .hcc-trash{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#B3502E;background:#FBEFEC;flex:none}
+  .hcc-wave-slider{position:relative;height:46px;touch-action:none;cursor:pointer}
+  .hcc-wave-slider svg{position:absolute;left:0;right:0;top:5px;width:100%;height:36px;overflow:visible}
   @keyframes hcFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
   @keyframes hcSpin{to{transform:rotate(360deg)}}
   @media (min-width:700px){#hcc-phone-sizer{max-width:620px!important;margin:0 auto!important;box-shadow:0 0 40px rgba(53,45,90,.12)}}
@@ -269,13 +276,13 @@
         </div>
 
         <div style="display:flex;flex-direction:column;gap:10px">
-          <div style="display:flex;align-items:baseline"><div style="font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--head);flex:1">TODAY'S CHECK-INS</div><div style="font-size:11px;font-weight:700;color:#747B8E">morning + evening</div></div>
+          <div style="display:flex;align-items:baseline"><div style="font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--head);flex:1">TODAY'S CHECK-INS</div></div>
           <div style="background:rgba(255,255,255,.94);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:4px 17px;box-shadow:0 2px 6px rgba(120,110,180,.06),0 18px 40px rgba(120,110,180,.16)">
             <sc-for list="{{ home.checkinRows }}" as="r" hint-placeholder-count="2">
               <div onClick="{{ r.onClick }}" data-hcc-sep="1" style="cursor:pointer;min-height:68px;display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #F1F0F7">
                 <div style="width:42px;height:42px;border-radius:14px;background:{{ r.iconBg }};color:{{ r.iconColor }};display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:900">{{ r.icon }}</div>
-                <div style="flex:1;min-width:0"><div style="font-size:14.5px;font-weight:800">{{ r.title }}</div><div style="font-size:11.5px;color:#61687A;margin-top:2px">{{ r.sub }}</div></div>
-                <div style="min-height:40px;display:flex;align-items:center;padding:8px 13px;border-radius:999px;background:{{ r.buttonBg }};color:{{ r.buttonColor }};font-size:11.5px;font-weight:800">{{ r.cta }}</div>
+                <div style="flex:1;min-width:0"><div style="font-size:14.5px;font-weight:800">{{ r.title }}</div><sc-if value="{{ r.showSub }}" hint-placeholder-val="{{ true }}"><div style="font-size:11.5px;color:#61687A;margin-top:2px">{{ r.sub }}</div></sc-if></div>
+                <div class="hcc-compact-pill" style="border-radius:999px;background:{{ r.buttonBg }};color:{{ r.buttonColor }};font-size:11.5px;font-weight:800">{{ r.cta }}</div>
               </div>
             </sc-for>
           </div>
@@ -288,17 +295,17 @@
               <div style="width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,#FBD9D3,#F4B0A6);display:flex;align-items:center;justify-content:center"><div style="width:30px;height:30px;background-image:url('uploads/Medication.png');background-size:contain;background-repeat:no-repeat;background-position:center"></div></div>
               <div style="font-size:13px;font-weight:800;line-height:1.13">Log<br>medication</div>
             </div>
+            <div onClick="{{ nav.goLog }}" style="cursor:pointer;scroll-snap-align:start;flex:0 0 132px;min-height:112px;background:rgba(255,255,255,.94);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-md);padding:13px;box-sizing:border-box;box-shadow:0 8px 20px rgba(120,110,180,.12);display:flex;flex-direction:column;justify-content:space-between">
+              <div style="width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,#FCE1D2,#F8C4A6);display:flex;align-items:center;justify-content:center"><div style="width:30px;height:30px;background-image:url('uploads/Body.png');background-size:contain;background-repeat:no-repeat;background-position:center"></div></div>
+              <div style="font-size:13px;font-weight:800;line-height:1.13">Log<br>symptom</div>
+            </div>
             <div onClick="{{ home.onQuickCheck }}" style="cursor:pointer;scroll-snap-align:start;flex:0 0 132px;min-height:112px;background:linear-gradient(135deg,var(--ac-050),rgba(255,255,255,.96));border:1px solid rgba(var(--ac-rgb),.2);border-radius:var(--r-md);padding:13px;box-sizing:border-box;box-shadow:0 8px 20px rgba(120,110,180,.12);display:flex;flex-direction:column;justify-content:space-between">
               <div style="width:42px;height:42px;background-image:url('uploads/Mood- Square.png');background-size:contain;background-repeat:no-repeat;background-position:center"></div>
-              <div style="font-size:13px;font-weight:800;line-height:1.13">Mood<br><span style="font-size:10.5px;font-weight:700;color:#61687A">+ stress</span></div>
+              <div style="font-size:13px;font-weight:800;line-height:1.13">Log Mood</div>
             </div>
             <div onClick="{{ home.onSelfCare }}" style="cursor:pointer;scroll-snap-align:start;flex:0 0 132px;min-height:112px;background:linear-gradient(135deg,var(--ac-050),rgba(255,255,255,.96));border:1px solid rgba(var(--ac-rgb),.2);border-radius:var(--r-md);padding:13px;box-sizing:border-box;box-shadow:0 8px 20px rgba(120,110,180,.12);display:flex;flex-direction:column;justify-content:space-between">
               <div style="width:42px;height:42px;background-image:url('uploads/Patterns- Square.png');background-size:contain;background-repeat:no-repeat;background-position:center"></div>
               <div style="font-size:13px;font-weight:800;line-height:1.13">Self care</div>
-            </div>
-            <div onClick="{{ nav.goLog }}" style="cursor:pointer;scroll-snap-align:start;flex:0 0 132px;min-height:112px;background:rgba(255,255,255,.94);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-md);padding:13px;box-sizing:border-box;box-shadow:0 8px 20px rgba(120,110,180,.12);display:flex;flex-direction:column;justify-content:space-between">
-              <div style="width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,#FCE1D2,#F8C4A6);display:flex;align-items:center;justify-content:center"><div style="width:30px;height:30px;background-image:url('uploads/Body.png');background-size:contain;background-repeat:no-repeat;background-position:center"></div></div>
-              <div style="font-size:13px;font-weight:800;line-height:1.13">Log<br>symptom</div>
             </div>
           </div>
         </div>
@@ -308,7 +315,7 @@
           <sc-if value="{{ home.hasMeds }}" hint-placeholder-val="{{ true }}">
           <div style="background:rgba(255,255,255,.94);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:2px 18px;box-shadow:0 2px 6px rgba(120,110,180,.06),0 16px 36px rgba(120,110,180,.15)">
             <sc-for list="{{ home.medsToday }}" as="m" hint-placeholder-count="3">
-              <div data-hcc-sep="1" style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #F1F0F7"><div style="flex:1"><div style="font-size:14px;font-weight:700">{{ m.name }} <span style="color:#61687A;font-weight:500">{{ m.dose }}</span></div><div onClick="{{ m.onTimeTap }}" style="cursor:pointer;font-size:12px;color:{{ m.timeColor }};font-weight:{{ m.timeWeight }}">{{ m.time }}</div></div><div onClick="{{ m.onStatusTap }}" style="cursor:pointer;font-size:12px;font-weight:800;padding:6px 13px;border-radius:999px;background:{{ m.pillBg }};color:{{ m.pillColor }}">{{ m.status }}</div></div>
+              <div data-hcc-sep="1" style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #F1F0F7"><div style="flex:1"><div style="font-size:14px;font-weight:700">{{ m.name }} <span style="color:#61687A;font-weight:500">{{ m.dose }}</span></div><div onClick="{{ m.onTimeTap }}" style="cursor:pointer;font-size:12px;color:{{ m.timeColor }};font-weight:{{ m.timeWeight }}">{{ m.time }}</div></div><div onClick="{{ m.onStatusTap }}" class="hcc-compact-pill" style="cursor:pointer;font-size:12px;font-weight:800;border-radius:999px;background:{{ m.pillBg }};color:{{ m.pillColor }}">{{ m.status }}</div></div>
             </sc-for>
           </div>
           </sc-if>
@@ -318,13 +325,13 @@
         </div>
 
         <div style="display:flex;flex-direction:column;gap:10px">
-          <div style="display:flex;align-items:baseline"><div style="font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--head);flex:1">RECENT ACTIVITY</div><div onClick="{{ nav.goCalendar }}" style="cursor:pointer;font-size:12px;font-weight:800;color:var(--ac);flex:none;white-space:nowrap">Calendar ›</div></div>
+          <div style="display:flex;align-items:baseline;margin-bottom:-4px"><div style="font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--head);flex:1">RECENT ACTIVITY</div><div onClick="{{ nav.goCalendar }}" style="cursor:pointer;font-size:12px;font-weight:800;color:var(--ac);flex:none;white-space:nowrap">Calendar ›</div></div>
           <sc-if value="{{ home.hasRecent }}" hint-placeholder-val="{{ true }}">
           <div style="background:rgba(255,255,255,.94);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:6px 18px;box-shadow:0 2px 6px rgba(120,110,180,.06),0 16px 36px rgba(120,110,180,.15)">
             <sc-for list="{{ home.recent }}" as="r" hint-placeholder-count="4">
               <div style="display:flex;gap:13px">
                 <div style="position:relative;width:14px;flex:none;display:flex;justify-content:center"><div style="position:absolute;top:0;bottom:0;width:2px;background:rgba(var(--ac-rgb),.16)"></div><div style="position:relative;z-index:1;width:11px;height:11px;border-radius:50%;background:{{ r.dot }};margin-top:15px;box-shadow:0 0 0 3px #fff"></div></div>
-                <div style="flex:1;min-width:0;padding:12px 0"><div style="font-size:13.5px;font-weight:700">{{ r.title }}</div><div style="font-size:11.5px;color:#61687A">{{ r.sub }}</div></div>
+                <div style="flex:1;min-width:0;padding:9px 0"><div style="font-size:13.5px;font-weight:700">{{ r.title }}</div><div style="font-size:11.5px;color:#61687A">{{ r.sub }}</div></div>
               </div>
             </sc-for>
           </div>
@@ -370,11 +377,11 @@
             <div style="display:flex;align-items:center;gap:12px"><div style="width:42px;height:42px;border-radius:14px;background:{{ m.iconBg }};display:flex;align-items:center;justify-content:center"><div style="width:24px;height:24px;background:{{ m.iconTint }};-webkit-mask:url('{{ m.iconSrc }}') center/contain no-repeat;mask:url('{{ m.iconSrc }}') center/contain no-repeat"></div></div><div style="flex:1"><div style="font-size:15px;font-weight:700">{{ m.name }}</div><div style="font-size:12.5px;color:#61687A">{{ m.sub }}</div></div><div style="font-size:12px;font-weight:700;color:{{ m.noteColor }}">{{ m.note }}</div></div>
             <div style="display:flex;gap:7px">
               <sc-for list="{{ m.segments }}" as="s" hint-placeholder-count="3">
-                <div onClick="{{ s.onClick }}" style="cursor:pointer;flex:1;text-align:center;padding:9px 0;border-radius:12px;font-size:12.5px;font-weight:700;background:{{ s.bg }};color:{{ s.color }}">{{ s.label }}</div>
+                <div onClick="{{ s.onClick }}" class="hcc-compact-pill" style="cursor:pointer;flex:1;text-align:center;border-radius:12px;font-size:12.5px;font-weight:700;background:{{ s.bg }};color:{{ s.color }}">{{ s.label }}</div>
               </sc-for>
             </div>
             <sc-if value="{{ m.showTime }}" hint-placeholder-val="{{ false }}">
-              <div style="display:flex;align-items:center;gap:10px;background:#F6F5FB;border-radius:12px;padding:8px 13px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5V12l3 2"></path></svg><div style="font-size:12.5px;font-weight:600;color:#565B6E;flex:1">Time taken</div><div onClick="{{ m.onTimeOpen }}" style="cursor:pointer;background:#fff;border-radius:9px;padding:6px 12px;font-size:13px;font-weight:800;color:var(--ac-deep);box-shadow:0 2px 6px rgba(120,110,180,.15)">{{ m.timeLabel }}</div></div>
+              <div style="min-height:44px;display:flex;align-items:center;gap:10px;background:#F6F5FB;border-radius:12px;padding:6px 11px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5V12l3 2"></path></svg><div style="font-size:12.5px;font-weight:600;color:#565B6E;flex:1">Time taken</div><div onClick="{{ m.onTimeOpen }}" class="hcc-compact-pill" style="cursor:pointer;background:#fff;border-radius:9px;font-size:13px;font-weight:800;color:var(--ac-deep);box-shadow:0 2px 6px rgba(120,110,180,.15)">{{ m.timeLabel }}</div></div>
             </sc-if>
           </div>
         </sc-for>
@@ -385,7 +392,7 @@
           <div style="background:rgba(255,255,255,.94);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:16px 18px;box-shadow:0 2px 6px rgba(120,110,180,.06),0 16px 36px rgba(120,110,180,.15);display:flex;align-items:center;gap:12px">
             <div style="width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,#F9D4DA,#F3B3C0);display:flex;align-items:center;justify-content:center"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#C05673" stroke-width="2" stroke-linecap="round"><rect x="4" y="9" width="16" height="7" rx="3.5" transform="rotate(-35 12 12)"></rect><line x1="10" y1="8.5" x2="14" y2="14.5"></line></svg></div>
             <div style="flex:1"><div style="font-size:15px;font-weight:700">{{ p.name }} <span style="color:#61687A;font-weight:500;font-size:13px">{{ p.dose }}</span></div><div style="font-size:12px;color:#61687A">{{ p.lastTaken }}</div></div>
-            <div onClick="{{ p.onLog }}" style="cursor:pointer;background:linear-gradient(90deg,var(--ac-soft),var(--ac));color:#fff;font-size:12.5px;font-weight:700;padding:9px 14px;border-radius:999px">Log dose</div>
+            <div onClick="{{ p.onLog }}" class="hcc-compact-pill" style="cursor:pointer;background:linear-gradient(90deg,var(--ac-soft),var(--ac));color:#fff;font-size:12.5px;font-weight:700;border-radius:999px">Log dose</div>
           </div>
         </sc-for>
         </sc-if>
@@ -426,7 +433,7 @@
           <div style="width:72px;height:72px;background-image:url('{{ ci.stepIcon }}');background-size:contain;background-repeat:no-repeat;background-position:center;filter:drop-shadow(0 10px 18px rgba(106,87,201,.28));animation:hcFloat 3.6s ease-in-out infinite"></div>
         </div>
         </sc-if>
-        <div><div style="font-size:24px;font-weight:800;letter-spacing:-.02em">{{ ci.title }}</div><div style="font-size:13.5px;color:#61687A;margin-top:3px">{{ ci.subtitle }}</div></div>
+        <div><div style="font-size:24px;font-weight:800;letter-spacing:-.02em">{{ ci.title }}</div><sc-if value="{{ ci.hasSubtitle }}" hint-placeholder-val="{{ true }}"><div style="font-size:13.5px;color:#61687A;margin-top:3px">{{ ci.subtitle }}</div></sc-if></div>
 
         <sc-if value="{{ ci.hasFace }}" hint-placeholder-val="{{ false }}">
           <div style="background:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:18px;box-shadow:0 2px 6px rgba(120,110,180,.06),0 16px 36px rgba(120,110,180,.15);display:flex;flex-direction:column;gap:14px">
@@ -547,7 +554,7 @@
           <div style="background:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:2px 18px;box-shadow:0 2px 6px rgba(120,110,180,.06),0 16px 36px rgba(120,110,180,.15)">
             <sc-for list="{{ grp.items }}" as="tg" hint-placeholder-count="2">
               <div data-hcc-sep="1" style="display:flex;flex-direction:column;padding:13px 0;border-bottom:1px solid #F1F0F7;gap:12px">
-                <div style="display:flex;align-items:center;gap:10px"><span style="width:9px;height:9px;border-radius:50%;background:{{ tg.dot }}"></span><div style="font-size:14px;font-weight:600;flex:1">{{ tg.label }}</div><div onClick="{{ tg.onToggle }}" style="cursor:pointer;width:46px;height:27px;border-radius:99px;position:relative;background:{{ tg.trackBg }}"><div style="position:absolute;top:3px;width:21px;height:21px;border-radius:50%;background:#fff;transition:left .15s;left:{{ tg.knobLeft }}"></div></div></div>
+                <div style="display:flex;align-items:center;gap:10px"><span style="width:9px;height:9px;border-radius:50%;background:{{ tg.dot }}"></span><div style="font-size:14px;font-weight:600;flex:1">{{ tg.label }}</div><div onClick="{{ tg.onToggle }}" class="hcc-toggle" style="cursor:pointer;background:{{ tg.trackBg }}"><div style="position:absolute;border-radius:50%;background:#fff;transition:left .15s;left:{{ tg.knobLeft }}"></div></div></div>
                 <sc-if value="{{ tg.showSev }}" hint-placeholder-val="{{ false }}">
                   <div style="display:flex;align-items:center;gap:12px;padding-left:19px"><div style="font-size:12px;color:#61687A;width:56px">Severity</div>
                     <div onPointerDown="{{ tg.onSevDown }}" style="position:relative;height:24px;flex:1;touch-action:none;cursor:pointer">
@@ -603,9 +610,9 @@
           <div style="display:flex;align-items:center;gap:10px;background:#E4F4EA;border-radius:16px;padding:12px 15px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2E8B5B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg><div style="font-size:13px;font-weight:700;color:#237A4E;flex:1">{{ log.justLogged }}</div></div>
         </sc-if>
         <div style="font-size:24px;font-weight:800;letter-spacing:-.02em">What would you like to log?</div>
-        <div onClick="{{ log.onMedication }}" style="cursor:pointer;background:rgba(255,255,255,.92);border:1px solid rgba(255,255,255,.95);border-radius:var(--r-md);padding:14px 15px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 20px rgba(120,110,180,.1)"><div style="width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,#FBD9D3,#F4B0A6);display:flex;align-items:center;justify-content:center"><div style="width:30px;height:30px;background-image:url('uploads/Medication.png');background-size:contain;background-repeat:no-repeat;background-position:center"></div></div><div style="flex:1"><div style="font-size:14.5px;font-weight:800">Log medication</div><div style="font-size:11.5px;color:#61687A;margin-top:2px">Scheduled, PRN, or a past dose</div></div><div style="font-size:20px;color:var(--ac-deep)">›</div></div>
-        <div onClick="{{ log.onQuickCheck }}" style="cursor:pointer;background:linear-gradient(135deg,var(--ac-050),rgba(255,255,255,.9));border:1px solid rgba(var(--ac-rgb),.2);border-radius:var(--r-md);padding:14px 15px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 20px rgba(120,110,180,.1)"><div style="width:42px;height:42px;background-image:url('uploads/Mood- Square.png');background-size:contain;background-repeat:no-repeat;background-position:center"></div><div style="flex:1"><div style="font-size:14.5px;font-weight:800;color:var(--ac-deep)">Log mood &amp; stress</div><div style="font-size:11.5px;color:#61687A;margin-top:2px">Add a quick timestamped reading</div></div><div style="font-size:20px;color:var(--ac-deep)">›</div></div>
-        <div onClick="{{ log.onSelfCare }}" style="cursor:pointer;background:linear-gradient(135deg,var(--ac-050),rgba(255,255,255,.9));border:1px solid rgba(var(--ac-rgb),.2);border-radius:var(--r-md);padding:14px 15px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 20px rgba(120,110,180,.1)"><div style="width:42px;height:42px;background-image:url('uploads/Patterns- Square.png');background-size:contain;background-repeat:no-repeat;background-position:center"></div><div style="flex:1"><div style="font-size:14.5px;font-weight:800;color:var(--ac-deep)">Log self care</div><div style="font-size:11.5px;color:#61687A;margin-top:2px">What helped, how long, and how you felt after</div></div><div style="font-size:20px;color:var(--ac-deep)">›</div></div>
+        <div onClick="{{ log.onMedication }}" style="cursor:pointer;min-height:68px;background:rgba(255,255,255,.92);border:1px solid rgba(255,255,255,.95);border-radius:var(--r-md);padding:12px 15px;display:flex;align-items:center;gap:13px;box-shadow:0 8px 20px rgba(120,110,180,.1)"><div style="width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#FBD9D3,#F4B0A6);display:flex;align-items:center;justify-content:center;flex:none"><div style="width:30px;height:30px;background-image:url('uploads/Medication.png');background-size:contain;background-repeat:no-repeat;background-position:center"></div></div><div style="flex:1;font-size:14.5px;font-weight:800">Log medication</div><div style="font-size:20px;color:var(--ac-deep)">›</div></div>
+        <div onClick="{{ log.onQuickCheck }}" style="cursor:pointer;min-height:68px;background:linear-gradient(135deg,var(--ac-050),rgba(255,255,255,.9));border:1px solid rgba(var(--ac-rgb),.2);border-radius:var(--r-md);padding:12px 15px;display:flex;align-items:center;gap:13px;box-shadow:0 8px 20px rgba(120,110,180,.1)"><div style="width:44px;height:44px;background-image:url('uploads/Mood- Square.png');background-size:contain;background-repeat:no-repeat;background-position:center;flex:none"></div><div style="flex:1;font-size:14.5px;font-weight:800;color:var(--ac-deep)">Log mood &amp; stress</div><div style="font-size:20px;color:var(--ac-deep)">›</div></div>
+        <div onClick="{{ log.onSelfCare }}" style="cursor:pointer;min-height:68px;background:linear-gradient(135deg,var(--ac-050),rgba(255,255,255,.9));border:1px solid rgba(var(--ac-rgb),.2);border-radius:var(--r-md);padding:12px 15px;display:flex;align-items:center;gap:13px;box-shadow:0 8px 20px rgba(120,110,180,.1)"><div style="width:44px;height:44px;background-image:url('uploads/Patterns- Square.png');background-size:contain;background-repeat:no-repeat;background-position:center;flex:none"></div><div style="flex:1;font-size:14.5px;font-weight:800;color:var(--ac-deep)">Log self care</div><div style="font-size:20px;color:var(--ac-deep)">›</div></div>
         <div style="font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--head)">LOG A SYMPTOM</div>
         <div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.9);border:1px solid rgba(255,255,255,.95);border-radius:16px;padding:12px 15px;box-shadow:0 6px 18px rgba(120,110,180,.14)">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#747B8E" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4-4"></path></svg>
@@ -681,10 +688,9 @@
 
         <div style="background:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:18px;box-shadow:0 2px 6px rgba(120,110,180,.06),0 16px 36px rgba(120,110,180,.15);display:flex;flex-direction:column;gap:14px">
           <div style="font-size:14.5px;font-weight:700">How intense?</div>
-          <div onPointerDown="{{ log.d.onSevDown }}" style="position:relative;height:36px;touch-action:none;cursor:pointer">
-            <div style="position:absolute;top:15px;left:0;right:0;height:7px;border-radius:99px;background:#EFEDF6"></div>
-            <div style="position:absolute;top:15px;left:0;height:7px;border-radius:99px;background:linear-gradient(90deg,var(--ac-200),var(--ac));width:{{ log.d.sevPct }}%"></div>
-            <div style="position:absolute;top:2px;width:34px;height:34px;border-radius:50%;background:#fff;border:4px solid var(--ac);box-sizing:border-box;box-shadow:0 4px 12px rgba(var(--ac-rgb),.4);left:calc({{ log.d.sevPct }}% - 17px)"></div>
+          <div onPointerDown="{{ log.d.onSevDown }}" class="hcc-wave-slider">
+            <svg viewBox="0 0 314 36" preserveAspectRatio="none"><defs><linearGradient id="symptomWave" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#73B66F"></stop><stop offset=".5" stop-color="#E2AE38"></stop><stop offset="1" stop-color="#E9695E"></stop></linearGradient></defs><path d="M2 20 C70 20 76 20 89 20 C102 20 102 9 115 20 S128 31 141 20 S154 9 167 20 S180 31 193 20 S206 9 219 20 S232 31 245 20 S258 9 271 20 S284 31 312 20" fill="none" stroke="url(#symptomWave)" stroke-width="4" stroke-linecap="round"></path></svg>
+            <div style="position:absolute;top:5px;width:34px;height:34px;border-radius:50%;background:#fff;border:4px solid var(--ac);box-sizing:border-box;box-shadow:0 4px 12px rgba(var(--ac-rgb),.4);left:calc({{ log.d.sevPct }}% - 17px)"></div>
           </div>
           <div style="display:flex;font-size:12.5px;font-weight:700">
             <div style="flex:1;text-align:left;color:#747B8E">None</div><div style="flex:1;text-align:center;color:#747B8E">Mild</div><div style="flex:1;text-align:center;color:#747B8E">Moderate</div><div style="flex:1;text-align:center;color:#747B8E">Severe</div><div style="flex:1;text-align:right;color:#747B8E">Extreme</div>
@@ -694,7 +700,7 @@
         <div style="background:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:18px;box-shadow:0 2px 6px rgba(120,110,180,.06),0 16px 36px rgba(120,110,180,.15);display:flex;flex-direction:column;gap:12px">
           <div style="display:flex;align-items:baseline;gap:8px"><div style="font-size:14.5px;font-weight:800;flex:1">When did it happen?</div><div style="font-size:10.5px;font-weight:800;color:var(--ac-deep);background:var(--ac-050);padding:3px 8px;border-radius:999px">LOGGING LATE? SET THE TIME</div></div>
           <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <sc-for list="{{ log.whenChips }}" as="c" hint-placeholder-count="4"><div onClick="{{ c.onClick }}" style="cursor:pointer;font-size:13px;font-weight:{{ c.weight }};padding:9px 15px;border-radius:999px;background:{{ c.bg }};color:{{ c.color }}">{{ c.label }}</div></sc-for>
+            <sc-for list="{{ log.whenChips }}" as="c" hint-placeholder-count="4"><div onClick="{{ c.onClick }}" class="hcc-compact-chip" style="cursor:pointer;font-size:13px;font-weight:{{ c.weight }};border-radius:999px;background:{{ c.bg }};color:{{ c.color }}">{{ c.label }}</div></sc-for>
           </div>
           <div style="display:flex;align-items:center;gap:10px;background:#F6F5FB;border-radius:12px;padding:9px 13px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5V12l3 2"></path></svg><div style="font-size:12.5px;font-weight:600;color:#565B6E;flex:1">Exact time it happened</div><input type="time" value="{{ log.logTime }}" onChange="{{ log.onLogTime }}" style="border:none;background:#fff;border-radius:9px;padding:6px 10px;font-size:13px;font-weight:700;color:var(--ac-deep);outline:none;font-family:inherit"></div>
         </div>
@@ -702,14 +708,14 @@
         <div style="background:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:18px;box-shadow:0 2px 6px rgba(120,110,180,.06),0 16px 36px rgba(120,110,180,.15);display:flex;flex-direction:column;gap:12px">
           <div style="font-size:14.5px;font-weight:800">How long did it last?</div>
           <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <sc-for list="{{ log.durChips }}" as="c" hint-placeholder-count="4"><div onClick="{{ c.onClick }}" style="cursor:pointer;font-size:13px;font-weight:{{ c.weight }};padding:9px 15px;border-radius:999px;background:{{ c.bg }};color:{{ c.color }}">{{ c.label }}</div></sc-for>
+            <sc-for list="{{ log.durChips }}" as="c" hint-placeholder-count="4"><div onClick="{{ c.onClick }}" class="hcc-compact-chip" style="cursor:pointer;font-size:13px;font-weight:{{ c.weight }};border-radius:999px;background:{{ c.bg }};color:{{ c.color }}">{{ c.label }}</div></sc-for>
           </div>
         </div>
 
         <div style="background:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:18px;box-shadow:0 2px 6px rgba(120,110,180,.06),0 16px 36px rgba(120,110,180,.15);display:flex;flex-direction:column;gap:13px">
           <div style="display:flex;align-items:flex-start;gap:10px"><div style="font-size:14.5px;font-weight:800;flex:1">Could this be from a medication?</div><div style="font-size:10.5px;font-weight:800;color:var(--ac-deep);background:var(--ac-050);padding:3px 8px;border-radius:999px">OPTIONAL</div></div>
           <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <sc-for list="{{ log.medChips }}" as="c" hint-placeholder-count="3"><div onClick="{{ c.onClick }}" style="cursor:pointer;font-size:13px;font-weight:{{ c.weight }};padding:9px 15px;border-radius:999px;background:{{ c.bg }};color:{{ c.color }}">{{ c.label }}</div></sc-for>
+            <sc-for list="{{ log.medChips }}" as="c" hint-placeholder-count="3"><div onClick="{{ c.onClick }}" class="hcc-compact-chip" style="cursor:pointer;font-size:13px;font-weight:{{ c.weight }};border-radius:999px;background:{{ c.bg }};color:{{ c.color }}">{{ c.label }}</div></sc-for>
           </div>
           <div>
             <sc-if value="{{ log.d.showConf }}" hint-placeholder-val="{{ false }}">
@@ -726,7 +732,7 @@
         <div style="background:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:18px;box-shadow:0 2px 6px rgba(120,110,180,.06),0 16px 36px rgba(120,110,180,.15);display:flex;flex-direction:column;gap:12px">
           <div style="font-size:14.5px;font-weight:800">Relief</div>
           <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <sc-for list="{{ log.helpChips }}" as="c" hint-placeholder-count="4"><div onClick="{{ c.onClick }}" style="cursor:pointer;font-size:13px;font-weight:{{ c.weight }};padding:9px 15px;border-radius:999px;background:{{ c.bg }};color:{{ c.color }}">{{ c.label }}</div></sc-for>
+            <sc-for list="{{ log.helpChips }}" as="c" hint-placeholder-count="4"><div onClick="{{ c.onClick }}" class="hcc-compact-chip" style="cursor:pointer;font-size:13px;font-weight:{{ c.weight }};border-radius:999px;background:{{ c.bg }};color:{{ c.color }}">{{ c.label }}</div></sc-for>
           </div>
           <sc-if value="{{ log.d.showPrnNote }}" hint-placeholder-val="{{ false }}">
             <div style="font-size:11.5px;color:var(--ac-deep);font-weight:700">↳ A PRN dose will be logged &amp; linked automatically.</div>
@@ -761,22 +767,13 @@
         <sc-if value="{{ settings.isMain }}" hint-placeholder-val="{{ true }}">
         <!-- PROFILE -->
         <div style="font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--head)">PROFILE</div>
-        <div style="background:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:16px 18px;box-shadow:0 2px 6px rgba(120,110,180,.06),0 16px 36px rgba(120,110,180,.15);display:flex;align-items:center;gap:14px">
+        <div style="background:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:15px 17px;box-shadow:0 2px 6px rgba(120,110,180,.06),0 16px 36px rgba(120,110,180,.15);display:flex;align-items:center;gap:13px">
           <div onClick="{{ home.onAvatar }}" style="cursor:pointer;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#F6C6A8,#C9B6F5);padding:3px">
             <sc-if value="{{ home.hasAvatar }}" hint-placeholder-val="{{ false }}"><div style="width:100%;height:100%;border-radius:50%;background-image:{{ home.avatarBg }};background-size:cover;background-position:center"></div></sc-if>
             <sc-if value="{{ home.noAvatar }}" hint-placeholder-val="{{ true }}"><div style="width:100%;height:100%;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--ac);font-size:18px">{{ home.initial }}</div></sc-if>
           </div>
-          <div style="flex:1"><input id="hcc-name-input" defaultValue="{{ settings.nameValue }}" onBlur="{{ settings.onName }}" placeholder="Your name" style="width:100%;border:none;background:#F6F5FB;border-radius:12px;padding:11px 13px;font-size:14px;font-weight:600;color:#23262F;outline:none;font-family:inherit"><div style="display:flex;align-items:center;gap:8px;margin-top:6px"><div style="flex:1;font-size:11px;color:{{ settings.avatarHintColor }}">{{ settings.avatarHint }}</div><div onClick="{{ settings.onNameSave }}" style="cursor:pointer;font-size:11.5px;font-weight:800;padding:6px 14px;border-radius:999px;background:{{ settings.nameSaveBg }};color:{{ settings.nameSaveColor }}">{{ settings.nameSaveLabel }}</div></div></div>
+          <div style="flex:1;min-width:0"><input id="hcc-name-input" defaultValue="{{ settings.nameValue }}" onBlur="{{ settings.onName }}" placeholder="Your name" style="width:100%;border:none;background:#F6F5FB;border-radius:12px;padding:10px 12px;font-size:14px;font-weight:600;color:#23262F;outline:none;font-family:inherit"><div style="display:flex;align-items:center;gap:8px;margin-top:7px"><div style="flex:1;font-size:11px;line-height:1.25;color:{{ settings.avatarHintColor }}">{{ settings.avatarHint }}</div><div onClick="{{ settings.onNameSave }}" class="hcc-compact-pill" style="cursor:pointer;font-size:11.5px;font-weight:800;border-radius:999px;background:{{ settings.nameSaveBg }};color:{{ settings.nameSaveColor }}">{{ settings.nameSaveLabel }}</div></div></div>
           <input id="hcc-avatar-input-2" type="file" accept="image/*" onChange="{{ home.onAvatarFile }}" style="display:none">
-        </div>
-
-        <!-- DATA -->
-        <div style="font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--head)">DATA</div>
-        <div style="background:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:18px;box-shadow:0 2px 6px rgba(120,110,180,.06),0 16px 36px rgba(120,110,180,.15);display:flex;flex-direction:column;gap:14px">
-          <div style="font-size:13px;color:#565B6E;line-height:1.5">{{ settings.dataSummary }}</div>
-          <div style="display:flex;gap:10px">
-            <div onClick="{{ settings.onWipe }}" style="cursor:pointer;flex:1;text-align:center;background:#F6F5FB;color:#E9695E;font-size:13.5px;font-weight:700;padding:13px 18px;border-radius:999px">Clear all data</div>
-          </div>
         </div>
 
         <!-- CHECK-IN CATEGORIES (moved to its own sub-screen) -->
@@ -784,7 +781,7 @@
           <sc-for list="{{ settings.steps }}" as="s" hint-placeholder-count="6">
             <div data-hcc-sep="1" style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid #F1F0F7">
               <input onBlur="{{ s.onRename }}" defaultValue="{{ s.name }}" style="flex:1;border:none;background:transparent;font-size:14px;font-weight:600;color:#23262F;outline:none;font-family:inherit">
-              <div onClick="{{ s.onToggle }}" style="cursor:pointer;width:46px;height:27px;border-radius:99px;position:relative;background:{{ s.trackBg }}"><div style="position:absolute;top:3px;width:21px;height:21px;border-radius:50%;background:#fff;left:{{ s.knobLeft }}"></div></div>
+              <div onClick="{{ s.onToggle }}" class="hcc-toggle" style="cursor:pointer;background:{{ s.trackBg }}"><div style="position:absolute;border-radius:50%;background:#fff;left:{{ s.knobLeft }}"></div></div>
             </div>
           </sc-for>
         </div>
@@ -814,6 +811,12 @@
             </div>
           </sc-for>
         </div>
+        <!-- DATA -->
+        <div style="font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--head)">DATA</div>
+        <div style="background:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:16px 18px;box-shadow:0 2px 6px rgba(120,110,180,.06),0 16px 36px rgba(120,110,180,.15);display:flex;flex-direction:column;gap:12px">
+          <div style="font-size:13px;color:#565B6E;line-height:1.5">{{ settings.dataSummary }}</div>
+          <div onClick="{{ settings.onWipe }}" class="hcc-compact-pill" style="cursor:pointer;text-align:center;background:#F6F5FB;color:#E9695E;font-size:13.5px;font-weight:700;border-radius:999px">Clear all data</div>
+        </div>
         <div style="font-size:11.5px;color:#747B8E;line-height:1.5;padding:0 4px">Local-first · records are stored in this browser (IndexedDB). Exports and backups leave the app only when you choose.</div>
         </sc-if>
 
@@ -824,7 +827,7 @@
           <sc-for list="{{ settings.steps }}" as="s" hint-placeholder-count="6">
             <div data-hcc-sep="1" style="display:flex;align-items:center;gap:10px;padding:13px 0;border-bottom:1px solid #F1F0F7">
               <input onBlur="{{ s.onRename }}" defaultValue="{{ s.name }}" style="flex:1;border:none;background:#F6F5FB;border-radius:10px;padding:10px 12px;font-size:14px;font-weight:600;color:#23262F;outline:none;font-family:inherit">
-              <div onClick="{{ s.onToggle }}" style="cursor:pointer;width:46px;height:27px;border-radius:99px;position:relative;background:{{ s.trackBg }};flex:none"><div style="position:absolute;top:3px;width:21px;height:21px;border-radius:50%;background:#fff;left:{{ s.knobLeft }}"></div></div>
+              <div onClick="{{ s.onToggle }}" class="hcc-toggle" style="cursor:pointer;background:{{ s.trackBg }}"><div style="position:absolute;border-radius:50%;background:#fff;left:{{ s.knobLeft }}"></div></div>
             </div>
           </sc-for>
         </div>
@@ -873,14 +876,13 @@
 
         <!-- SUB: WHAT HELPED -->
         <sc-if value="{{ settings.isWhatHelped }}" hint-placeholder-val="{{ false }}">
-        <div style="font-size:13px;color:#61687A;line-height:1.5;padding:0 2px">Relief options are always available when logging Self Care. Turn “Symptom logs” on only for options you also want shown while logging symptoms, then choose the relevant symptom categories.</div>
+        <div style="font-size:13px;color:#61687A;line-height:1.5;padding:0 2px">Choose where each relief option appears. Existing options remain available unless you turn them off.</div>
         <div style="background:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:16px 18px;box-shadow:0 2px 6px rgba(120,110,180,.06),0 16px 36px rgba(120,110,180,.15);display:flex;flex-direction:column;gap:12px">
           <sc-for list="{{ settings.whatHelped }}" as="w" hint-placeholder-count="4">
             <div data-hcc-sep="1" style="display:flex;flex-direction:column;gap:11px;padding:2px 0 14px;border-bottom:1px solid #F1F0F7">
-              <div style="font-size:14.5px;font-weight:800">{{ w.label }}</div>
-              <div onClick="{{ w.onToggleSymptoms }}" style="cursor:pointer;min-height:44px;display:flex;align-items:center;gap:12px;background:#F8F7FC;border-radius:13px;padding:8px 11px"><div style="flex:1"><div style="font-size:12.5px;font-weight:800;color:#565B6E">Show in symptom logs</div><div style="font-size:10.5px;color:#747B8E;margin-top:2px">Self-care logging is always available</div></div><div style="width:46px;height:27px;border-radius:99px;position:relative;background:{{ w.trackBg }};flex:none"><div style="position:absolute;top:3px;width:21px;height:21px;border-radius:50%;background:#fff;transition:left .15s;left:{{ w.knobLeft }}"></div></div></div>
+              <div style="display:flex;align-items:center;gap:10px"><div style="font-size:14.5px;font-weight:800;flex:1">{{ w.label }}</div><div onClick="{{ w.onRemove }}" class="hcc-trash" aria-label="Remove option"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"></path></svg></div></div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div onClick="{{ w.onToggleSelfCare }}" style="cursor:pointer;min-height:44px;display:flex;align-items:center;gap:8px;background:#F8F7FC;border-radius:13px;padding:7px 9px"><div style="flex:1;font-size:11.5px;font-weight:800;color:#565B6E">Self care</div><div class="hcc-toggle" style="background:{{ w.selfCareBg }}"><div style="position:absolute;border-radius:50%;background:#fff;left:{{ w.selfCareKnob }}"></div></div></div><div onClick="{{ w.onToggleSymptoms }}" style="cursor:pointer;min-height:44px;display:flex;align-items:center;gap:8px;background:#F8F7FC;border-radius:13px;padding:7px 9px"><div style="flex:1;font-size:11.5px;font-weight:800;color:#565B6E">Symptom logs</div><div class="hcc-toggle" style="background:{{ w.trackBg }}"><div style="position:absolute;border-radius:50%;background:#fff;left:{{ w.knobLeft }}"></div></div></div></div>
               <sc-if value="{{ w.showCats }}" hint-placeholder-val="{{ true }}"><div><div style="font-size:10px;font-weight:800;letter-spacing:.06em;color:#747B8E;margin-bottom:7px">SHOW FOR</div><div style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ w.cats }}" as="c" hint-placeholder-count="3"><div onClick="{{ c.onClick }}" style="cursor:pointer;min-height:34px;display:flex;align-items:center;font-size:11px;font-weight:700;padding:6px 11px;border-radius:999px;background:{{ c.bg }};color:{{ c.color }}">{{ c.label }}</div></sc-for></div></div></sc-if>
-              <div onClick="{{ w.onRemove }}" style="cursor:pointer;align-self:flex-start;min-height:36px;display:flex;align-items:center;color:#B3502E;font-size:11.5px;font-weight:800;padding:4px 2px">Remove option</div>
             </div>
           </sc-for>
           <div style="display:flex;gap:8px"><input id="hcc-wh-input" placeholder="Add an option…" style="flex:1;border:none;background:#F6F5FB;border-radius:12px;padding:11px 13px;font-size:13.5px;color:#23262F;outline:none;font-family:inherit"><div onClick="{{ settings.onAddWhatHelped }}" style="cursor:pointer;background:var(--ac);color:#fff;font-size:13px;font-weight:700;padding:11px 16px;border-radius:12px">Add</div></div>
@@ -893,7 +895,7 @@
         <div style="background:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:16px 18px;box-shadow:0 2px 6px rgba(120,110,180,.06),0 16px 36px rgba(120,110,180,.15);display:flex;flex-direction:column;gap:12px">
           <sc-for list="{{ settings.contexts }}" as="w" hint-placeholder-count="5">
             <div data-hcc-sep="1" style="display:flex;flex-direction:column;gap:7px;padding-bottom:10px;border-bottom:1px solid #F1F0F7">
-              <div style="display:flex;align-items:center;gap:8px"><div style="font-size:14px;font-weight:700;flex:1">{{ w.label }}</div><div onClick="{{ w.onRemove }}" style="cursor:pointer;color:#E9695E;font-size:16px;font-weight:700">✕</div></div>
+              <div style="display:flex;align-items:center;gap:8px"><div style="font-size:14px;font-weight:700;flex:1">{{ w.label }}</div><div onClick="{{ w.onRemove }}" class="hcc-trash" aria-label="Remove factor"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13"></path></svg></div></div>
               <div style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ w.cats }}" as="c" hint-placeholder-count="3"><div onClick="{{ c.onClick }}" style="cursor:pointer;font-size:11px;font-weight:700;padding:5px 10px;border-radius:999px;background:{{ c.bg }};color:{{ c.color }}">{{ c.label }}</div></sc-for></div>
             </div>
           </sc-for>
@@ -1064,13 +1066,13 @@
           </div>
           </sc-if>
           <div style="font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--head);margin-top:2px">OTHER TOOLS</div>
-          <div onClick="{{ ins.hub.onMedHistory }}" style="cursor:pointer;background:#fff;border:1px solid rgba(120,110,180,.12);border-radius:var(--r-md);padding:17px 18px;display:flex;align-items:center;gap:13px;box-shadow:0 2px 6px rgba(120,110,180,.06),0 12px 30px rgba(120,110,180,.14)">
-            <div style="width:40px;height:40px;border-radius:13px;background:rgba(var(--ac-rgb),.2);display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--ac-deep)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 2"></path><path d="M3.05 11a9 9 0 1 1 .5 4"></path><path d="M3 21v-5h5"></path></svg></div>
+          <div onClick="{{ ins.hub.onMedHistory }}" style="cursor:pointer;min-height:82px;background:#fff;border:1px solid rgba(120,110,180,.12);border-radius:var(--r-md);padding:18px;display:flex;align-items:center;gap:14px;box-shadow:0 2px 6px rgba(120,110,180,.06),0 12px 30px rgba(120,110,180,.14)">
+            <div style="width:44px;height:44px;flex:none;border-radius:14px;background:rgba(var(--ac-rgb),.2);display:flex;align-items:center;justify-content:center"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="var(--ac-deep)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 2"></path><path d="M3.05 11a9 9 0 1 1 .5 4"></path><path d="M3 21v-5h5"></path></svg></div>
             <div style="flex:1"><div style="font-size:15px;font-weight:800;color:#3a2f6b">Medication history</div><div style="font-size:12px;color:var(--ac-deep);margin-top:2px">Timeline of every dose, change &amp; note</div></div>
             <div style="color:#9A8FC6;font-size:20px">›</div>
           </div>
-          <div onClick="{{ ins.hub.onReport }}" style="cursor:pointer;background:#fff;border:1px solid rgba(120,110,180,.12);border-radius:var(--r-md);padding:17px 18px;display:flex;align-items:center;gap:13px;box-shadow:0 2px 6px rgba(120,110,180,.06),0 12px 30px rgba(120,110,180,.14)">
-            <div style="width:40px;height:40px;border-radius:13px;background:rgba(var(--ac-rgb),.2);display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--ac-deep)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4"></path><path d="M8 12h5M8 16h8M8 8h3"></path><path d="M16 3l5 5-2 1-3-3z"></path></svg></div>
+          <div onClick="{{ ins.hub.onReport }}" style="cursor:pointer;min-height:82px;background:#fff;border:1px solid rgba(120,110,180,.12);border-radius:var(--r-md);padding:18px;display:flex;align-items:center;gap:14px;box-shadow:0 2px 6px rgba(120,110,180,.06),0 12px 30px rgba(120,110,180,.14)">
+            <div style="width:44px;height:44px;flex:none;border-radius:14px;background:rgba(var(--ac-rgb),.2);display:flex;align-items:center;justify-content:center"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="var(--ac-deep)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4"></path><path d="M8 12h5M8 16h8M8 8h3"></path><path d="M16 3l5 5-2 1-3-3z"></path></svg></div>
             <div style="flex:1"><div style="font-size:15px;font-weight:800;color:#3a2f6b">Build a report</div><div style="font-size:12px;color:var(--ac-deep);margin-top:2px">Pick fields · date range · export</div></div>
             <div style="color:#9A8FC6;font-size:20px">›</div>
           </div>
@@ -1558,7 +1560,7 @@
 
         <!-- ===== MEDICATION HISTORY ===== -->
         <sc-if value="{{ ins.isMedHistory }}" hint-placeholder-val="{{ false }}">
-          <div style="font-size:13px;color:#565B6E;line-height:1.5;padding:0 2px">Every medication's start, dose &amp; schedule changes over time. Flip on a med to see each dose taken (handy for PRN).</div>
+          <div style="font-size:13px;color:#565B6E;line-height:1.5;padding:0 2px">Every medication's start, dose and schedule changes over time. Open a medication’s full log to review every recorded dose.</div>
           <sc-if value="{{ ins.medHistory.empty }}" hint-placeholder-val="{{ false }}"><div style="background:rgba(255,255,255,.7);border:1px dashed rgba(var(--ac-rgb),.35);border-radius:var(--r-lg);padding:22px;text-align:center;font-size:13px;color:#61687A">No medications yet. Add meds to see their history here.</div></sc-if>
           <sc-for list="{{ ins.medHistory.cards }}" as="m" hint-placeholder-count="3">
             <div style="background:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:16px 18px;box-shadow:0 2px 6px rgba(120,110,180,.06),0 16px 36px rgba(120,110,180,.15);display:flex;flex-direction:column;gap:12px">
@@ -1578,13 +1580,7 @@
                 </sc-for>
               </div>
               </sc-if>
-              <div onClick="{{ m.onToggleTimes }}" style="cursor:pointer;display:flex;align-items:center;gap:10px;background:var(--ac-050);border-radius:12px;padding:10px 13px"><div style="font-size:12.5px;font-weight:800;color:var(--ac-deep);flex:1">{{ m.toggleLabel }}</div><div style="width:40px;height:23px;border-radius:99px;position:relative;background:{{ m.trackBg }}"><div style="position:absolute;top:3px;width:17px;height:17px;border-radius:50%;background:#fff;transition:left .15s;left:{{ m.knob }}"></div></div></div>
-              <sc-if value="{{ m.showTimes }}" hint-placeholder-val="{{ false }}">
-                <div style="display:flex;flex-direction:column;gap:6px;max-height:220px;overflow-y:auto">
-                  <sc-for list="{{ m.doses }}" as="d" hint-placeholder-count="4"><div style="display:flex;align-items:center;gap:10px;font-size:12px"><span style="width:7px;height:7px;border-radius:50%;background:{{ d.color }};flex:none"></span><div style="flex:1;color:#3a3f52;font-weight:600">{{ d.when }}</div><div style="font-weight:800;color:{{ d.color }};text-transform:capitalize">{{ d.status }}</div></div></sc-for>
-                  <sc-if value="{{ m.noDoses }}" hint-placeholder-val="{{ false }}"><div style="font-size:12px;color:#747B8E;padding:4px 0">No doses logged yet.</div></sc-if>
-                </div>
-              </sc-if>
+              <div onClick="{{ m.onOpenLog }}" style="cursor:pointer;min-height:44px;display:flex;align-items:center;gap:10px;background:var(--ac-050);border-radius:12px;padding:8px 12px"><div style="width:30px;height:30px;border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center;color:var(--ac-deep)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 19V5M4 19h16M8 15l3-3 3 2 5-6"></path></svg></div><div style="font-size:12.5px;font-weight:800;color:var(--ac-deep);flex:1">View full dose log</div><div style="font-size:19px;color:var(--ac-deep)">›</div></div>
             </div>
           </sc-for>
         </sc-if>
@@ -1620,6 +1616,14 @@
     </div>
     </sc-if>
 
+    <!-- ============================ FULL MEDICATION DOSE LOG ============================ -->
+    <sc-if value="{{ medHistoryDetail.open }}" hint-placeholder-val="{{ false }}">
+    <div data-hcc-dialog style="position:absolute;inset:0;z-index:76;background:var(--wash);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px)">
+      <div style="display:flex;align-items:center;gap:12px;padding:10px 20px 8px;background:rgba(255,255,255,.65);backdrop-filter:blur(12px)"><div onClick="{{ medHistoryDetail.onClose }}" style="cursor:pointer;width:40px;height:40px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(120,110,180,.12);font-size:18px;color:#565B6E">‹</div><div style="flex:1;text-align:center"><div style="font-size:15px;font-weight:800">{{ medHistoryDetail.name }}</div><div style="font-size:10.5px;color:#747B8E">Complete dose history</div></div><div style="width:40px"></div></div>
+      <div style="flex:1;min-height:0;overflow-y:auto;padding:16px 20px calc(30px + var(--hcc-safe-bottom));display:flex;flex-direction:column;gap:9px"><sc-if value="{{ medHistoryDetail.empty }}" hint-placeholder-val="{{ false }}"><div style="background:#fff;border-radius:var(--r-lg);padding:24px;text-align:center;color:#747B8E;font-size:13px">No doses logged yet.</div></sc-if><sc-for list="{{ medHistoryDetail.rows }}" as="d" hint-placeholder-count="8"><div style="background:rgba(255,255,255,.94);border-radius:16px;padding:12px 14px;display:flex;align-items:center;gap:10px;box-shadow:0 6px 16px rgba(120,110,180,.09)"><span style="width:8px;height:8px;border-radius:50%;background:{{ d.color }};flex:none"></span><div style="flex:1"><div style="font-size:13px;font-weight:800">{{ d.when }}</div><div style="font-size:11.5px;color:#61687A;margin-top:2px">{{ d.details }}</div></div><div style="font-size:11.5px;font-weight:800;color:{{ d.color }};text-transform:capitalize">{{ d.status }}</div></div></sc-for></div>
+    </div>
+    </sc-if>
+
     <!-- ============================ CALENDAR ============================ -->
     <sc-if value="{{ isActivity }}" hint-placeholder-val="{{ false }}">
     <div style="flex:1;min-height:0;display:flex;flex-direction:column">
@@ -1628,22 +1632,20 @@
         <div style="flex:1;text-align:center;font-size:15px;font-weight:700">Calendar</div>
         <div onClick="{{ activity.onToday }}" style="cursor:pointer;min-width:36px;text-align:right;font-size:11.5px;font-weight:800;color:var(--ac-deep)">Today</div>
       </div>
-      <div style="flex:1;overflow-y:auto;padding:14px 20px 110px;display:flex;flex-direction:column;gap:16px">
+      <div style="flex:1;min-height:0;overflow-y:auto;padding:14px 20px calc(132px + var(--hcc-safe-bottom));display:flex;flex-direction:column;gap:16px">
         <div style="background:rgba(255,255,255,.94);border:1px solid rgba(255,255,255,.92);border-radius:var(--r-lg);padding:16px;box-shadow:0 2px 6px rgba(120,110,180,.06),0 16px 36px rgba(120,110,180,.15);display:flex;flex-direction:column;gap:12px">
           <div style="display:flex;align-items:center;gap:10px"><div onClick="{{ activity.onPrevMonth }}" style="cursor:pointer;width:38px;height:38px;border-radius:50%;background:#F6F5FB;display:flex;align-items:center;justify-content:center;color:var(--ac-deep);font-size:18px;font-weight:800">‹</div><div style="flex:1;text-align:center;font-size:16px;font-weight:800">{{ activity.monthLabel }}</div><div onClick="{{ activity.onNextMonth }}" style="cursor:pointer;width:38px;height:38px;border-radius:50%;background:#F6F5FB;display:flex;align-items:center;justify-content:center;color:var(--ac-deep);font-size:18px;font-weight:800;opacity:{{ activity.nextOpacity }}">›</div></div>
           <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:5px"><sc-for list="{{ activity.dow }}" as="d" hint-placeholder-count="7"><div style="text-align:center;font-size:9.5px;font-weight:800;letter-spacing:.05em;color:#747B8E">{{ d }}</div></sc-for></div>
-          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:5px">
+          <div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;width:100%;min-width:0">
             <sc-for list="{{ activity.cells }}" as="c" hint-placeholder-count="35">
-              <div onClick="{{ c.onClick }}" style="cursor:{{ c.cursor }};opacity:{{ c.opacity }};position:relative;aspect-ratio:1;border-radius:13px;background:{{ c.bg }};border:{{ c.border }};box-shadow:{{ c.shadow }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:{{ c.color }}">
+              <div onClick="{{ c.onClick }}" style="cursor:{{ c.cursor }};opacity:{{ c.opacity }};position:relative;aspect-ratio:1;min-width:0;border-radius:11px;background:{{ c.bg }};border:{{ c.border }};box-shadow:{{ c.shadow }};display:flex;align-items:center;justify-content:center;color:{{ c.color }}">
                 <div style="font-size:12.5px;font-weight:{{ c.weight }};line-height:1">{{ c.day }}</div>
-                <div style="height:7px;display:flex;align-items:center;justify-content:center;gap:2px"><sc-if value="{{ c.hasCheck }}" hint-placeholder-val="{{ false }}"><span style="font-size:8.5px;font-weight:900;color:{{ c.checkColor }}">✓</span></sc-if><sc-for list="{{ c.dots }}" as="dot" hint-placeholder-count="2"><span style="width:4px;height:4px;border-radius:50%;background:{{ dot.color }}"></span></sc-for></div>
               </div>
             </sc-for>
           </div>
-          <div style="display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;font-size:9.5px;font-weight:700;color:#747B8E"><span style="color:#2E8B5B">✓ check-in</span><span style="color:var(--ac-deep)">● symptom</span><span style="color:#B35F1E">● medication</span><span style="color:#2C8C78">● self care</span><span style="color:#C05673">● mood/stress</span></div>
         </div>
 
-        <div style="display:flex;align-items:center;gap:10px"><div style="font-size:15px;font-weight:800;flex:1">{{ activity.selectedLabel }}</div><div style="font-size:11px;font-weight:800;color:#747B8E">{{ activity.itemCount }}</div></div>
+        <div style="display:flex;align-items:center;gap:10px"><div style="font-size:15px;font-weight:800;flex:1">{{ activity.selectedLabel }}</div></div>
         <div style="background:rgba(255,255,255,.92);border:1px solid rgba(var(--ac-rgb),.18);border-radius:var(--r-md);padding:4px 15px;box-shadow:0 8px 20px rgba(120,110,180,.1)"><sc-for list="{{ activity.checkinRows }}" as="r" hint-placeholder-count="2"><div onClick="{{ r.onClick }}" data-hcc-sep="1" style="cursor:pointer;min-height:62px;display:flex;align-items:center;gap:11px;padding:9px 0;border-bottom:1px solid #F1F0F7"><div style="width:38px;height:38px;border-radius:13px;background:{{ r.iconBg }};color:{{ r.iconColor }};display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:900">{{ r.icon }}</div><div style="flex:1"><div style="font-size:13.5px;font-weight:800">{{ r.title }}</div><div style="font-size:11.5px;color:#61687A;margin-top:2px">{{ r.sub }}</div></div><div style="min-height:38px;display:flex;align-items:center;background:{{ r.buttonBg }};color:{{ r.buttonColor }};font-size:11.5px;font-weight:800;padding:7px 12px;border-radius:999px">{{ r.cta }}</div></div></sc-for></div>
         <div data-hcc-scroll-rail style="display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:4px">
           <div onClick="{{ activity.onMedication }}" style="cursor:pointer;scroll-snap-align:start;flex:0 0 142px;background:#fff;border:1px solid rgba(255,255,255,.92);border-radius:var(--r-md);padding:13px;display:flex;flex-direction:column;gap:8px"><div style="width:38px;height:38px;border-radius:12px;background:#FBD9D3 url('uploads/Medication.png') center/27px no-repeat"></div><div><div style="font-size:13.5px;font-weight:800">Medication</div><div style="font-size:11px;color:#61687A;margin-top:2px">Dose or PRN</div></div></div>
@@ -1663,9 +1665,9 @@
     <div data-hcc-dialog style="position:absolute;inset:0;z-index:74;background:var(--wash);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px);box-sizing:border-box">
       <div style="flex:none;display:flex;align-items:center;gap:12px;padding:10px 20px 8px;background:rgba(255,255,255,.55);backdrop-filter:blur(12px)"><div onClick="{{ quickCheck.onCancel }}" style="cursor:pointer;width:42px;height:42px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(120,110,180,.12);font-size:18px;color:#565B6E">‹</div><div style="flex:1;text-align:center"><div style="font-size:15px;font-weight:800">Quick mood &amp; stress</div><div style="font-size:10.5px;color:#61687A;margin-top:2px">A timestamped reading for your calendar</div></div><div style="width:42px"></div></div>
       <div style="flex:1;overflow-y:auto;padding:16px 20px calc(128px + var(--hcc-safe-bottom));display:flex;flex-direction:column;gap:14px">
-        <div style="background:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:16px;box-shadow:0 16px 36px rgba(120,110,180,.15);display:flex;gap:10px"><div onClick="{{ quickCheck.onDateOpen }}" style="cursor:pointer;flex:1;min-height:52px;background:var(--ac-050);border-radius:14px;padding:10px 12px"><div style="font-size:10px;font-weight:800;letter-spacing:.07em;color:#747B8E">DATE</div><div style="font-size:13px;font-weight:800;color:var(--ac-deep);margin-top:4px">{{ quickCheck.dateLabel }}</div></div><div onClick="{{ quickCheck.onTimeOpen }}" style="cursor:pointer;flex:1;min-height:52px;background:var(--ac-050);border-radius:14px;padding:10px 12px"><div style="font-size:10px;font-weight:800;letter-spacing:.07em;color:#747B8E">TIME</div><div style="font-size:13px;font-weight:800;color:var(--ac-deep);margin-top:4px">{{ quickCheck.timeLabel }}</div></div></div>
+        <div style="background:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:12px 14px;box-shadow:0 16px 36px rgba(120,110,180,.15);display:flex;align-items:center;gap:8px"><div style="font-size:10px;font-weight:800;letter-spacing:.07em;color:#747B8E;flex:none">WHEN</div><div onClick="{{ quickCheck.onDateOpen }}" class="hcc-compact-chip" style="cursor:pointer;flex:1;background:var(--ac-050);border-radius:12px;font-size:12.5px;font-weight:800;color:var(--ac-deep)">{{ quickCheck.dateLabel }}</div><div onClick="{{ quickCheck.onTimeOpen }}" class="hcc-compact-chip" style="cursor:pointer;flex:none;background:var(--ac-050);border-radius:12px;font-size:12.5px;font-weight:800;color:var(--ac-deep)">{{ quickCheck.timeLabel }}</div></div>
         <div style="background:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:18px;box-shadow:0 2px 6px rgba(120,110,180,.06),0 16px 36px rgba(120,110,180,.15);display:flex;flex-direction:column;gap:14px"><div style="display:flex;align-items:center"><div style="font-size:14.5px;font-weight:700;flex:1">Mood</div><div style="font-size:13px;font-weight:700;color:{{ quickCheck.moodFace.wordColor }}">{{ quickCheck.moodFace.word }}</div></div><div onPointerDown="{{ quickCheck.moodFace.onDown }}" style="position:relative;height:144px;touch-action:none;cursor:pointer"><svg width="100%" height="120" viewBox="0 0 314 120" preserveAspectRatio="none" style="position:absolute;left:0;top:0"><defs><linearGradient id="quickmoodarch" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#E9695E"></stop><stop offset=".28" stop-color="#EE8B4E"></stop><stop offset=".5" stop-color="#F1B04C"></stop><stop offset=".75" stop-color="#7FBF86"></stop><stop offset="1" stop-color="#3FA96A"></stop></linearGradient></defs><path d="M22,96 Q157,-8 292,96" stroke="url(#quickmoodarch)" stroke-width="4.5" fill="none" stroke-linecap="round" opacity=".55"></path></svg><sc-for list="{{ quickCheck.moodFace.faces }}" as="fc" hint-placeholder-count="5"><div style="position:absolute;left:calc({{ fc.leftPct }}% - {{ fc.half }}px);top:{{ fc.top }}px;width:{{ fc.size }}px;height:{{ fc.size }}px;border-radius:50%;background:{{ fc.puckBg }};box-shadow:{{ fc.shadow }};display:flex;align-items:center;justify-content:center;transition:all .12s"><svg width="{{ fc.svgSize }}" height="{{ fc.svgSize }}" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="{{ fc.fill }}"></circle><circle cx="8.4" cy="9.7" r="1.35" fill="#fff"></circle><circle cx="15.6" cy="9.7" r="1.35" fill="#fff"></circle><path d="{{ fc.mouth }}" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round"></path></svg></div><div style="position:absolute;left:calc({{ fc.leftPct }}% - 30px);top:{{ fc.lblTop }}px;width:60px;text-align:center;font-size:11px;font-weight:{{ fc.lblWeight }};color:{{ fc.lblCol }};transition:all .12s">{{ fc.label }}</div></sc-for></div></div>
-        <sc-for list="{{ quickCheck.sliders }}" as="it" hint-placeholder-count="1"><div style="background:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:18px;box-shadow:0 2px 6px rgba(120,110,180,.06),0 16px 36px rgba(120,110,180,.15);display:flex;flex-direction:column;gap:14px"><div style="display:flex;align-items:center"><div style="font-size:14.5px;font-weight:700;flex:1">{{ it.label }}</div><div style="background:#EFEBFC;color:var(--ac-deep);font-size:14px;font-weight:800;padding:5px 13px;border-radius:999px">{{ it.value }}</div></div><div onPointerDown="{{ it.onDown }}" style="position:relative;height:36px;touch-action:none;cursor:pointer"><div style="position:absolute;top:15px;left:0;right:0;height:7px;border-radius:99px;background:#EFEDF6"></div><div style="position:absolute;top:15px;left:0;height:7px;border-radius:99px;background:linear-gradient(90deg,var(--ac-200),var(--ac));width:{{ it.pct }}%"></div><div style="position:absolute;top:2px;width:34px;height:34px;border-radius:50%;background:#fff;border:4px solid var(--ac);box-sizing:border-box;box-shadow:0 4px 12px rgba(var(--ac-rgb),.4);left:calc({{ it.pct }}% - 17px)"></div></div><div style="display:flex;font-size:12px;font-weight:700;color:#747B8E"><div style="flex:1;text-align:left">{{ it.low }}</div><div style="flex:1;text-align:center">Moderate</div><div style="flex:1;text-align:right">{{ it.high }}</div></div></div></sc-for>
+        <sc-for list="{{ quickCheck.sliders }}" as="it" hint-placeholder-count="1"><div style="background:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:18px;box-shadow:0 2px 6px rgba(120,110,180,.06),0 16px 36px rgba(120,110,180,.15);display:flex;flex-direction:column;gap:12px"><div style="display:flex;align-items:center"><div style="font-size:14.5px;font-weight:700;flex:1">{{ it.label }}</div><div style="background:#EFEBFC;color:var(--ac-deep);font-size:14px;font-weight:800;padding:5px 13px;border-radius:999px">{{ it.value }}</div></div><div onPointerDown="{{ it.onDown }}" class="hcc-wave-slider"><svg viewBox="0 0 314 36" preserveAspectRatio="none"><defs><linearGradient id="quickStressWave" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#73B66F"></stop><stop offset=".5" stop-color="#E2AE38"></stop><stop offset="1" stop-color="#E9695E"></stop></linearGradient></defs><path d="M2 20 C70 20 76 20 89 20 C102 20 102 9 115 20 S128 31 141 20 S154 9 167 20 S180 31 193 20 S206 9 219 20 S232 31 245 20 S258 9 271 20 S284 31 312 20" fill="none" stroke="url(#quickStressWave)" stroke-width="4" stroke-linecap="round"></path></svg><div style="position:absolute;top:6px;width:34px;height:34px;border-radius:50%;background:#fff;border:4px solid var(--ac);box-sizing:border-box;box-shadow:0 4px 12px rgba(var(--ac-rgb),.4);left:calc({{ it.pct }}% - 17px)"></div></div><div style="display:flex;font-size:12px;font-weight:700;color:#747B8E"><div style="flex:1;text-align:left">{{ it.low }}</div><div style="flex:1;text-align:center">Moderate</div><div style="flex:1;text-align:right">{{ it.high }}</div></div></div></sc-for>
         <textarea onInput="{{ quickCheck.onNotes }}" value="{{ quickCheck.notes }}" placeholder="Notes (optional)" style="min-height:92px;resize:vertical;border:none;background:rgba(255,255,255,.95);border-radius:var(--r-lg);padding:15px 17px;font-size:13.5px;line-height:1.45;color:#23262F;outline:none;font-family:inherit;box-shadow:0 12px 28px rgba(120,110,180,.12)"></textarea>
         <sc-if value="{{ quickCheck.hasErr }}" hint-placeholder-val="{{ false }}"><div role="alert" style="font-size:12px;font-weight:700;color:#B3502E;background:#FBEFEC;border-radius:12px;padding:10px 12px">{{ quickCheck.err }}</div></sc-if>
         <sc-if value="{{ quickCheck.isEdit }}" hint-placeholder-val="{{ false }}"><sc-if value="{{ quickCheck.notDeleteConfirm }}" hint-placeholder-val="{{ true }}"><div onClick="{{ quickCheck.onAskDelete }}" style="cursor:pointer;text-align:center;color:#B3502E;font-size:13px;font-weight:800;padding:12px">Delete mood &amp; stress entry</div></sc-if><sc-if value="{{ quickCheck.hasDeleteConfirm }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:8px;background:#FBEFEC;border-radius:14px;padding:11px 13px"><div style="flex:1;font-size:12px;font-weight:700;color:#B3502E">Delete this reading?</div><div onClick="{{ quickCheck.onDelete }}" style="cursor:pointer;background:#C7463B;color:#fff;font-size:12px;font-weight:800;padding:11px 14px;border-radius:999px">Delete</div><div onClick="{{ quickCheck.onKeep }}" style="cursor:pointer;background:#fff;color:#565B6E;font-size:12px;font-weight:700;padding:11px 14px;border-radius:999px">Keep</div></div></sc-if></sc-if>
@@ -1679,12 +1681,12 @@
     <div data-hcc-dialog style="position:absolute;inset:0;z-index:73;background:var(--wash);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px);box-sizing:border-box">
       <div style="flex:none;display:flex;align-items:center;gap:12px;padding:10px 20px 8px;background:rgba(255,255,255,.55);backdrop-filter:blur(12px)"><div onClick="{{ selfCare.onCancel }}" style="cursor:pointer;width:42px;height:42px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(120,110,180,.12);font-size:18px;color:#565B6E">‹</div><div style="flex:1;text-align:center"><div style="font-size:15px;font-weight:800">{{ selfCare.title }}</div><div style="font-size:10.5px;color:#61687A;margin-top:2px">Relief, length, and optional after ratings</div></div><div style="width:42px"></div></div>
       <div style="flex:1;overflow-y:auto;padding:16px 20px calc(132px + var(--hcc-safe-bottom));display:flex;flex-direction:column;gap:14px">
-        <div style="background:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:16px;box-shadow:0 16px 36px rgba(120,110,180,.15);display:flex;gap:10px"><div onClick="{{ selfCare.onDateOpen }}" style="cursor:pointer;min-height:52px;flex:1;background:var(--ac-050);border-radius:14px;padding:10px 12px"><div style="font-size:10px;font-weight:800;letter-spacing:.07em;color:#747B8E">DATE</div><div style="font-size:13px;font-weight:800;color:var(--ac-deep);margin-top:4px">{{ selfCare.dateLabel }}</div></div><div onClick="{{ selfCare.onTimeOpen }}" style="cursor:pointer;min-height:52px;flex:1;background:var(--ac-050);border-radius:14px;padding:10px 12px"><div style="font-size:10px;font-weight:800;letter-spacing:.07em;color:#747B8E">START TIME</div><div style="font-size:13px;font-weight:800;color:var(--ac-deep);margin-top:4px">{{ selfCare.timeLabel }}</div></div></div>
-        <div style="background:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:18px;box-shadow:0 16px 36px rgba(120,110,180,.15);display:flex;flex-direction:column;gap:11px"><div style="font-size:14.5px;font-weight:800">What did you do?</div><sc-if value="{{ selfCare.noRelief }}" hint-placeholder-val="{{ false }}"><div style="font-size:12.5px;color:#61687A;background:#F6F5FB;border-radius:13px;padding:12px">No saved Relief options yet. You can type an activity below.</div></sc-if><div style="display:flex;gap:8px;flex-wrap:wrap"><sc-for list="{{ selfCare.reliefChips }}" as="c" hint-placeholder-count="5"><div onClick="{{ c.onClick }}" style="cursor:pointer;min-height:42px;display:flex;align-items:center;font-size:12.5px;font-weight:{{ c.weight }};padding:9px 14px;border-radius:999px;background:{{ c.bg }};color:{{ c.color }}">{{ c.label }}</div></sc-for></div><label for="hcc-selfcare-adhoc" style="font-size:12px;font-weight:800;color:#565B6E;margin-top:2px">Something else</label><input id="hcc-selfcare-adhoc" value="{{ selfCare.adHoc }}" onInput="{{ selfCare.onAdHoc }}" placeholder="Type an activity or care action" style="border:none;background:#F6F5FB;border-radius:12px;padding:12px 13px;font-family:inherit;color:#23262F;outline:none"><div style="display:flex;align-items:center;gap:10px"><div style="font-size:12px;color:#61687A;flex:1">Save as a reusable Relief option</div><div onClick="{{ selfCare.onToggleSaveRelief }}" role="switch" style="cursor:pointer;width:46px;height:27px;border-radius:99px;position:relative;background:{{ selfCare.saveReliefBg }}"><div style="position:absolute;top:3px;width:21px;height:21px;border-radius:50%;background:#fff;left:{{ selfCare.saveReliefKnob }}"></div></div></div></div>
+        <div style="background:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:12px 14px;box-shadow:0 16px 36px rgba(120,110,180,.15);display:flex;align-items:center;gap:8px"><div style="font-size:10px;font-weight:800;letter-spacing:.07em;color:#747B8E;flex:none">WHEN</div><div onClick="{{ selfCare.onDateOpen }}" class="hcc-compact-chip" style="cursor:pointer;flex:1;background:var(--ac-050);border-radius:12px;font-size:12.5px;font-weight:800;color:var(--ac-deep)">{{ selfCare.dateLabel }}</div><div onClick="{{ selfCare.onTimeOpen }}" class="hcc-compact-chip" style="cursor:pointer;flex:none;background:var(--ac-050);border-radius:12px;font-size:12.5px;font-weight:800;color:var(--ac-deep)">{{ selfCare.timeLabel }}</div></div>
+        <div style="background:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:18px;box-shadow:0 16px 36px rgba(120,110,180,.15);display:flex;flex-direction:column;gap:11px"><div style="font-size:14.5px;font-weight:800">What did you do?</div><sc-if value="{{ selfCare.noRelief }}" hint-placeholder-val="{{ false }}"><div style="font-size:12.5px;color:#61687A;background:#F6F5FB;border-radius:13px;padding:12px">No saved Relief options yet. You can type an activity below.</div></sc-if><div style="display:flex;gap:8px;flex-wrap:wrap"><sc-for list="{{ selfCare.reliefChips }}" as="c" hint-placeholder-count="5"><div onClick="{{ c.onClick }}" class="hcc-compact-chip" style="cursor:pointer;font-size:12.5px;font-weight:{{ c.weight }};border-radius:999px;background:{{ c.bg }};color:{{ c.color }}">{{ c.label }}</div></sc-for></div><label for="hcc-selfcare-adhoc" style="font-size:12px;font-weight:800;color:#565B6E;margin-top:2px">Something else</label><input id="hcc-selfcare-adhoc" value="{{ selfCare.adHoc }}" onInput="{{ selfCare.onAdHoc }}" placeholder="Type an activity or care action" style="border:none;background:#F6F5FB;border-radius:12px;padding:12px 13px;font-family:inherit;color:#23262F;outline:none"><div style="display:flex;align-items:center;gap:10px"><div style="font-size:12px;color:#61687A;flex:1">Save as a reusable Relief option</div><div onClick="{{ selfCare.onToggleSaveRelief }}" role="switch" class="hcc-toggle" style="cursor:pointer;background:{{ selfCare.saveReliefBg }}"><div style="position:absolute;border-radius:50%;background:#fff;left:{{ selfCare.saveReliefKnob }}"></div></div></div></div>
         <div style="background:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:15px 17px;box-shadow:0 16px 36px rgba(120,110,180,.15);display:flex;align-items:center;gap:12px"><div style="flex:1"><div style="font-size:14px;font-weight:800">How long?</div><div style="font-size:11px;color:#747B8E;margin-top:2px">5-minute increments</div></div><div onClick="{{ selfCare.onDurationDec }}" style="cursor:pointer;width:44px;height:44px;border-radius:50%;background:var(--ac-050);display:flex;align-items:center;justify-content:center;color:var(--ac-deep);font-size:20px;font-weight:800">−</div><div style="min-width:62px;text-align:center;font-size:17px;font-weight:800;color:var(--ac-deep)">{{ selfCare.duration }}</div><div onClick="{{ selfCare.onDurationInc }}" style="cursor:pointer;width:44px;height:44px;border-radius:50%;background:var(--ac-050);display:flex;align-items:center;justify-content:center;color:var(--ac-deep);font-size:20px;font-weight:800">＋</div></div>
         <div style="font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--head);padding-top:2px">HOW DID YOU FEEL AFTER? <span style="font-weight:600;color:#747B8E">OPTIONAL</span></div>
         <div style="background:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:18px;box-shadow:0 2px 6px rgba(120,110,180,.06),0 16px 36px rgba(120,110,180,.15);display:flex;flex-direction:column;gap:14px"><div style="display:flex;align-items:center"><div style="font-size:14.5px;font-weight:700;flex:1">Mood after</div><div onClick="{{ selfCare.moodFace.onClear }}" style="cursor:pointer;font-size:11px;font-weight:800;color:#747B8E;padding:7px">{{ selfCare.moodFace.clearLabel }}</div><div style="background:#EFEBFC;color:var(--ac-deep);font-size:14px;font-weight:800;padding:5px 11px;border-radius:999px">{{ selfCare.moodFace.value }}</div></div><div onPointerDown="{{ selfCare.moodFace.onDown }}" style="position:relative;height:144px;touch-action:none;cursor:pointer"><svg width="100%" height="120" viewBox="0 0 314 120" preserveAspectRatio="none" style="position:absolute;left:0;top:0"><defs><linearGradient id="selfcaremoodarch" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#E9695E"></stop><stop offset=".28" stop-color="#EE8B4E"></stop><stop offset=".5" stop-color="#F1B04C"></stop><stop offset=".75" stop-color="#7FBF86"></stop><stop offset="1" stop-color="#3FA96A"></stop></linearGradient></defs><path d="M22,96 Q157,-8 292,96" stroke="url(#selfcaremoodarch)" stroke-width="4.5" fill="none" stroke-linecap="round" opacity=".55"></path></svg><sc-for list="{{ selfCare.moodFace.faces }}" as="fc" hint-placeholder-count="5"><div style="position:absolute;left:calc({{ fc.leftPct }}% - {{ fc.half }}px);top:{{ fc.top }}px;width:{{ fc.size }}px;height:{{ fc.size }}px;border-radius:50%;background:{{ fc.puckBg }};box-shadow:{{ fc.shadow }};display:flex;align-items:center;justify-content:center;transition:all .12s"><svg width="{{ fc.svgSize }}" height="{{ fc.svgSize }}" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="{{ fc.fill }}"></circle><circle cx="8.4" cy="9.7" r="1.35" fill="#fff"></circle><circle cx="15.6" cy="9.7" r="1.35" fill="#fff"></circle><path d="{{ fc.mouth }}" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round"></path></svg></div><div style="position:absolute;left:calc({{ fc.leftPct }}% - 30px);top:{{ fc.lblTop }}px;width:60px;text-align:center;font-size:11px;font-weight:{{ fc.lblWeight }};color:{{ fc.lblCol }};transition:all .12s">{{ fc.label }}</div></sc-for></div></div>
-        <sc-for list="{{ selfCare.sliders }}" as="it" hint-placeholder-count="1"><div style="background:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:18px;box-shadow:0 2px 6px rgba(120,110,180,.06),0 16px 36px rgba(120,110,180,.15);display:flex;flex-direction:column;gap:14px"><div style="display:flex;align-items:center"><div style="font-size:14.5px;font-weight:700;flex:1">{{ it.label }}</div><div onClick="{{ it.onClear }}" style="cursor:pointer;font-size:11px;font-weight:800;color:#747B8E;padding:7px">{{ it.clearLabel }}</div><div style="background:#EFEBFC;color:var(--ac-deep);font-size:14px;font-weight:800;padding:5px 11px;border-radius:999px">{{ it.value }}</div></div><div onPointerDown="{{ it.onDown }}" style="position:relative;height:36px;touch-action:none;cursor:pointer"><div style="position:absolute;top:15px;left:0;right:0;height:7px;border-radius:99px;background:#EFEDF6"></div><div style="position:absolute;top:15px;left:0;height:7px;border-radius:99px;background:linear-gradient(90deg,var(--ac-200),var(--ac));width:{{ it.pct }}%"></div><div style="position:absolute;top:2px;width:34px;height:34px;border-radius:50%;background:#fff;border:4px solid var(--ac);box-sizing:border-box;box-shadow:0 4px 12px rgba(var(--ac-rgb),.4);left:calc({{ it.pct }}% - 17px)"></div></div><div style="display:flex;font-size:12px;font-weight:700;color:#747B8E"><div style="flex:1;text-align:left">{{ it.low }}</div><div style="flex:1;text-align:center">Moderate</div><div style="flex:1;text-align:right">{{ it.high }}</div></div></div></sc-for>
+        <sc-for list="{{ selfCare.sliders }}" as="it" hint-placeholder-count="1"><div style="background:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-lg);padding:18px;box-shadow:0 2px 6px rgba(120,110,180,.06),0 16px 36px rgba(120,110,180,.15);display:flex;flex-direction:column;gap:12px"><div style="display:flex;align-items:center"><div style="font-size:14.5px;font-weight:700;flex:1">{{ it.label }}</div><sc-if value="{{ it.hasValue }}" hint-placeholder-val="{{ false }}"><div onClick="{{ it.onClear }}" style="cursor:pointer;font-size:11px;font-weight:800;color:#747B8E;padding:7px">Clear</div><div style="background:#EFEBFC;color:var(--ac-deep);font-size:14px;font-weight:800;padding:5px 11px;border-radius:999px">{{ it.value }}</div></sc-if></div><div onPointerDown="{{ it.onDown }}" class="hcc-wave-slider"><svg viewBox="0 0 314 36" preserveAspectRatio="none"><defs><linearGradient id="selfStressWave" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#73B66F"></stop><stop offset=".5" stop-color="#E2AE38"></stop><stop offset="1" stop-color="#E9695E"></stop></linearGradient></defs><path d="M2 20 C70 20 76 20 89 20 C102 20 102 9 115 20 S128 31 141 20 S154 9 167 20 S180 31 193 20 S206 9 219 20 S232 31 245 20 S258 9 271 20 S284 31 312 20" fill="none" stroke="url(#selfStressWave)" stroke-width="4" stroke-linecap="round"></path></svg><div style="position:absolute;top:6px;width:34px;height:34px;border-radius:50%;background:#fff;border:4px solid var(--ac);box-sizing:border-box;box-shadow:0 4px 12px rgba(var(--ac-rgb),.4);left:calc({{ it.pct }}% - 17px)"></div></div><div style="display:flex;font-size:12px;font-weight:700;color:#747B8E"><div style="flex:1;text-align:left">{{ it.low }}</div><div style="flex:1;text-align:center">Moderate</div><div style="flex:1;text-align:right">{{ it.high }}</div></div></div></sc-for>
         <textarea onInput="{{ selfCare.onNotes }}" value="{{ selfCare.notes }}" placeholder="Notes (optional)" style="min-height:92px;resize:vertical;border:none;background:rgba(255,255,255,.95);border-radius:var(--r-lg);padding:15px 17px;font-size:13.5px;line-height:1.45;color:#23262F;outline:none;font-family:inherit;box-shadow:0 12px 28px rgba(120,110,180,.12)"></textarea>
         <sc-if value="{{ selfCare.hasErr }}" hint-placeholder-val="{{ false }}"><div style="font-size:12px;font-weight:700;color:#B3502E;background:#FBEFEC;border-radius:12px;padding:10px 12px">{{ selfCare.err }}</div></sc-if>
         <sc-if value="{{ selfCare.isEdit }}" hint-placeholder-val="{{ false }}"><sc-if value="{{ selfCare.notDeleteConfirm }}" hint-placeholder-val="{{ true }}"><div onClick="{{ selfCare.onAskDelete }}" style="cursor:pointer;text-align:center;color:#B3502E;font-size:13px;font-weight:800;padding:12px">Delete self-care entry</div></sc-if><sc-if value="{{ selfCare.hasDeleteConfirm }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:8px;background:#FBEFEC;border-radius:14px;padding:11px 13px"><div style="flex:1;font-size:12px;font-weight:700;color:#B3502E">Delete this self-care entry?</div><div onClick="{{ selfCare.onDelete }}" style="cursor:pointer;min-height:42px;display:flex;align-items:center;background:#E9695E;color:#fff;font-size:12px;font-weight:800;padding:8px 13px;border-radius:999px">Delete</div><div onClick="{{ selfCare.onKeep }}" style="cursor:pointer;min-height:42px;display:flex;align-items:center;background:#fff;color:#565B6E;font-size:12px;font-weight:700;padding:8px 13px;border-radius:999px">Keep</div></div></sc-if></sc-if>
@@ -1737,7 +1739,7 @@
         <div style="background:#FCEEE1;border-radius:15px;padding:13px 14px;display:flex;align-items:center;gap:11px"><div style="width:38px;height:38px;border-radius:13px;background:linear-gradient(135deg,#FDE3CF,#F9C9A8);display:flex;align-items:center;justify-content:center"><div style="width:27px;height:27px;background-image:url('uploads/Medication.png');background-size:contain;background-position:center;background-repeat:no-repeat"></div></div><div style="flex:1"><div style="font-size:15px;font-weight:800">{{ medLogEdit.name }}</div><div style="font-size:11.5px;color:#61687A;margin-top:2px">{{ medLogEdit.meta }}</div></div></div>
         <div style="display:flex;gap:10px"><div style="min-height:50px;flex:1;background:#F6F5FB;border-radius:14px;padding:10px 12px"><div style="font-size:10px;font-weight:800;letter-spacing:.07em;color:#747B8E">DATE</div><div style="font-size:13px;font-weight:800;color:#565B6E;margin-top:4px">{{ medLogEdit.dateLabel }}</div></div><div onClick="{{ medLogEdit.onTimeOpen }}" style="cursor:pointer;min-height:50px;flex:1;background:#F6F5FB;border-radius:14px;padding:10px 12px"><div style="font-size:10px;font-weight:800;letter-spacing:.07em;color:#747B8E">ACTUAL TIME</div><div style="font-size:13px;font-weight:800;color:var(--ac-deep);margin-top:4px">{{ medLogEdit.timeLabel }}</div></div></div>
         <sc-if value="{{ medLogEdit.showStatus }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:8px"><div style="font-size:11px;font-weight:800;letter-spacing:.07em;color:#747B8E">STATUS</div><div style="display:flex;gap:8px"><sc-for list="{{ medLogEdit.statuses }}" as="s" hint-placeholder-count="3"><div onClick="{{ s.onClick }}" style="cursor:pointer;min-height:44px;flex:1;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:{{ s.weight }};border-radius:13px;background:{{ s.bg }};color:{{ s.color }}">{{ s.label }}</div></sc-for></div></div></sc-if>
-        <sc-if value="{{ medLogEdit.isPrn }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:10px"><div style="flex:1;display:flex;flex-direction:column;gap:7px"><div style="font-size:11px;font-weight:800;letter-spacing:.07em;color:#747B8E">DOSE</div><input id="hcc-medlog-dose" defaultValue="{{ medLogEdit.dose }}" style="border:none;background:#F6F5FB;border-radius:13px;padding:12px 13px;font-size:13.5px;font-weight:700;color:#23262F;outline:none;font-family:inherit"></div><div style="display:flex;flex-direction:column;gap:7px"><div style="font-size:11px;font-weight:800;letter-spacing:.07em;color:#747B8E">QUANTITY</div><div style="display:flex;align-items:center;gap:9px;background:#F6F5FB;border-radius:13px;padding:5px 8px"><div onClick="{{ medLogEdit.onQtyDec }}" style="cursor:pointer;width:34px;height:34px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;color:var(--ac-deep);font-size:18px;font-weight:800">−</div><div style="font-size:17px;font-weight:800;min-width:18px;text-align:center">{{ medLogEdit.qty }}</div><div onClick="{{ medLogEdit.onQtyInc }}" style="cursor:pointer;width:34px;height:34px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;color:var(--ac-deep);font-size:18px;font-weight:800">＋</div></div></div></div><div style="display:flex;flex-direction:column;gap:7px"><div style="font-size:11px;font-weight:800;letter-spacing:.07em;color:#747B8E">REASON</div><input id="hcc-medlog-reason" defaultValue="{{ medLogEdit.reason }}" placeholder="Optional" style="border:none;background:#F6F5FB;border-radius:13px;padding:12px 13px;font-size:13.5px;color:#23262F;outline:none;font-family:inherit"></div></sc-if>
+        <sc-if value="{{ medLogEdit.isPrn }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:10px"><div style="flex:1;display:flex;flex-direction:column;gap:7px"><div style="font-size:11px;font-weight:800;letter-spacing:.07em;color:#747B8E">DOSE</div><input id="hcc-medlog-dose" defaultValue="{{ medLogEdit.dose }}" style="border:none;background:#F6F5FB;border-radius:13px;padding:12px 13px;font-size:13.5px;font-weight:700;color:#23262F;outline:none;font-family:inherit"></div><div style="display:flex;flex-direction:column;gap:7px"><div style="font-size:11px;font-weight:800;letter-spacing:.07em;color:#747B8E">QUANTITY</div><div style="display:flex;align-items:center;gap:9px;background:#F6F5FB;border-radius:13px;padding:5px 8px"><div onClick="{{ medLogEdit.onQtyDec }}" style="cursor:pointer;width:34px;height:34px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;color:var(--ac-deep);font-size:18px;font-weight:800">−</div><div style="font-size:17px;font-weight:800;min-width:18px;text-align:center">{{ medLogEdit.qty }}</div><div onClick="{{ medLogEdit.onQtyInc }}" style="cursor:pointer;width:34px;height:34px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;color:var(--ac-deep);font-size:18px;font-weight:800">＋</div></div></div></div><div style="display:flex;flex-direction:column;gap:7px"><div style="font-size:11px;font-weight:800;letter-spacing:.07em;color:#747B8E">REASON</div><div style="display:flex;gap:7px;flex-wrap:wrap"><sc-for list="{{ medLogEdit.reasons }}" as="r" hint-placeholder-count="5"><div onClick="{{ r.onClick }}" class="hcc-compact-chip" style="cursor:pointer;border-radius:999px;background:{{ r.bg }};color:{{ r.color }};font-size:12px;font-weight:{{ r.weight }}">{{ r.label }}</div></sc-for></div></div></sc-if>
         <div style="font-size:11.5px;color:#61687A;line-height:1.45;background:var(--ac-050);border-radius:12px;padding:10px 12px">This changes only the recorded occurrence on {{ medLogEdit.dateLabel }}. Your normal medication schedule stays the same.</div>
         <sc-if value="{{ medLogEdit.hasDeleteConfirm }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:8px;background:#FBEFEC;border-radius:14px;padding:11px 13px"><div style="flex:1;font-size:12px;font-weight:700;color:#B3502E">Delete this medication entry?</div><div onClick="{{ medLogEdit.onDelete }}" style="cursor:pointer;min-height:38px;display:flex;align-items:center;background:#E9695E;color:#fff;font-size:12px;font-weight:800;padding:7px 12px;border-radius:999px">Delete</div><div onClick="{{ medLogEdit.onKeep }}" style="cursor:pointer;min-height:38px;display:flex;align-items:center;background:#fff;color:#565B6E;font-size:12px;font-weight:700;padding:7px 12px;border-radius:999px">Keep</div></div></sc-if>
         <sc-if value="{{ medLogEdit.notDeleteConfirm }}" hint-placeholder-val="{{ true }}"><div style="display:flex;gap:10px"><div onClick="{{ medLogEdit.onAskDelete }}" style="cursor:pointer;min-height:50px;display:flex;align-items:center;background:#FBEFEC;color:#B3502E;font-size:14px;font-weight:800;padding:13px 17px;border-radius:999px">Delete</div><div onClick="{{ medLogEdit.onSave }}" style="cursor:pointer;min-height:50px;display:flex;align-items:center;justify-content:center;flex:1;background:linear-gradient(90deg,var(--ac-soft),var(--ac));color:#fff;font-size:15px;font-weight:800;padding:13px;border-radius:999px;box-shadow:0 10px 22px rgba(var(--ac-rgb),.35)">Save changes</div></div></sc-if>
@@ -1818,7 +1820,7 @@
           </sc-for>
           <div style="display:flex;gap:8px"><input id="hcc-med-note" placeholder="Add a note, e.g. felt dizzy first week" style="flex:1;border:none;background:#F6F5FB;border-radius:12px;padding:11px 13px;font-size:13px;color:#23262F;outline:none;font-family:inherit"><div onClick="{{ medEdit.onAddNote }}" style="cursor:pointer;background:var(--ac);color:#fff;font-size:13px;font-weight:700;padding:11px 16px;border-radius:12px">Add</div></div>
         </div>
-        <div style="display:flex;align-items:center;gap:10px;background:#F6F5FB;border-radius:12px;padding:11px 14px"><div style="font-size:13.5px;font-weight:600;flex:1">Active</div><div onClick="{{ medEdit.onToggleActive }}" style="cursor:pointer;width:46px;height:27px;border-radius:99px;position:relative;background:{{ medEdit.activeBg }}"><div style="position:absolute;top:3px;width:21px;height:21px;border-radius:50%;background:#fff;left:{{ medEdit.activeKnob }}"></div></div></div>
+        <div style="display:flex;align-items:center;gap:10px;background:#F6F5FB;border-radius:12px;padding:11px 14px"><div style="font-size:13.5px;font-weight:600;flex:1">Active</div><div onClick="{{ medEdit.onToggleActive }}" class="hcc-toggle" style="cursor:pointer;background:{{ medEdit.activeBg }}"><div style="position:absolute;border-radius:50%;background:#fff;left:{{ medEdit.activeKnob }}"></div></div></div>
         <sc-if value="{{ medEdit.hasHistory }}" hint-placeholder-val="{{ false }}">
         <div style="display:flex;flex-direction:column;gap:8px;margin-top:2px">
           <div style="font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--head)">CHANGE HISTORY</div>
@@ -1861,15 +1863,15 @@
           <div style="display:flex;gap:7px;flex-wrap:wrap"><sc-for list="{{ symEdit.controls }}" as="c" hint-placeholder-count="4"><div onClick="{{ c.onClick }}" style="cursor:pointer;font-size:12.5px;font-weight:{{ c.weight }};padding:9px 14px;border-radius:999px;background:{{ c.bg }};color:{{ c.color }}">{{ c.label }}</div></sc-for></div>
         </div>
         <div style="font-size:12px;font-weight:800;color:#565B6E;letter-spacing:.06em;text-transform:uppercase;margin-top:2px">Where to show it</div>
-        <div style="display:flex;align-items:center;gap:12px;background:#F6F5FB;border-radius:14px;padding:12px 14px;min-height:50px"><div style="flex:1"><div style="font-size:13.5px;font-weight:700">Allow ad-hoc logging</div><div style="font-size:11px;color:#8D92A6;line-height:1.35;margin-top:2px">Find it under the center ＋ whenever you need it.</div></div><div onClick="{{ symEdit.onToggleQuick }}" style="cursor:pointer;width:46px;height:27px;border-radius:99px;position:relative;background:{{ symEdit.quickBg }};flex:none"><div style="position:absolute;top:3px;width:21px;height:21px;border-radius:50%;background:#fff;left:{{ symEdit.quickKnob }}"></div></div></div>
-        <div style="display:flex;align-items:center;gap:12px;background:#F6F5FB;border-radius:14px;padding:12px 14px;min-height:50px"><div style="flex:1"><div style="font-size:13.5px;font-weight:700">Include in daily check-in</div><div style="font-size:11px;color:#8D92A6;line-height:1.35;margin-top:2px">Ask about it during your regular check-in.</div></div><div onClick="{{ symEdit.onToggleCheckin }}" style="cursor:pointer;width:46px;height:27px;border-radius:99px;position:relative;background:{{ symEdit.ciBg }};flex:none"><div style="position:absolute;top:3px;width:21px;height:21px;border-radius:50%;background:#fff;left:{{ symEdit.ciKnob }}"></div></div></div>
+        <div style="display:flex;align-items:center;gap:12px;background:#F6F5FB;border-radius:14px;padding:12px 14px;min-height:50px"><div style="flex:1"><div style="font-size:13.5px;font-weight:700">Allow ad-hoc logging</div><div style="font-size:11px;color:#8D92A6;line-height:1.35;margin-top:2px">Find it under the center ＋ whenever you need it.</div></div><div onClick="{{ symEdit.onToggleQuick }}" class="hcc-toggle" style="cursor:pointer;background:{{ symEdit.quickBg }}"><div style="position:absolute;border-radius:50%;background:#fff;left:{{ symEdit.quickKnob }}"></div></div></div>
+        <div style="display:flex;align-items:center;gap:12px;background:#F6F5FB;border-radius:14px;padding:12px 14px;min-height:50px"><div style="flex:1"><div style="font-size:13.5px;font-weight:700">Include in daily check-in</div><div style="font-size:11px;color:#8D92A6;line-height:1.35;margin-top:2px">Ask about it during your regular check-in.</div></div><div onClick="{{ symEdit.onToggleCheckin }}" class="hcc-toggle" style="cursor:pointer;background:{{ symEdit.ciBg }}"><div style="position:absolute;border-radius:50%;background:#fff;left:{{ symEdit.ciKnob }}"></div></div></div>
         <sc-if value="{{ symEdit.showCheckinStep }}" hint-placeholder-val="{{ false }}">
         <div style="display:flex;flex-direction:column;gap:8px;padding:0 2px"><div style="font-size:12px;font-weight:700;color:#565B6E">Ask during</div>
           <div style="display:flex;gap:7px;flex-wrap:wrap"><sc-for list="{{ symEdit.steps }}" as="c" hint-placeholder-count="5"><div onClick="{{ c.onClick }}" style="cursor:pointer;min-height:42px;display:flex;align-items:center;font-size:12.5px;font-weight:{{ c.weight }};padding:9px 14px;border-radius:999px;background:{{ c.bg }};color:{{ c.color }}">{{ c.label }}</div></sc-for></div>
         </div>
         </sc-if>
         <sc-if value="{{ symEdit.showQuickPin }}" hint-placeholder-val="{{ false }}">
-        <div style="display:flex;align-items:center;gap:12px;background:#FBFAFD;border:1px solid #F0EDF7;border-radius:14px;padding:11px 14px;min-height:48px"><div style="flex:1"><div style="font-size:13px;font-weight:700">Pin to Quick Add</div><div style="font-size:11px;color:#8D92A6;line-height:1.35;margin-top:2px">Keep it at the top for one-tap access.</div></div><div onClick="{{ symEdit.onTogglePin }}" style="cursor:pointer;width:46px;height:27px;border-radius:99px;position:relative;background:{{ symEdit.pinBg }};flex:none"><div style="position:absolute;top:3px;width:21px;height:21px;border-radius:50%;background:#fff;left:{{ symEdit.pinKnob }}"></div></div></div>
+        <div style="display:flex;align-items:center;gap:12px;background:#FBFAFD;border:1px solid #F0EDF7;border-radius:14px;padding:11px 14px;min-height:48px"><div style="flex:1"><div style="font-size:13px;font-weight:700">Pin to Quick Add</div><div style="font-size:11px;color:#8D92A6;line-height:1.35;margin-top:2px">Keep it at the top for one-tap access.</div></div><div onClick="{{ symEdit.onTogglePin }}" class="hcc-toggle" style="cursor:pointer;background:{{ symEdit.pinBg }}"><div style="position:absolute;border-radius:50%;background:#fff;left:{{ symEdit.pinKnob }}"></div></div></div>
         </sc-if>
         <sc-if value="{{ symEdit.hasErr }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:9px;background:#FADFD4;border-radius:13px;padding:11px 14px;margin-top:2px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#B3502E" stroke-width="2.2" stroke-linecap="round" style="flex:none"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4M12 16h.01"></path></svg><div style="font-size:12.5px;font-weight:700;color:#B3502E;line-height:1.4">Name is required — scroll up and add a symptom name, then tap Save.</div></div></sc-if>
         <div style="display:flex;gap:10px;margin-top:2px">
@@ -1989,12 +1991,12 @@
 
         <sc-if value="{{ exp.isDoctor }}" hint-placeholder-val="{{ false }}">
           <div style="font-size:11px;font-weight:800;letter-spacing:.08em;color:#747B8E">SHARE WITH</div>
-          <div style="display:flex;gap:8px"><sc-for list="{{ exp.providers }}" as="p" hint-placeholder-count="3"><div onClick="{{ p.onClick }}" style="cursor:pointer;flex:1;text-align:center;font-size:13px;font-weight:{{ p.weight }};padding:11px 0;border-radius:12px;background:{{ p.bg }};color:{{ p.color }}">{{ p.label }}</div></sc-for></div>
+          <div style="display:flex;gap:8px"><sc-for list="{{ exp.providers }}" as="p" hint-placeholder-count="3"><div onClick="{{ p.onClick }}" class="hcc-compact-chip" style="cursor:pointer;flex:1;text-align:center;font-size:13px;font-weight:{{ p.weight }};border-radius:12px;background:{{ p.bg }};color:{{ p.color }}">{{ p.label }}</div></sc-for></div>
           <div style="font-size:12px;color:#61687A;font-style:italic">Keeps: {{ exp.provFocus }}</div>
           <div style="font-size:11px;font-weight:800;letter-spacing:.08em;color:#747B8E">TIME RANGE</div>
-          <div style="display:flex;gap:7px"><sc-for list="{{ exp.rangeChips }}" as="r" hint-placeholder-count="4"><div onClick="{{ r.onClick }}" style="cursor:pointer;flex:1;text-align:center;font-size:12px;font-weight:{{ r.weight }};padding:9px 0;border-radius:11px;background:{{ r.bg }};color:{{ r.color }}">{{ r.label }}</div></sc-for></div>
+          <div style="display:flex;gap:7px"><sc-for list="{{ exp.rangeChips }}" as="r" hint-placeholder-count="4"><div onClick="{{ r.onClick }}" class="hcc-compact-chip" style="cursor:pointer;flex:1;text-align:center;font-size:12px;font-weight:{{ r.weight }};border-radius:11px;background:{{ r.bg }};color:{{ r.color }}">{{ r.label }}</div></sc-for></div>
           <div style="font-size:11px;font-weight:800;letter-spacing:.08em;color:#747B8E">INCLUDE SECTIONS</div>
-          <div style="display:flex;gap:7px;flex-wrap:wrap"><sc-for list="{{ exp.sections }}" as="s" hint-placeholder-count="5"><div onClick="{{ s.onClick }}" style="cursor:pointer;font-size:12px;font-weight:{{ s.weight }};padding:9px 13px;border-radius:999px;background:{{ s.bg }};color:{{ s.color }}">{{ s.label }}</div></sc-for></div>
+          <div style="display:flex;gap:7px;flex-wrap:wrap"><sc-for list="{{ exp.sections }}" as="s" hint-placeholder-count="5"><div onClick="{{ s.onClick }}" class="hcc-compact-chip" style="cursor:pointer;font-size:12px;font-weight:{{ s.weight }};border-radius:999px;background:{{ s.bg }};color:{{ s.color }}">{{ s.label }}</div></sc-for></div>
           <div style="background:#F8F7FC;border:1px solid #ECEAF4;border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:12px">
             <div style="font-size:15px;font-weight:800;border-bottom:1px solid #ECEAF4;padding-bottom:10px">Health summary <span style="font-weight:600;color:#747B8E;font-size:12px">· full report preview</span></div>
             <sc-for list="{{ exp.lines }}" as="l" hint-placeholder-count="5"><div><div style="font-size:11px;font-weight:800;letter-spacing:.05em;color:var(--ac)">{{ l.h }}</div><div style="font-size:13px;color:#3a3f52;line-height:1.5;margin-top:2px">{{ l.t }}</div></div></sc-for>
@@ -2006,7 +2008,7 @@
           <div style="background:#20232E;border-radius:14px;padding:14px 16px;font-family:ui-monospace,Menlo,monospace;font-size:11px;line-height:1.6;color:#C9D2E3;white-space:pre-wrap;word-break:break-word;max-height:260px;overflow:auto">{{ exp.preview }}</div>
         </sc-if>
 
-        <div onClick="{{ exp.onPrimary }}" style="cursor:pointer;margin-top:4px;background:linear-gradient(90deg,var(--ac-soft),var(--ac));color:#fff;font-size:15px;font-weight:700;padding:15px;border-radius:999px;text-align:center;box-shadow:0 10px 22px rgba(var(--ac-rgb),.35)">{{ exp.cta }}</div>
+        <div onClick="{{ exp.onPrimary }}" style="cursor:pointer;margin-top:4px;min-height:46px;display:flex;align-items:center;justify-content:center;background:linear-gradient(90deg,var(--ac-soft),var(--ac));color:#fff;font-size:15px;font-weight:700;padding:10px 14px;border-radius:999px;text-align:center;box-shadow:0 10px 22px rgba(var(--ac-rgb),.35)">{{ exp.cta }}</div>
         <div style="text-align:center;font-size:11px;color:#777E91">Data stays on this device unless you export it</div>
       </div>
     </div>
@@ -2042,9 +2044,9 @@
 
         <sc-if value="{{ historicMed.showStatus }}" hint-placeholder-val="{{ true }}"><div style="display:flex;flex-direction:column;gap:8px"><div style="font-size:11px;font-weight:800;letter-spacing:.08em;color:#747B8E">STATUS</div><div style="display:flex;gap:7px"><sc-for list="{{ historicMed.statuses }}" as="s" hint-placeholder-count="3"><div onClick="{{ s.onClick }}" style="cursor:pointer;min-height:44px;flex:1;text-align:center;font-size:12.5px;font-weight:{{ s.weight }};padding:11px 0;border-radius:12px;background:{{ s.bg }};color:{{ s.color }};display:flex;align-items:center;justify-content:center">{{ s.label }}</div></sc-for></div></div></sc-if>
         <sc-if value="{{ historicMed.isPrn }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:8px"><div style="font-size:11px;font-weight:800;letter-spacing:.08em;color:#747B8E">REASON (OPTIONAL)</div><div style="display:flex;gap:8px;flex-wrap:wrap"><sc-for list="{{ historicMed.reasons }}" as="r" hint-placeholder-count="5"><div onClick="{{ r.onClick }}" style="cursor:pointer;min-height:44px;font-size:12.5px;font-weight:{{ r.weight }};padding:10px 14px;border-radius:999px;background:{{ r.bg }};color:{{ r.color }};display:flex;align-items:center">{{ r.label }}</div></sc-for></div></div></sc-if>
-        <sc-if value="{{ historicMed.hasExisting }}" hint-placeholder-val="{{ false }}"><div style="background:var(--ac-050);color:var(--ac-deep);font-size:11.5px;font-weight:700;padding:9px 12px;border-radius:11px">A record already exists for this dose. Saving will update it.</div></sc-if>
+        <sc-if value="{{ historicMed.hasExisting }}" hint-placeholder-val="{{ false }}"><div style="background:var(--ac-050);color:var(--ac-deep);font-size:11.5px;font-weight:700;padding:9px 12px;border-radius:11px">{{ historicMed.existingNotice }}</div></sc-if>
         <sc-if value="{{ historicMed.hasErr }}" hint-placeholder-val="{{ false }}"><div style="background:#FADFD4;color:#B3502E;font-size:12px;font-weight:700;padding:10px 13px;border-radius:12px">{{ historicMed.err }}</div></sc-if>
-        <div style="display:flex;gap:10px;margin-top:2px;position:sticky;bottom:0;padding-top:4px;background:linear-gradient(180deg,rgba(255,255,255,0),rgba(255,255,255,.98) 24%)"><div onClick="{{ historicMed.onCancel }}" style="cursor:pointer;min-height:52px;background:#F6F5FB;color:#565B6E;font-size:15px;font-weight:700;padding:15px 22px;border-radius:999px;display:flex;align-items:center;justify-content:center">Cancel</div><div onClick="{{ historicMed.onSave }}" style="cursor:pointer;min-height:52px;flex:1;text-align:center;background:linear-gradient(90deg,var(--ac-soft),var(--ac));color:#fff;font-size:15px;font-weight:800;padding:15px;border-radius:999px;box-shadow:0 10px 22px rgba(var(--ac-rgb),.35);display:flex;align-items:center;justify-content:center">{{ historicMed.saveLabel }}</div></div>
+        <div style="display:flex;gap:10px;margin-top:2px;position:sticky;bottom:0;padding-top:4px"><div onClick="{{ historicMed.onCancel }}" style="cursor:pointer;min-height:46px;background:#F6F5FB;color:#565B6E;font-size:15px;font-weight:700;padding:11px 20px;border-radius:999px;display:flex;align-items:center;justify-content:center">Cancel</div><div onClick="{{ historicMed.onSave }}" style="cursor:pointer;min-height:46px;flex:1;text-align:center;background:linear-gradient(90deg,var(--ac-soft),var(--ac));color:#fff;font-size:15px;font-weight:800;padding:11px;border-radius:999px;box-shadow:0 10px 22px rgba(var(--ac-rgb),.35);display:flex;align-items:center;justify-content:center">{{ historicMed.saveLabel }}</div></div>
       </div>
     </div>
     </sc-if>
@@ -2055,10 +2057,11 @@
       <div onClick="{{ tp.onCancel }}" style="flex:1"></div>
       <div style="background:linear-gradient(155deg,rgba(255,255,255,.94),rgba(255,255,255,.8));backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.95);border-radius:var(--r-sheet) var(--r-sheet) 0 0;padding:20px 22px calc(30px + var(--hcc-safe-bottom));display:flex;flex-direction:column;gap:14px;box-shadow:0 -20px 50px rgba(70,60,130,.3)">
         <div style="width:40px;height:5px;border-radius:99px;background:#E4E2EE;align-self:center"></div>
-        <div style="display:flex;align-items:baseline"><div style="font-size:17px;font-weight:800;flex:1">{{ tp.title }}</div><div style="font-size:15px;font-weight:800;color:var(--ac)">{{ tp.preview }}</div></div>
-        <div style="display:flex;gap:10px;margin-bottom:-10px"><div style="flex:1;text-align:center;font-size:10px;font-weight:800;letter-spacing:.08em;color:#747B8E">HOUR</div><div style="flex:1;text-align:center;font-size:10px;font-weight:800;letter-spacing:.08em;color:#747B8E">MINUTE</div><div style="flex:1;text-align:center;font-size:10px;font-weight:800;letter-spacing:.08em;color:#747B8E">AM / PM</div></div>
-        <div style="position:relative;display:flex;gap:10px;height:176px">
+        <div style="display:flex;flex-direction:column;gap:3px"><div style="font-size:17px;font-weight:800">{{ tp.title }}</div><div style="font-size:13px;font-weight:800;color:var(--ac)">{{ tp.preview }}</div></div>
+        <div style="display:flex;gap:8px;margin-bottom:-10px"><sc-if value="{{ tp.showDate }}" hint-placeholder-val="{{ false }}"><div style="flex:1.6;text-align:center;font-size:10px;font-weight:800;letter-spacing:.08em;color:#747B8E">DATE</div></sc-if><div style="flex:1;text-align:center;font-size:10px;font-weight:800;letter-spacing:.08em;color:#747B8E">HOUR</div><div style="flex:1;text-align:center;font-size:10px;font-weight:800;letter-spacing:.08em;color:#747B8E">MINUTE</div><div style="flex:1;text-align:center;font-size:10px;font-weight:800;letter-spacing:.08em;color:#747B8E">AM / PM</div></div>
+        <div style="position:relative;display:flex;gap:8px;height:176px">
           <div style="position:absolute;left:0;right:0;top:66px;height:44px;border-radius:14px;background:rgba(var(--ac-rgb),.1);border:1px solid rgba(var(--ac-rgb),.28);pointer-events:none"></div>
+          <sc-if value="{{ tp.showDate }}" hint-placeholder-val="{{ false }}"><div id="hcc-tp-d" class="hcc-time-wheel" onScroll="{{ tp.onDateScroll }}" style="flex:1.6;overflow-y:auto;padding:66px 0;scrollbar-width:none"><sc-for list="{{ tp.dates }}" as="d" hint-placeholder-count="7"><div class="hcc-time-option" onClick="{{ d.onClick }}" style="cursor:pointer;height:44px;display:flex;align-items:center;justify-content:center;font-size:{{ d.size }};font-weight:{{ d.weight }};color:{{ d.color }};opacity:{{ d.op }};transform:{{ d.scale }};transition:all .12s;white-space:nowrap">{{ d.label }}</div></sc-for></div></sc-if>
           <div id="hcc-tp-h" class="hcc-time-wheel" onScroll="{{ tp.onHourScroll }}" style="flex:1;overflow-y:auto;padding:66px 0;scrollbar-width:none">
             <sc-for list="{{ tp.hours }}" as="h" hint-placeholder-count="6">
               <div class="hcc-time-option" onClick="{{ h.onClick }}" style="cursor:pointer;height:44px;display:flex;align-items:center;justify-content:center;font-size:{{ h.size }};font-weight:{{ h.weight }};color:{{ h.color }};opacity:{{ h.op }};transform:{{ h.scale }};transition:all .12s">{{ h.label }}</div>
@@ -2077,7 +2080,7 @@
         </div>
         <div style="display:flex;gap:10px">
           <div onClick="{{ tp.onCancel }}" style="cursor:pointer;background:#F6F5FB;color:#565B6E;font-size:15px;font-weight:700;padding:15px 22px;border-radius:999px">Cancel</div>
-          <div onClick="{{ tp.onSave }}" style="cursor:pointer;flex:1;text-align:center;background:linear-gradient(90deg,var(--ac-soft),var(--ac));color:#fff;font-size:15px;font-weight:700;padding:15px;border-radius:999px;box-shadow:0 10px 22px rgba(var(--ac-rgb),.35)">Set time</div>
+          <div onClick="{{ tp.onSave }}" style="cursor:pointer;flex:1;text-align:center;background:linear-gradient(90deg,var(--ac-soft),var(--ac));color:#fff;font-size:15px;font-weight:700;padding:15px;border-radius:999px;box-shadow:0 10px 22px rgba(var(--ac-rgb),.35)">{{ tp.saveLabel }}</div>
         </div>
       </div>
     </div>
@@ -2113,7 +2116,7 @@
         <div style="width:100%;max-width:380px;background:#fff;border-radius:24px;padding:22px;display:flex;flex-direction:column;gap:13px;box-shadow:0 24px 60px rgba(40,34,70,.35)">
           <div style="font-size:20px;font-weight:800">Clear all health data?</div>
           <div style="font-size:13.5px;line-height:1.5;color:#565B6E">This removes every medication, check-in, symptom, note, photo, and setting from this browser. Download a backup first if you may need it later.</div>
-          <div style="display:flex;gap:9px"><div onClick="{{ confirmWipe.onCancel }}" style="cursor:pointer;flex:1;text-align:center;background:#F6F5FB;color:#565B6E;padding:14px;border-radius:999px;font-weight:800">Keep my data</div><div onClick="{{ confirmWipe.onConfirm }}" style="cursor:pointer;flex:1;text-align:center;background:#C7463B;color:#fff;padding:14px;border-radius:999px;font-weight:800">Clear everything</div></div>
+          <div style="display:flex;gap:9px"><div onClick="{{ confirmWipe.onCancel }}" style="cursor:pointer;flex:1;min-height:46px;background:#F6F5FB;color:#565B6E;padding:10px 12px;border-radius:999px;font-weight:800;display:flex;align-items:center;justify-content:center;text-align:center">Keep my data</div><div onClick="{{ confirmWipe.onConfirm }}" style="cursor:pointer;flex:1;min-height:46px;background:#C7463B;color:#fff;padding:10px 12px;border-radius:999px;font-weight:800;display:flex;align-items:center;justify-content:center;text-align:center">Clear everything</div></div>
         </div>
       </div>
     </sc-if>
@@ -2792,8 +2795,8 @@ class Component extends DCLogic {
       ratings: { ...(source.ratings || {}) },
       occ: { ...(source.occurrences || {}) },
       occSev: { ...(source.occurrenceSev || {}) },
-      sleepHours: source.sleepHours ?? ex?.sleepHours ?? null,
-      wakeups: source.wakeups ?? ex?.wakeups ?? null,
+      sleepHours: source.sleepHours ?? ex?.sleepHours ?? (period === 'morning' ? 9 : null),
+      wakeups: source.wakeups ?? ex?.wakeups ?? (period === 'morning' ? 0 : null),
       proteinG: source.proteinG ?? ex?.proteinG ?? null,
       proteinRange: source.proteinRange ?? ex?.proteinRange ?? null,
       notes: source.notes || '',
@@ -2812,7 +2815,7 @@ class Component extends DCLogic {
 
   // ---------- check-in ----------
   STEP_TITLE = { sleep: 'How was your sleep?', feeling: 'How are you feeling?', body: 'Body & GI', cognition: 'Cognition', food: 'Food & fuel', meds: 'Meds & wrap-up' };
-  STEP_SUB = { sleep: 'Last night', feeling: 'Today', body: 'Today so far', cognition: 'Rate each 0–10', food: 'Across the day', meds: 'Confirm what you took' };
+  STEP_SUB = { sleep: 'Last night', feeling: '', body: '', cognition: '', food: 'Across the day', meds: 'Confirm what you took' };
   STEP_TOGGLE_LABEL = { sleep: 'SLEEP SYMPTOMS', feeling: 'EPISODES', body: 'GI & BODY', cognition: 'NOTES', food: 'MEALS', meds: '' };
   PROTEIN_LEVELS = [['low', 'Low', '< 60 g', 40], ['target', 'Target', '60–100 g', 80], ['high', 'High', '> 100 g', 115]];
   setRating = (k, v) => this.setState(st => ({ ci: { ...st.ci, ratings: { ...st.ci.ratings, [k]: v } } }));
@@ -3035,7 +3038,9 @@ class Component extends DCLogic {
       dateLabel: dateObj ? dateObj.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : 'Choose date',
       timeLabel: this.fmtTime(h.time || selectedDose?.timing || '08:00'),
       onDateOpen: this.openDatePick('historicDate', h.date), onTimeOpen: this.openTimePick('historicMedTime', null, h.time || selectedDose?.timing || '08:00'),
-      hasExisting: !isPrn && !!existing, saveLabel: isPrn ? 'Save PRN dose' : existing ? 'Update dose' : (h.date === this.db.todayISO() ? 'Save dose' : 'Save past dose'), hasErr: !!h.err, err: h.err,
+      hasExisting: !isPrn && !!existing,
+      existingNotice: existing ? `Existing record: ${new Date(existing.eventDate + 'T12:00:00').toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })} at ${this.fmtTime(this.hhmm(new Date(existing.takenTime || `${existing.eventDate}T${existing.scheduledTime || selectedDose?.timing || '08:00'}:00`)))}. Saving will update it.` : '',
+      saveLabel: isPrn ? 'Save PRN dose' : existing ? 'Update dose' : (h.date === this.db.todayISO() ? 'Save dose' : 'Save past dose'), hasErr: !!h.err, err: h.err,
       onCancel: this.closeHistoricMed, onSave: this.saveHistoricMed,
     };
   }
@@ -3080,7 +3085,7 @@ class Component extends DCLogic {
     return { open: true, dateLabel: new Date(q.date + 'T12:00:00').toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }), timeLabel: this.fmtTime(q.time), notes: q.notes || '',
       moodFace: this.moodFaceData(q.mood, (e) => this.beginDrag(e, v => this.quickCheckField('mood', v))), sliders: [slider('stress', 'Stress', q.stress, 'None', 'Extreme')],
       hasErr: !!q.err, err: q.err || '', isEdit: !!q.id, hasDeleteConfirm: !!q.confirmDelete, notDeleteConfirm: !q.confirmDelete,
-      onDateOpen: this.openDatePick('quickCheckDate', q.date), onTimeOpen: this.openTimePick('quickCheckTime', null, q.time), onNotes: this.quickCheckNotes, onSave: this.saveQuickCheck, onCancel: this.closeQuickCheck,
+      onDateOpen: this.openDateTimePick('quickCheckTime', q.date, q.time), onTimeOpen: this.openDateTimePick('quickCheckTime', q.date, q.time), onNotes: this.quickCheckNotes, onSave: this.saveQuickCheck, onCancel: this.closeQuickCheck,
       onAskDelete: () => this.setState({ quickCheck: { ...q, confirmDelete: true } }), onKeep: () => this.setState({ quickCheck: { ...q, confirmDelete: false } }), onDelete: this.deleteQuickCheck };
   }
 
@@ -3116,7 +3121,7 @@ class Component extends DCLogic {
     if (!(s.selected || []).length && !adHoc) { this.setState({ selfCareEdit: { ...s, err: 'Choose an activity or type what you did.' } }); return; }
     const selected = [...(s.selected || []), ...(adHoc ? [{ id: `adhoc:${Date.now()}`, label: adHoc }] : [])];
     if (adHoc && s.saveRelief && !(this.raw.settings?.whatHelped || []).some(x => String(x.label).toLowerCase() === adHoc.toLowerCase())) {
-      await this.db.saveSettings({ whatHelped: [...(this.raw.settings?.whatHelped || []), { id: `wh${Date.now().toString(36)}`, label: adHoc, cats: ['all'], showInSymptoms: true }] });
+      await this.db.saveSettings({ whatHelped: [...(this.raw.settings?.whatHelped || []), { id: `wh${Date.now().toString(36)}`, label: adHoc, cats: ['all'], showInSymptoms: true, showInSelfCare: true }] });
     }
     await this.db.saveSelfCareLog({ id: s.id || undefined, eventDate: s.date, time: `${s.date}T${s.time}:00`, durationMin: s.durationMin, reliefIds: selected.map(x => x.id), reliefLabels: selected.map(x => x.label), afterStress: s.afterStress, afterMood: s.afterMood, notes: s.notes?.trim() || null });
     await this.refresh();
@@ -3125,14 +3130,14 @@ class Component extends DCLogic {
   deleteSelfCare = async () => { const s = this.state.selfCareEdit; if (!s?.id) return; await this.db.deleteSelfCareLog(s.id); await this.refresh(); this.setState({ selfCareEdit: null }); };
   viewSelfCare() {
     const s = this.state.selfCareEdit; if (!s) return { open: false };
-    const current = (this.raw.settings?.whatHelped || []).map(x => ({ id: x.id, label: x.label }));
+    const current = (this.raw.settings?.whatHelped || []).filter(x => x.showInSelfCare !== false).map(x => ({ id: x.id, label: x.label }));
     const options = [...current, ...(s.selected || []).filter(x => !current.some(w => w.id === x.id || w.label === x.label))].sort((a, b) => String(a.label || '').localeCompare(String(b.label || ''), undefined, { sensitivity: 'base' }));
     const chip = (label, active, onClick, activeBg = 'var(--ac)') => ({ label, onClick, bg: active ? activeBg : '#F6F5FB', color: active ? '#fff' : '#565B6E', weight: active ? 800 : 600 });
     const reliefChips = options.map(o => chip(o.label, (s.selected || []).some(x => x.id === o.id || x.label === o.label), this.selfCareToggleRelief(o)));
-    const slider = (field, label, value, low, high) => { const set = value != null, v = set ? Number(value) : 5; return { label, value: set ? Math.round(v) : 'Add', pct: v * 10, low, high, clearLabel: set ? 'Clear' : 'Optional', onClear: this.clearSelfCareRating(field), onDown: (e) => this.beginDrag(e, n => this.selfCareRating(field, n)) }; };
-    const moodFace = { ...this.moodFaceData(s.afterMood, (e) => this.beginDrag(e, n => this.selfCareRating('afterMood', n))), clearLabel: s.afterMood == null ? 'Optional' : 'Clear', onClear: this.clearSelfCareRating('afterMood') };
-    return { open: true, title: s.id ? 'Edit self care' : 'Log self care', isEdit: !!s.id, saveLabel: s.id ? 'Save changes' : 'Save self care', reliefChips, noRelief: options.length === 0, adHoc: s.adHoc || '', saveRelief: !!s.saveRelief, saveReliefBg: s.saveRelief ? 'var(--ac)' : '#E4E2EE', saveReliefKnob: s.saveRelief ? '22px' : '3px', duration: `${s.durationMin} min`, dateLabel: new Date(s.date + 'T12:00:00').toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }), timeLabel: this.fmtTime(s.time), moodFace, sliders: [slider('afterStress', 'Stress after', s.afterStress, 'None', 'Extreme')], notes: s.notes || '', hasErr: !!s.err, err: s.err || '', hasDeleteConfirm: !!s.confirmDelete, notDeleteConfirm: !s.confirmDelete,
-      onAdHoc: this.selfCareAdHoc, onToggleSaveRelief: this.toggleSelfCareSaveRelief, onDateOpen: this.openDatePick('selfCareDate', s.date), onTimeOpen: this.openTimePick('selfCareTime', null, s.time), onDurationDec: this.selfCareDuration(-5), onDurationInc: this.selfCareDuration(5), onNotes: this.selfCareNotes, onSave: this.saveSelfCare, onCancel: this.closeSelfCare, onAskDelete: () => this.setState({ selfCareEdit: { ...s, confirmDelete: true } }), onKeep: () => this.setState({ selfCareEdit: { ...s, confirmDelete: false } }), onDelete: this.deleteSelfCare };
+    const slider = (field, label, value, low, high) => { const set = value != null, v = set ? Number(value) : 5; return { label, hasValue: set, value: set ? Math.round(v) : '', pct: v * 10, low, high, onClear: this.clearSelfCareRating(field), onDown: (e) => this.beginDrag(e, n => this.selfCareRating(field, n)) }; };
+    const moodFace = { ...this.moodFaceData(s.afterMood, (e) => this.beginDrag(e, n => this.selfCareRating('afterMood', n))), clearLabel: s.afterMood == null ? '' : 'Clear', onClear: this.clearSelfCareRating('afterMood') };
+    return { open: true, title: s.id ? 'Edit self care' : 'Log self care', isEdit: !!s.id, saveLabel: s.id ? 'Save changes' : 'Save self care', reliefChips, noRelief: options.length === 0, adHoc: s.adHoc || '', saveRelief: !!s.saveRelief, saveReliefBg: s.saveRelief ? 'var(--ac)' : '#E4E2EE', saveReliefKnob: s.saveRelief ? '19px' : '3px', duration: `${s.durationMin} min`, dateLabel: new Date(s.date + 'T12:00:00').toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }), timeLabel: this.fmtTime(s.time), moodFace, sliders: [slider('afterStress', 'Stress after', s.afterStress, 'None', 'Extreme')], notes: s.notes || '', hasErr: !!s.err, err: s.err || '', hasDeleteConfirm: !!s.confirmDelete, notDeleteConfirm: !s.confirmDelete,
+      onAdHoc: this.selfCareAdHoc, onToggleSaveRelief: this.toggleSelfCareSaveRelief, onDateOpen: this.openDateTimePick('selfCareTime', s.date, s.time), onTimeOpen: this.openDateTimePick('selfCareTime', s.date, s.time), onDurationDec: this.selfCareDuration(-5), onDurationInc: this.selfCareDuration(5), onNotes: this.selfCareNotes, onSave: this.saveSelfCare, onCancel: this.closeSelfCare, onAskDelete: () => this.setState({ selfCareEdit: { ...s, confirmDelete: true } }), onKeep: () => this.setState({ selfCareEdit: { ...s, confirmDelete: false } }), onDelete: this.deleteSelfCare };
   }
 
   // ---------- glass time picker ----------
@@ -3153,9 +3158,23 @@ class Component extends DCLogic {
       if (ps) ps.scrollTop = periodIdx * 44;
     }, 60);
   };
+  openDateTimePick = (kind, date, value) => () => {
+    const [h, mi] = (value || this.hhmm()).split(':').map(Number);
+    const roundedTotal = Math.max(0, Math.min(1410, Math.round((((Number.isFinite(h) ? h : 0) * 60) + (Number.isFinite(mi) ? mi : 0)) / 30) * 30));
+    const hour24 = Math.floor(roundedTotal / 60), hourIdx = (hour24 + 11) % 12, minIdx = roundedTotal % 60 === 30 ? 1 : 0, periodIdx = hour24 >= 12 ? 1 : 0;
+    const today = this.db.todayISO(), dateOptions = [];
+    for (let i = 365; i >= 0; i--) dateOptions.push(this.isoShift(today, -i));
+    if (date && !dateOptions.includes(date)) dateOptions.unshift(date);
+    const dateIdx = Math.max(0, dateOptions.indexOf(date || today));
+    this.setState({ tp: { kind, refId: null, hourIdx, minIdx, periodIdx, dateIdx, dateOptions, showDate: true } });
+    setTimeout(() => {
+      const ds = document.getElementById('hcc-tp-d'), hs = document.getElementById('hcc-tp-h'), ms = document.getElementById('hcc-tp-m'), ps = document.getElementById('hcc-tp-p');
+      if (ds) ds.scrollTop = dateIdx * 44; if (hs) hs.scrollTop = hourIdx * 44; if (ms) ms.scrollTop = minIdx * 44; if (ps) ps.scrollTop = periodIdx * 44;
+    }, 60);
+  };
   tpScroll = (field) => (e) => {
     const el = e.currentTarget || e.target;
-    const max = field === 'hourIdx' ? 11 : 1;
+    const max = field === 'hourIdx' ? 11 : field === 'dateIdx' ? Math.max(0, (this.state.tp?.dateOptions || []).length - 1) : 1;
     const idx = Math.max(0, Math.min(max, Math.round(el.scrollTop / 44)));
     this.setState(st => st.tp && st.tp[field] !== idx ? { tp: { ...st.tp, [field]: idx } } : null);
     this._tpSnapTimers = this._tpSnapTimers || {};
@@ -3199,11 +3218,11 @@ class Component extends DCLogic {
     } else if (tp.kind === 'medLogTime') {
       this.setState(st => ({ medLogEdit: st.medLogEdit ? { ...st.medLogEdit, time: val } : st.medLogEdit }));
     } else if (tp.kind === 'selfCareTime') {
-      this.setState(st => ({ selfCareEdit: st.selfCareEdit ? { ...st.selfCareEdit, time: val } : st.selfCareEdit }));
+      this.setState(st => ({ selfCareEdit: st.selfCareEdit ? { ...st.selfCareEdit, time: val, ...(tp.showDate ? { date: tp.dateOptions[tp.dateIdx] } : {}) } : st.selfCareEdit }));
     } else if (tp.kind === 'checkinTime') {
       this.setState(st => ({ ci: st.ci ? { ...st.ci, time: val } : st.ci }));
     } else if (tp.kind === 'quickCheckTime') {
-      this.setState(st => ({ quickCheck: st.quickCheck ? { ...st.quickCheck, time: val } : st.quickCheck }));
+      this.setState(st => ({ quickCheck: st.quickCheck ? { ...st.quickCheck, time: val, ...(tp.showDate ? { date: tp.dateOptions[tp.dateIdx] } : {}) } : st.quickCheck }));
     } else if (tp.kind === 'medSchedule') {
       // set a med's scheduled time straight from the Home row (logged as a timing change)
       const ref = typeof tp.refId === 'object' ? tp.refId : { medId: tp.refId, doseSlot: null };
@@ -3219,13 +3238,14 @@ class Component extends DCLogic {
     const tp = this.state.tp; if (!tp) return { open: false };
     const item = (sel, label, onClick) => ({ label, onClick,
       size: sel ? '19px' : '14px', color: sel ? 'var(--ac-deep)' : '#747B8E', weight: sel ? 800 : 600, scale: sel ? 'scale(1.08)' : 'scale(1)', op: sel ? 1 : .55 });
-    const hours = [], mins = [], periods = [];
+    const hours = [], mins = [], periods = [], dates = [];
     for (let i = 0; i < 12; i++) hours.push(item(i === tp.hourIdx, String(i + 1), this.tpPick('hourIdx', i, 'hcc-tp-h')));
     for (let i = 0; i < 2; i++) mins.push(item(i === tp.minIdx, i ? '30' : '00', this.tpPick('minIdx', i, 'hcc-tp-m')));
     for (let i = 0; i < 2; i++) periods.push(item(i === tp.periodIdx, i ? 'PM' : 'AM', this.tpPick('periodIdx', i, 'hcc-tp-p')));
-    const preview = this.fmtTime(this.tpValue(tp));
+    for (let i = 0; i < (tp.dateOptions || []).length; i++) { const iso = tp.dateOptions[i], d = new Date(iso + 'T12:00:00'); dates.push(item(i === tp.dateIdx, d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }), this.tpPick('dateIdx', i, 'hcc-tp-d'))); }
+    const preview = `${tp.showDate ? new Date(tp.dateOptions[tp.dateIdx] + 'T12:00:00').toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) + ' · ' : ''}${this.fmtTime(this.tpValue(tp))}`;
     const titles = { checkinTime: 'Check-in time', quickCheckTime: 'Reading time', selfCareTime: 'Self-care start time', episodeTime: 'Symptom time', medLogTime: 'Time taken', historicMedTime: 'Time taken' };
-    return { open: true, title: titles[tp.kind] || 'Choose time', hours, mins, periods, preview, onHourScroll: this.tpScroll('hourIdx'), onMinScroll: this.tpScroll('minIdx'), onPeriodScroll: this.tpScroll('periodIdx'), onCancel: this.closeTp, onSave: this.saveTp };
+    return { open: true, title: tp.showDate ? 'Choose date & time' : (titles[tp.kind] || 'Choose time'), saveLabel: tp.showDate ? 'Set date & time' : 'Set time', showDate: !!tp.showDate, dates, hours, mins, periods, preview, onDateScroll: this.tpScroll('dateIdx'), onHourScroll: this.tpScroll('hourIdx'), onMinScroll: this.tpScroll('minIdx'), onPeriodScroll: this.tpScroll('periodIdx'), onCancel: this.closeTp, onSave: this.saveTp };
   }
 
   // ---------- glass date picker ----------
@@ -3513,7 +3533,7 @@ class Component extends DCLogic {
   addListItem = async (field, inputId, extra) => {
     const label = this.val(inputId); if (!label) return;
     const list = [...(this.raw.settings[field] || [])];
-    list.push({ id: 'u' + Date.now().toString(36), label, cats: ['all'], ...(field === 'whatHelped' ? { showInSymptoms: true } : {}), ...extra });
+    list.push({ id: 'u' + Date.now().toString(36), label, cats: ['all'], ...(field === 'whatHelped' ? { showInSymptoms: true, showInSelfCare: true } : {}), ...extra });
     await this.db.saveSettings({ [field]: list });
     const el = document.getElementById(inputId); if (el) el.value = '';
     await this.refresh();
@@ -3534,6 +3554,10 @@ class Component extends DCLogic {
   };
   toggleReliefSymptoms = (id) => async () => {
     const list = (this.raw.settings.whatHelped || []).map(x => x.id === id ? { ...x, showInSymptoms: x.showInSymptoms === false } : x);
+    await this.db.saveSettings({ whatHelped: list }); await this.refresh();
+  };
+  toggleReliefSelfCare = (id) => async () => {
+    const list = (this.raw.settings.whatHelped || []).map(x => x.id === id ? { ...x, showInSelfCare: x.showInSelfCare === false } : x);
     await this.db.saveSettings({ whatHelped: list }); await this.refresh();
   };
 
@@ -3823,7 +3847,7 @@ class Component extends DCLogic {
       isSettings: !st.loading && route === 'settings',
       isInsights: !st.loading && route === 'insights',
       isActivity: !st.loading && route === 'activity',
-      showTabBar: !st.loading && !st.prn && !st.historicMed && !st.medEdit && !st.medLogEdit && !st.symEdit && !st.episodeEdit && !st.selfCareEdit && !st.quickCheck && !st.sp && !st.exp && !st.tp && !st.dp && (route === 'home' || route === 'meds' || route === 'activity' || route === 'settings' || (route === 'log' && (!st.draft || st.draft.stage === 'pick'))),
+      showTabBar: !st.loading && !st.prn && !st.historicMed && !st.medEdit && !st.medLogEdit && !st.medHistoryDetail && !st.symEdit && !st.episodeEdit && !st.selfCareEdit && !st.quickCheck && !st.sp && !st.exp && !st.tp && !st.dp && (route === 'home' || route === 'meds' || route === 'activity' || route === 'settings' || (route === 'log' && (!st.draft || st.draft.stage === 'pick'))),
       nav: {
         goHome: this.go('home'), goMeds: this.go('meds'), goSettings: this.openSettings,
         goCheckin: this.openCheckin, goLog: this.openLog, goCalendar: this.openActivity, goActivity: this.openActivity,
@@ -3832,7 +3856,7 @@ class Component extends DCLogic {
         cMore: route === 'settings' ? 'var(--ac)' : '#747B8E',
       },
     };
-    const emptyOverlays = { prn: { open: false }, historicMed: { open: false }, medEdit: { open: false }, medLogEdit: { open: false }, symEdit: { open: false }, episodeEdit: { open: false }, selfCare: { open: false }, quickCheck: { open: false }, sp: { open: false, showBrowse: false, showDone: false }, exp: { open: false }, tp: { open: false }, dp: { open: false }, rep: { open: false } };
+    const emptyOverlays = { prn: { open: false }, historicMed: { open: false }, medEdit: { open: false }, medLogEdit: { open: false }, medHistoryDetail: { open: false }, symEdit: { open: false }, episodeEdit: { open: false }, selfCare: { open: false }, quickCheck: { open: false }, sp: { open: false, showBrowse: false, showDone: false }, exp: { open: false }, tp: { open: false }, dp: { open: false }, rep: { open: false } };
     if (st.loading || !db) return { ...base, ...emptyOverlays, home: {}, meds: {}, ci: {}, log: {}, settings: {}, ins: {}, activity: {} };
 
     const today = db.todayISO();
@@ -3848,6 +3872,7 @@ class Component extends DCLogic {
       historicMed: this.viewHistoricMed(),
       medEdit: this.viewMedEdit(),
       medLogEdit: this.viewMedLogEdit(),
+      medHistoryDetail: this.viewMedHistoryDetail(),
       symEdit: this.viewSymEdit(),
       episodeEdit: this.viewEpisodeEdit(),
       selfCare: this.viewSelfCare(),
@@ -3880,7 +3905,7 @@ class Component extends DCLogic {
       const moment = ex?.moments?.[kind];
       const complete = legacyComplete || !!moment?.completed;
       const time = moment?.time ? this.fmtTime(this.hhmm(new Date(moment.time))) : '';
-      return { title, icon, iconBg, iconColor, sub: complete ? `Completed${time ? ' · ' + time : ''}` : (kind === 'morning' ? 'Sleep, waking mood, energy & symptoms' : 'Overall mood, stress, food, meds & symptoms'), cta: complete ? 'Review' : 'Start',
+      return { title, icon, iconBg, iconColor, showSub: !complete, sub: complete ? '' : (kind === 'morning' ? 'Sleep, waking mood, energy & symptoms' : 'Overall mood, stress, food, meds & symptoms'), cta: complete ? 'Review' : 'Start',
         buttonBg: complete ? '#E4F4EA' : 'var(--ac)', buttonColor: complete ? '#237A4E' : '#fff', onClick: () => this.openCheckin(today, kind) };
     });
 
@@ -3896,8 +3921,8 @@ class Component extends DCLogic {
       // scheduled time — tap to set it (saved to the med profile) when missing
       const hasTime = !!timing;
       return { name: m.name, dose: `${m.dose}${slotLabel ? ' · ' + slotLabel : ''}`,
-        time: hasTime ? `Scheduled ${this.fmtTime(timing)}` : 'No time set — tap to add',
-        timeColor: hasTime ? '#61687A' : '#8E7CF3', timeWeight: hasTime ? 500 : 700,
+        time: hasTime ? this.fmtTime(timing) : 'No time set — tap to add',
+        timeColor: hasTime ? '#8A90A1' : '#8E7CF3', timeWeight: hasTime ? 500 : 700,
         onTimeTap: this.openTimePick('medSchedule', { medId: m.id, doseSlot }, timing || (doseSlot === 'night' ? '20:00' : '08:00')),
         status, pillBg, pillColor, onStatusTap: this.setMedStatus(m.id, next, doseSlot) };
     });
@@ -4098,7 +4123,7 @@ class Component extends DCLogic {
         const on = !!ci.occ[s.key];
         const sv = ci.occSev[s.key] ?? 4;
         toggleItems.push({ label: s.name, dot: this.catColor(s.category), cat: s.category, onToggle: () => this.toggleOcc(s.key),
-          trackBg: on ? 'var(--ac)' : '#E4E2EE', knobLeft: on ? '22px' : '3px',
+          trackBg: on ? 'var(--ac)' : '#E4E2EE', knobLeft: on ? '19px' : '3px',
           showSev: sev && on, sevPct: sv * 10, sevValue: Math.round(sv),
           onSevDown: (e) => this.beginDrag(e, v => this.setOccSev(s.key, v)) });
       }
@@ -4168,7 +4193,7 @@ class Component extends DCLogic {
       stepBg,
       stepIcon: STEP_ICON[step] ? 'uploads/' + STEP_ICON[step] + '.png' : '', hasStepIcon: !!STEP_ICON[step],
       segs: steps.map((_, i) => ({ bg: i <= ci.stepIndex ? 'var(--ac)' : '#DDD8F0' })),
-      title: this.STEP_TITLE[step] || (stepDef ? stepDef.name : step), subtitle: step === 'feeling' ? (ci.kind === 'morning' ? 'After waking' : 'Looking back on today') : (this.STEP_SUB[step] || ''),
+      title: this.STEP_TITLE[step] || (stepDef ? stepDef.name : step), subtitle: step === 'feeling' ? '' : (this.STEP_SUB[step] || ''), hasSubtitle: !!(step === 'feeling' ? '' : (this.STEP_SUB[step] || '')),
       hasFace: !!faceItem, face: faceItem || {},
       scaleItems, hasSteppers: steppers.length > 0, steppers,
       hasProtein: !!protein, protein: protein || {},
@@ -4278,7 +4303,7 @@ class Component extends DCLogic {
     const summary = loaded
       ? `Loaded: ${(raw.meds || []).length} meds · ${(raw.symptoms || []).length} symptoms · ${(raw.checkIns || []).length} check-ins · ${(raw.episodes || []).length} symptom logs · ${(raw.selfCare || []).length} self-care logs.`
       : 'No data yet. Set up your tracker and start logging. Records are stored in this browser; use Backup to keep a portable copy.';
-    const steps = (s.checkInSteps || []).slice().sort((a, b) => (a.name || '').localeCompare(b.name || '')).map(x => ({ name: x.name, onRename: this.renameStep(x.key), onToggle: this.toggleStep(x.key), trackBg: x.enabled ? 'var(--ac)' : '#E4E2EE', knobLeft: x.enabled ? '22px' : '3px' }));
+    const steps = (s.checkInSteps || []).slice().sort((a, b) => (a.name || '').localeCompare(b.name || '')).map(x => ({ name: x.name, onRename: this.renameStep(x.key), onToggle: this.toggleStep(x.key), trackBg: x.enabled ? 'var(--ac)' : '#E4E2EE', knobLeft: x.enabled ? '19px' : '3px' }));
     const meds = (raw.meds || []).map(m => { const sched = this.medScheduleText(m); return { name: m.name, sub: `${m.dose || ''}${m.prn ? ' · PRN' : (m.weekly ? ' · weekly' : (sched ? ' · ' + sched : ''))}${m.active === false ? ' · inactive' : ''}`, iconBg: `linear-gradient(135deg,${this.lighten(m.color || '#8E7CF3', 0.55)},${m.color || '#8E7CF3'})`, iconTint: this.darken(m.color || '#8E7CF3', 0.42), iconSrc: this.medIconSrc(m.icon), onEdit: () => this.openMedEditor(m) }; });
     const symptoms = (raw.symptoms || []).filter(x => !x.archived).map(x => ({
       name: x.name, dot: this.catColor(x.category), cat: x.category, meta: this.controlLabel(x.control || x.askAs), onEdit: () => this.openSymEditor(x),
@@ -4312,7 +4337,7 @@ class Component extends DCLogic {
     const showAdd = sub === 'meds' || sub === 'symptoms';
     const onHeaderAdd = sub === 'meds' ? (() => this.openMedEditor(null)) : sub === 'symptoms' ? (() => this.openSymEditor(null)) : (() => {});
     const catChips = (item, field) => this.CAT_OPTS.map(c => ({ label: c.label, onClick: this.toggleItemCat(field, item.id, c.key), bg: (item.cats || []).includes(c.key) ? 'var(--ac)' : '#F6F5FB', color: (item.cats || []).includes(c.key) ? '#fff' : '#747B8E' }));
-    const whatHelped = (s.whatHelped || []).slice().sort((a, b) => String(a.label || '').localeCompare(String(b.label || ''), undefined, { sensitivity: 'base' })).map(w => { const on = w.showInSymptoms !== false; return { label: w.label, onRemove: this.removeListItem('whatHelped', w.id), onToggleSymptoms: this.toggleReliefSymptoms(w.id), trackBg: on ? 'var(--ac)' : '#E4E2EE', knobLeft: on ? '22px' : '3px', showCats: on, cats: catChips(w, 'whatHelped') }; });
+    const whatHelped = (s.whatHelped || []).slice().sort((a, b) => String(a.label || '').localeCompare(String(b.label || ''), undefined, { sensitivity: 'base' })).map(w => { const on = w.showInSymptoms !== false, selfCareOn = w.showInSelfCare !== false; return { label: w.label, onRemove: this.removeListItem('whatHelped', w.id), onToggleSymptoms: this.toggleReliefSymptoms(w.id), onToggleSelfCare: this.toggleReliefSelfCare(w.id), trackBg: on ? 'var(--ac)' : '#E4E2EE', knobLeft: on ? '19px' : '3px', selfCareBg: selfCareOn ? 'var(--ac)' : '#E4E2EE', selfCareKnob: selfCareOn ? '19px' : '3px', showCats: on, cats: catChips(w, 'whatHelped') }; });
     const contexts = (s.contexts || []).map(w => ({ label: w.label, onRemove: this.removeListItem('contexts', w.id), cats: catChips(w, 'contexts') }));
     const avatarHint = this.state.avatarStatus === 'saving' ? 'Saving photo…' : this.state.avatarStatus === 'saved' ? 'Photo saved ✓' : this.state.avatarStatus === 'error' ? 'Could not save that photo. Try JPG or PNG.' : 'Tap the avatar to upload a photo';
     const avatarHintColor = this.state.avatarStatus === 'saved' ? '#2E8B5B' : this.state.avatarStatus === 'error' ? '#B3502E' : '#747B8E';
@@ -4373,7 +4398,7 @@ class Component extends DCLogic {
       startLabel: fmtD(me.startDate) || 'Not set', startColor: me.startDate ? 'var(--ac-deep)' : '#747B8E', onStartOpen: this.openDatePick('startDate', me.startDate),
       endLabel: fmtD(me.endDate) || 'Not set', endColor: me.endDate ? 'var(--ac-deep)' : '#747B8E', onEndOpen: this.openDatePick('endDate', me.endDate),
       colorChips, iconChips, notesList, onAddNote: this.medAddNote,
-      purpose: me.purpose, freqs, purposes, slots, showSlot: me.frequency === 'daily', startDate: me.startDate || '', endDate: me.endDate || '', activeBg: me.active ? 'var(--ac)' : '#E4E2EE', activeKnob: me.active ? '22px' : '3px', onToggleActive: this.medActive, canDelete: !!me.id, onSave: this.saveMed, onCancel: this.closeMedEditor, onDelete: this.deleteMed, hasHistory: history.length > 0, history };
+      purpose: me.purpose, freqs, purposes, slots, showSlot: me.frequency === 'daily', startDate: me.startDate || '', endDate: me.endDate || '', activeBg: me.active ? 'var(--ac)' : '#E4E2EE', activeKnob: me.active ? '19px' : '3px', onToggleActive: this.medActive, canDelete: !!me.id, onSave: this.saveMed, onCancel: this.closeMedEditor, onDelete: this.deleteMed, hasHistory: history.length > 0, history };
   }
 
   viewSymEdit() {
@@ -4384,9 +4409,9 @@ class Component extends DCLogic {
     const steps = ((this.raw.settings?.checkInSteps) || []).map(x => chip(x.name, se.step === x.key, this.symField('step', x.key)));
     return { open: true, title: se.id ? 'Edit symptom' : 'Add symptom', hasErr: !!se.err, name: se.name, categories, controls, steps,
       showCheckinStep: !!se.appearsInCheckIn, showQuickPin: !!se.availableInQuickLog,
-      quickBg: se.availableInQuickLog ? 'var(--ac)' : '#E4E2EE', quickKnob: se.availableInQuickLog ? '22px' : '3px', onToggleQuick: this.symToggle('availableInQuickLog'),
-      ciBg: se.appearsInCheckIn ? 'var(--ac)' : '#E4E2EE', ciKnob: se.appearsInCheckIn ? '22px' : '3px', onToggleCheckin: this.symToggle('appearsInCheckIn'),
-      pinBg: se.pinned ? 'var(--ac)' : '#E4E2EE', pinKnob: se.pinned ? '22px' : '3px', onTogglePin: this.symToggle('pinned'),
+      quickBg: se.availableInQuickLog ? 'var(--ac)' : '#E4E2EE', quickKnob: se.availableInQuickLog ? '19px' : '3px', onToggleQuick: this.symToggle('availableInQuickLog'),
+      ciBg: se.appearsInCheckIn ? 'var(--ac)' : '#E4E2EE', ciKnob: se.appearsInCheckIn ? '19px' : '3px', onToggleCheckin: this.symToggle('appearsInCheckIn'),
+      pinBg: se.pinned ? 'var(--ac)' : '#E4E2EE', pinKnob: se.pinned ? '19px' : '3px', onTogglePin: this.symToggle('pinned'),
       canDelete: !!se.id, onSave: this.saveSym, onCancel: this.closeSymEditor, onDelete: this.deleteSym };
   }
 
@@ -4616,8 +4641,8 @@ class Component extends DCLogic {
     const allPats = this.scanPatterns();
     const sel = this.state.heroSel || null;
     const fsp = 'Cozy';
-    const step = 46;
-    const topPad = 14, RW = 17, botPad = 10; // ribbon half-height = tag half-height → seamless join
+    const step = 42;
+    const topPad = 12, RW = 13, botPad = 10; // compact tags align exactly to each connecting ribbon
     const slotY = i => topPad + RW + i * step;
     const buildFlowFrom = (src) => {
       const strong2 = src.filter(p => p.strength >= 0.22);
@@ -4845,12 +4870,24 @@ class Component extends DCLogic {
   }
 
   // ===== MEDICATION HISTORY (timeline per med) =====
-  toggleMedTimes = (id) => () => this.setState(st => { const s = new Set(st.medHistTimes || []); s.has(id) ? s.delete(id) : s.add(id); return { medHistTimes: [...s] }; });
+  openMedHistoryDetail = (id) => () => this.setState({ medHistoryDetail: { medId: id } });
+  closeMedHistoryDetail = () => this.setState({ medHistoryDetail: null });
+  viewMedHistoryDetail() {
+    const detail = this.state.medHistoryDetail;
+    if (!detail) return { open: false };
+    const med = (this.raw.meds || []).find(m => m.id === detail.medId);
+    const rows = (this.raw.medLogs || []).filter(l => l.medId === detail.medId && (l.takenTime || l.status)).sort((a, b) => this.tsOf(b) - this.tsOf(a)).map(l => ({
+      when: new Date(this.tsOf(l)).toLocaleString(undefined, { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' }),
+      status: l.isPrn ? 'PRN taken' : (l.status || 'logged'),
+      details: [l.doseSlot === 'morning' ? 'AM dose' : l.doseSlot === 'night' ? 'PM dose' : '', l.dose || med?.dose || '', l.reason || '', l.notes || ''].filter(Boolean).join(' · ') || 'Medication log',
+      color: l.status === 'skipped' || l.status === 'missed' ? '#B3502E' : l.status === 'late' ? '#B35F1E' : (l.isPrn ? 'var(--ac-deep)' : '#2E8B5B'),
+    }));
+    return { open: true, name: med?.name || 'Medication', rows, empty: rows.length === 0, onClose: this.closeMedHistoryDetail };
+  }
   medHistoryView() {
     const meds = (this.raw.meds || []);
     const changes = (this.raw.changes || []);
     const logs = (this.raw.medLogs || []);
-    const showTimes = new Set(this.state.medHistTimes || []);
     const CT = { start: 'Started', dose: 'Dose change', timing: 'Time change', frequency: 'Schedule change', stop: 'Stopped', restart: 'Restarted' };
     const CDOT = { start: '#2E8B5B', dose: 'var(--ac)', timing: '#3A6FB0', frequency: '#B35F1E', stop: '#B3502E', restart: '#2E8B5B' };
     const fmtD = (r) => new Date(this.tsOf(r)).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
@@ -4868,9 +4905,7 @@ class Component extends DCLogic {
       }));
       return { id: m.id, name: m.name, meta: `${m.dose || ''}${m.prn ? ' · PRN' : (m.weekly ? ' · weekly' : (this.medScheduleText(m) ? ' · ' + this.medScheduleText(m) : ''))}`.replace(/^ · /, ''),
         color: m.color || 'var(--ac)', events, hasEvents: events.length > 0,
-        showTimes: showTimes.has(m.id), onToggleTimes: this.toggleMedTimes(m.id),
-        trackBg: showTimes.has(m.id) ? 'var(--ac)' : '#E4E2EE', knob: showTimes.has(m.id) ? '20px' : '3px',
-        toggleLabel: m.prn ? 'Show every dose taken' : 'Show times taken', doses, hasDoses: doses.length > 0, noDoses: doses.length === 0 };
+        onOpenLog: this.openMedHistoryDetail(m.id), doses, hasDoses: doses.length > 0, noDoses: doses.length === 0 };
     });
     return { cards, empty: cards.length === 0 };
   }
@@ -5154,12 +5189,11 @@ class Component extends DCLogic {
   saveMedLogEdit = async () => {
     const m = this.state.medLogEdit; if (!m) return;
     const doseEl = document.getElementById('hcc-medlog-dose');
-    const reasonEl = document.getElementById('hcc-medlog-reason');
     const hasTime = m.isPrn || m.status === 'taken' || m.status === 'late';
     await this.db.updateMedicationLog(m.id, {
       status: m.isPrn ? 'prn' : m.status,
       takenTime: hasTime ? `${m.date}T${m.time || '12:00'}:00` : null,
-      ...(m.isPrn ? { dose: doseEl ? String(doseEl.value || '').trim() || null : m.dose || null, quantity: m.qty || 1, reason: reasonEl ? String(reasonEl.value || '').trim() || null : m.reason || null } : {}),
+      ...(m.isPrn ? { dose: doseEl ? String(doseEl.value || '').trim() || null : m.dose || null, quantity: m.qty || 1, reason: m.reason || null } : {}),
     });
     await this.refresh();
     this.setState({ medLogEdit: null });
@@ -5171,13 +5205,14 @@ class Component extends DCLogic {
     const m = this.state.medLogEdit; if (!m) return { open: false };
     const statusDefs = [['taken', 'Taken', '#2E8B5B'], ['late', 'Late', '#B35F1E'], ['skipped', 'Skipped', '#B3502E']];
     const statuses = statusDefs.map(([key, label, color]) => ({ label, onClick: this.medLogField('status', key), bg: m.status === key ? color : '#F6F5FB', color: m.status === key ? '#fff' : '#61687A', weight: m.status === key ? 800 : 700 }));
+    const reasons = ['Panic', 'Anxiety', 'Nausea', 'Sleep', 'Pain', 'Other'].map(label => { const active = m.reason === label; return { label, onClick: this.medLogField('reason', active ? '' : label), bg: active ? 'var(--ac)' : '#F6F5FB', color: active ? '#fff' : '#565B6E', weight: active ? 800 : 600 }; });
     const d = new Date(m.date + 'T12:00:00');
     const dateLabel = d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
     const canTime = m.isPrn || m.status === 'taken' || m.status === 'late';
     return {
       open: true, name: m.name, meta: m.isPrn ? 'As-needed dose' : `${m.doseSlot === 'morning' ? 'AM dose' : m.doseSlot === 'night' ? 'PM dose' : 'Scheduled dose'} · ${m.status}`,
       dateLabel, timeLabel: canTime ? this.fmtTime(m.time || '12:00') : 'Not applicable', onTimeOpen: canTime ? this.openTimePick('medLogTime', null, m.time || '12:00') : (() => {}),
-      isPrn: m.isPrn, showStatus: !m.isPrn, statuses, dose: m.dose || '', qty: m.qty || 1, reason: m.reason || '', onQtyDec: this.medLogQty(-1), onQtyInc: this.medLogQty(1),
+      isPrn: m.isPrn, showStatus: !m.isPrn, statuses, dose: m.dose || '', qty: m.qty || 1, reason: m.reason || '', reasons, onQtyDec: this.medLogQty(-1), onQtyInc: this.medLogQty(1),
       hasDeleteConfirm: !!m.confirmDelete, notDeleteConfirm: !m.confirmDelete,
       onAskDelete: this.askMedLogDelete, onDelete: this.deleteMedLogEdit, onKeep: this.keepMedLog,
       onSave: this.saveMedLogEdit, onCancel: this.closeMedLogEditor,
@@ -5211,14 +5246,9 @@ class Component extends DCLogic {
       const iso = `${y}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
       const future = iso > today, active = iso === selected, isToday = iso === today;
       const hasCheck = (raw.checkIns || []).some(c => c.eventDate === iso && (c.completed || c.moments?.morning?.completed || c.moments?.evening?.completed));
-      const hasSymptom = (raw.episodes || []).some(e => e.eventDate === iso);
-      const hasMed = (raw.medLogs || []).some(l => l.eventDate === iso);
-      const hasSelfCare = (raw.selfCare || []).some(s => s.eventDate === iso);
-      const hasReading = (raw.stress || []).some(s => s.eventDate === iso);
-      const dots = [...(hasSymptom ? [{ color: active ? '#fff' : 'var(--ac-deep)' }] : []), ...(hasMed ? [{ color: active ? '#fff' : '#B35F1E' }] : []), ...(hasSelfCare ? [{ color: active ? '#fff' : '#2C8C78' }] : []), ...(hasReading ? [{ color: active ? '#fff' : '#C05673' }] : [])];
-      cells.push({ day: String(day), dots, hasCheck, checkColor: active ? '#fff' : '#2E8B5B', cursor: future ? 'default' : 'pointer', opacity: future ? .3 : 1,
+      cells.push({ day: String(day), dots: [], hasCheck, checkColor: '#2E8B5B', cursor: future ? 'default' : 'pointer', opacity: future ? .3 : 1,
         bg: active ? 'linear-gradient(135deg,var(--ac-soft),var(--ac))' : (isToday ? 'var(--ac-050)' : '#fff'),
-        border: active ? '1px solid transparent' : (isToday ? '1.5px solid var(--ac)' : '1px solid #F0EDF7'), shadow: active ? '0 7px 15px rgba(var(--ac-rgb),.35)' : 'none',
+        border: hasCheck ? '2px solid #3FA96A' : (active ? '1px solid transparent' : (isToday ? '1.5px solid var(--ac)' : '1px solid #F0EDF7')), shadow: active ? '0 7px 15px rgba(var(--ac-rgb),.35)' : 'none',
         color: active ? '#fff' : '#3A3F52', weight: active || isToday ? 800 : 600, onClick: future ? (() => {}) : this.calendarSelect(iso) });
     }
     const items = [];

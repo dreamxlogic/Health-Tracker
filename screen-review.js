@@ -70,7 +70,7 @@ function screen(){ return screens[state.index]; }
 function getApp(){ return frame.contentWindow && frame.contentWindow.__hccApp; }
 
 function resetApp(app){
-  app.setState({loading:false,route:'home',ob:null,ci:null,draft:null,logDate:null,setSub:null,insView:'hub',insCat:null,insMode:'visuals',heroSel:null,quickCheck:null,selfCareEdit:null,episodeEdit:null,medLogEdit:null,prn:null,historicMed:null,medEdit:null,symEdit:null,symPicker:null,exp:null,tp:null,dp:null,repOpen:false,confirmWipe:false,confirmDel:null,justLogged:null});
+  app.setState({loading:false,route:'home',ob:null,ci:null,draft:null,logDate:null,setSub:null,insView:'hub',insCat:null,insMode:'visuals',heroSel:null,quickCheck:null,selfCareEdit:null,episodeEdit:null,medLogEdit:null,medHistoryDetail:null,prn:null,historicMed:null,medEdit:null,symEdit:null,symPicker:null,exp:null,tp:null,dp:null,repOpen:false,confirmWipe:false,confirmDel:null,justLogged:null});
 }
 
 async function applyScreen(){
@@ -101,7 +101,11 @@ async function applyScreen(){
     app.setState({route:'log',logDate:today,draft:{stage:'detail',selected:symptom,cat:symptom&&symptom.category,queue:null,qi:0,staged:{},severity:6,when:'earlier',duration:'30',trigger:[],suspectedMedId:null,confidence:null,whatHelped:[],context:[],notes:'',logTime:'14:30'}});
   }
   if(kind==='checkin'){
-    app.openCheckin(today,'morning'); await delay(35); app.setState((st)=>({ci:{...st.ci,stepIndex:Number(a)}}));
+    const wanted=['sleep','feeling','body','cognition','food','meds'][Number(a)];
+    const period=wanted==='food'||wanted==='meds'?'evening':'morning';
+    app.openCheckin(today,period); await delay(35);
+    const steps=app.checkinStepsFor(period); const stepIndex=Math.max(0,steps.indexOf(wanted));
+    app.setState((st)=>({ci:{...st.ci,stepIndex,...(wanted==='sleep'?{sleepHours:9,wakeups:0}:{})}}));
   }
   if(kind==='mededit') app.openMedEditor(a==='existing'?(app.raw.meds||[])[0]:null);
   if(kind==='symedit') app.openSymEditor(a==='existing'?(app.raw.symptoms||[])[0]:null);

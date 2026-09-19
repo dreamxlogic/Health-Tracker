@@ -24,7 +24,16 @@ for (const marker of [
   'Type an activity or care action',
   'storageWarningText',
   'health-pre-restore-',
+  'showInSelfCare',
+  'Complete dose history',
+  'Set date & time',
 ]) assert.ok(html.includes(marker), `missing UI regression marker: ${marker}`);
+
+for (const marker of ['this.raw.episodes || []', 'this.raw.medLogs || []', 'this.raw.checkIns || []', 'this.raw.stress || []', 'this.raw.selfCare || []']) {
+  assert.ok(html.includes(marker), `${marker} must remain part of detailed export assembly`);
+}
+assert.ok(html.includes("notes: e.notes || ''"), 'symptom notes must remain in detailed exports');
+assert.ok(html.includes("notes: s.notes || ''"), 'mood, stress, and self-care notes must remain in detailed exports');
 
 assert.ok(!html.includes('maximum-scale=1'), 'pinch zoom must not be disabled');
 assert.ok(html.includes('data-hcc-scroll-rail'), 'horizontal rails must expose keyboard affordances');
